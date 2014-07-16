@@ -1,0 +1,12 @@
+{
+  "name": "rxmarbles",
+  "version": "0.1.0",
+  "author": "Andre Staltz",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:staltz/rxmarbles.git"
+  },
+  "dependencies": {
+    "rx": "~2.2.28"
+  }
+}
