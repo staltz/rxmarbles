@@ -11,21 +11,6 @@ makeScheduler = ->
   scheduler.toRelative = (timeSpan) -> timeSpan
   return scheduler
 
-vtscheduler = makeScheduler()
-
-s1 = Rx.Observable
-  .interval(2000, vtscheduler)
-  .map(-> 2)
-  .scan((x,y) -> x+y)
-  .take(4)
-
-s2 = Rx.Observable
-  .interval(5000, vtscheduler)
-  #.delay(8, vtscheduler)
-  .map(-> 1)
-  .scan((x,y) -> x+y)
-  .take(2)
-
 printStream = (stream, scheduler) ->
   output = "------------------------------->"
   stream
@@ -42,6 +27,21 @@ printStream = (stream, scheduler) ->
       console.log(output)
       true
     )
+
+vtscheduler = makeScheduler()
+
+s1 = Rx.Observable
+  .interval(2000, vtscheduler)
+  .map(-> 2)
+  .scan((x,y) -> x+y)
+  .take(4)
+
+s2 = Rx.Observable
+  .interval(5000, vtscheduler)
+  .delay(2, vtscheduler)
+  .map(-> 1)
+  .scan((x,y) -> x+y)
+  .take(2)
 
 printStream(s1, vtscheduler)
 printStream(s2, vtscheduler)

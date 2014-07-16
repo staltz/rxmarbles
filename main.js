@@ -27,20 +27,6 @@
     return scheduler;
   };
 
-  vtscheduler = makeScheduler();
-
-  s1 = Rx.Observable.interval(2000, vtscheduler).map(function() {
-    return 2;
-  }).scan(function(x, y) {
-    return x + y;
-  }).take(4);
-
-  s2 = Rx.Observable.interval(5000, vtscheduler).map(function() {
-    return 1;
-  }).scan(function(x, y) {
-    return x + y;
-  }).take(2);
-
   printStream = function(stream, scheduler) {
     var output;
     output = "------------------------------->";
@@ -57,6 +43,20 @@
       return true;
     });
   };
+
+  vtscheduler = makeScheduler();
+
+  s1 = Rx.Observable.interval(2000, vtscheduler).map(function() {
+    return 2;
+  }).scan(function(x, y) {
+    return x + y;
+  }).take(4);
+
+  s2 = Rx.Observable.interval(5000, vtscheduler).delay(2, vtscheduler).map(function() {
+    return 1;
+  }).scan(function(x, y) {
+    return x + y;
+  }).take(2);
 
   printStream(s1, vtscheduler);
 
