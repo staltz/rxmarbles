@@ -1,6 +1,5 @@
-- TODO React framework with hello world button
-  - App architecture similar to https://github.com/facebook/react/blob/master/examples/todomvc-flux/package.json
-  - https://github.com/jnordberg/coffeeify
++ DONE React framework with hello world
+- TODO Simple React component: button and hello world printed
 - TODO Render a stream with HTML+CSS
 - TODO Merged stream from two streams
 - TODO Render the stream with Snap.svg
