@@ -1,4 +1,5 @@
 + DONE React framework with hello world
+- TODO Upgrade to React 0.11
 - TODO Simple React component: button and hello world printed
 - TODO Render a stream with HTML+CSS
 - TODO Merged stream from two streams
