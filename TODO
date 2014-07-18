@@ -1,7 +1,8 @@
 + DONE React framework with hello world
 + DONE Upgrade to React 0.11
-- TODO Render a stream with HTML+CSS
++ DONE Render streams with React and HTML
 - TODO HTML5 boilerplate, normalize.css (or Google Web Start Kit?)
+- TODO Style the streams as an arrow diagram
 - TODO Merged stream from two streams
 - TODO Render the stream with Snap.svg
 - TODO Stream items can be dragged

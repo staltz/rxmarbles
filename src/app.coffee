@@ -1,8 +1,7 @@
 React = require 'react'
-
-RxMarblesApp = require './components/RxMarblesApp'
+Body = require 'rxmarbles/views/body'
 
 React.renderComponent(
-  RxMarblesApp(),
+  Body(),
   document.getElementById('rxmarblesapp')
 )
