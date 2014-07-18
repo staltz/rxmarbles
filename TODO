@@ -1,7 +1,7 @@
 + DONE React framework with hello world
 + DONE Upgrade to React 0.11
-- TODO Simple React component: button and hello world printed
 - TODO Render a stream with HTML+CSS
+- TODO HTML5 boilerplate, normalize.css (or Google Web Start Kit?)
 - TODO Merged stream from two streams
 - TODO Render the stream with Snap.svg
 - TODO Stream items can be dragged

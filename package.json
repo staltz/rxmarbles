@@ -23,5 +23,8 @@
     "gulp-util": "^2.2.20",
     "uglify-js": "~2.4.13",
     "watchify": "~0.4.1"
+  },
+  "scripts": {
+    "postinstall": "mkdir build && mkdir build/src && ln -s ../build/src node_modules/rxmarbles"
   }
 }
