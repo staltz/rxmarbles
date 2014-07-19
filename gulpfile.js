@@ -1,17 +1,28 @@
 var gulp = require('gulp');
-var browserify = require('gulp-browserify');
 var coffee = require('gulp-coffee');
+var less = require('gulp-less');
+var browserify = require('gulp-browserify');
 var uglify = require('gulp-uglify');
 var rimraf = require('gulp-rimraf');
 var gutil = require('gulp-util');
+var path = require('path');
 
 // Based on https://github.com/deepak1556/gulp-browserify/issues/7
 
 gulp.task('coffee', function() {
-  gutil.log(gutil.colors.yellow("Running CoffeeScript compiler..."));
+  gutil.log(gutil.colors.yellow("Compiling CoffeeScript..."));
   return gulp.src(['./src/**/*.coffee'])
     .pipe(coffee({bare: true}).on('error', gutil.log))
     .pipe(gulp.dest('./build/src'));
+});
+
+gulp.task('less', function() {
+  gutil.log(gutil.colors.yellow("Compiling LESS styles..."));
+  gulp.src('./styles/main.less')
+    .pipe(less({
+      paths: [ path.join(__dirname, 'styles', 'includes') ]
+    }))
+    .pipe(gulp.dest('./css'));
 });
 
 gulp.task('browserify', ['coffee'], function() {
@@ -37,9 +48,9 @@ gulp.task('post-clean-up', ['uglify'], function() {
     .pipe(rimraf());
 });
 
-gulp.task('build', ['post-clean-up']);
+gulp.task('build', ['less', 'post-clean-up']);
 
-gulp.task('dev-build', ['browserify'], function() {
+gulp.task('dev-build', ['less', 'browserify'], function() {
   return gulp.src(['./build/browserified-js/*.js'])
     .pipe(gulp.dest('./js'))
 });
@@ -48,7 +59,7 @@ gulp.task('default', function() {
   gulp.run('dev-build');
 
   gutil.log("Watching for changes...");
-  gulp.watch(['./src/**/*.coffee'], function(event) {
+  gulp.watch(['./src/**/*.coffee', './styles/**/*.less'], function(event) {
     if (event.path) {
       gutil.log("Change detected in ", gutil.colors.magenta(event.path));
     } else {
