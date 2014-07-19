@@ -1,0 +1,38 @@
+
+@marble-size: 32px;
+@arrow-thickness: 2px;
+@stream-vertical-margin: 32px;
+@stream-side-margin: 32px;
+
+.stream {
+  padding: 0;
+  position: relative;
+  margin: 0 @stream-side-margin;
+  height: @marble-size + (2 * @stream-vertical-margin);
+
+  .arrow {
+    background-color: @color-black;
+    width: 100%;
+    height: @arrow-thickness;
+    position: absolute;
+    margin-top: (@stream-vertical-margin + (@marble-size / 2) - (@arrow-thickness / 2));
+  }
+
+  .marble {
+    position: absolute;
+    display: inline;
+    background-color: @color-yellow;
+    width: @marble-size;
+    height: @marble-size;
+    border-radius: @marble-size;
+    border: @arrow-thickness solid @color-black;
+    text-align: center;
+    line-height: @marble-size;
+    margin-left: -(@marble-size / 2);
+    margin-top: @stream-vertical-margin;
+    &.marble-color-1 { background-color: @color-blue; }
+    &.marble-color-2 { background-color: @color-green; }
+    &.marble-color-3 { background-color: @color-yellow; }
+    &.marble-color-4 { background-color: @color-red; }
+  }
+}

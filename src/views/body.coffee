@@ -11,11 +11,8 @@ Body = React.createClass({
   render: ->
     return (
       React.DOM.div(null,
-        React.DOM.p(null, "Stream number one")
         InputStream({stream: Streams.s1})
-        React.DOM.p(null, "Stream number two")
         InputStream({stream: Streams.s2})
-        React.DOM.p(null, "Merged stream:")
         InputStream({stream: Streams.s3})
       )
     )

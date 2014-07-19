@@ -3,8 +3,9 @@
 + DONE Render streams with React and HTML
 + DONE Add HTML5 boilerplate, normalize.css
 + DONE Make styles as lesscss, gulp task to compile it to main.css
-- TODO Style the streams as an arrow diagram
-- TODO Merged stream from two streams
++ DONE Style the streams as a horizontal diagram
+- TODO Style the arrow head on the streams
+- TODO Refactor streams.coffee to generalize id generation
 - TODO Style the marble function box
 - TODO Render the stream with Snap.svg?
 - TODO Stream items can be dragged
