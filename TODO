@@ -5,7 +5,8 @@
 - TODO Make styles as lesscss, gulp task to compile it to main.css
 - TODO Style the streams as an arrow diagram
 - TODO Merged stream from two streams
-- TODO Render the stream with Snap.svg
+- TODO Style the marble function box
+- TODO Render the stream with Snap.svg?
 - TODO Stream items can be dragged
   - Reference: http://jsfiddle.net/Af9Jt/2/
 - TODO Merged stream updates in real time when child streams are dragged
