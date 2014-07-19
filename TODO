@@ -1,7 +1,8 @@
 + DONE React framework with hello world
 + DONE Upgrade to React 0.11
 + DONE Render streams with React and HTML
-- TODO HTML5 boilerplate, normalize.css (or Google Web Start Kit?)
++ DONE Add HTML5 boilerplate, normalize.css
+- TODO Make styles as lesscss, gulp task to compile it to main.css
 - TODO Style the streams as an arrow diagram
 - TODO Merged stream from two streams
 - TODO Render the stream with Snap.svg
