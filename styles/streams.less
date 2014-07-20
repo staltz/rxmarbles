@@ -3,25 +3,40 @@
 @arrow-thickness: 2px;
 @stream-vertical-margin: 32px;
 @stream-side-margin: 32px;
+@stream-arrow-padding: 22px;
+@arrow-head-size: 8px;
+@arrow-color: @color-black;
 
 .stream {
   padding: 0;
   position: relative;
-  margin: 0 @stream-side-margin;
+  margin: 0 (@stream-side-margin + @stream-arrow-padding);
   height: @marble-size + (2 * @stream-vertical-margin);
 
   .arrow {
-    background-color: @color-black;
-    width: 100%;
+    background-color: @arrow-color;
     height: @arrow-thickness;
     position: absolute;
-    margin-top: (@stream-vertical-margin + (@marble-size / 2) - (@arrow-thickness / 2));
+    top: (@stream-vertical-margin + (@marble-size / 2));
+    left: -@stream-arrow-padding;
+    right: -@stream-arrow-padding;
+  }
+  .arrow-head {
+    width: 0;
+    height: 0;
+    border-top: @arrow-head-size solid transparent;
+    border-bottom: @arrow-head-size solid transparent;
+    border-left: (2 * @arrow-head-size) solid @arrow-color;
+    display: inline-block;
+    right: (-@stream-arrow-padding - 1px);
+    position: absolute;
+    top: (@stream-vertical-margin + (@marble-size / 2) - @arrow-head-size + (@arrow-thickness / 2));
   }
 
   .marble {
     position: absolute;
     display: inline;
-    background-color: @color-yellow;
+    background-color: @color-blue; // default color
     width: @marble-size;
     height: @marble-size;
     border-radius: @marble-size;

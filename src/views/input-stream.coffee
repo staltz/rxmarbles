@@ -23,7 +23,8 @@ InputStream = React.createClass({
     return (
       React.DOM.ul({className: 'stream'},
         React.DOM.div(className: 'arrow', null),
-        marbles
+        marbles,
+        React.DOM.div(className: 'arrow-head', null)
       )
     )
 })

@@ -1,20 +1,32 @@
 .stream {
   padding: 0;
   position: relative;
-  margin: 0 32px;
+  margin: 0 54px;
   height: 96px;
 }
 .stream .arrow {
   background-color: #323232;
-  width: 100%;
   height: 2px;
   position: absolute;
-  margin-top: 47px;
+  top: 48px;
+  left: -22px;
+  right: -22px;
+}
+.stream .arrow-head {
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 16px solid #323232;
+  display: inline-block;
+  right: -23px;
+  position: absolute;
+  top: 41px;
 }
 .stream .marble {
   position: absolute;
   display: inline;
-  background-color: #ffcb46;
+  background-color: #3ea1cb;
   width: 32px;
   height: 32px;
   border-radius: 32px;

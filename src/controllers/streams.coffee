@@ -41,6 +41,7 @@ vtscheduler = makeScheduler()
 
 s1 = Rx.Observable
   .interval(15, vtscheduler)
+  .startWith(vtscheduler,2)
   .map(-> 2)
   .scan((x,y) -> x+y)
   .map((x) -> {content: x, id: Math.floor(Math.random()*10000)})
