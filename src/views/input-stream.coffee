@@ -1,5 +1,4 @@
 React = require 'react'
-Rx = require 'rx'
 Marble = require 'rxmarbles/views/marble'
 
 #
@@ -13,10 +12,7 @@ InputStream = React.createClass({
     }
 
   componentWillMount: ->
-    this.props.stream
-      .subscribe((serializedStream) =>
-        this.setState({serializedStream: serializedStream})
-      )
+    this.setState({serializedStream: this.props.serializedStream})
 
   render: ->
     marbles = [Marble({item: i}) for i in this.state.serializedStream]

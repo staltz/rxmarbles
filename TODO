@@ -5,7 +5,7 @@
 + DONE Make styles as lesscss, gulp task to compile it to main.css
 + DONE Style the streams as a horizontal diagram
 + DONE Style the arrow head on the streams
-- TODO Refactor streams.coffee to generalize id generation
++ DONE Refactor methods out of streams.coffee
 - TODO Style the marble function box
 - TODO Render the stream with Snap.svg?
 - TODO Stream items can be dragged

@@ -1,4 +1,5 @@
 Rx = require 'rx'
+Utils = require 'rxmarbles/controllers/utils'
 
 TIME_OF_COMPLETION = 100
 
@@ -6,62 +7,28 @@ TIME_OF_COMPLETION = 100
 # Streams.coffee exports the data streams used for the play interaction
 #
 
-makeScheduler = ->
-  scheduler = new Rx.VirtualTimeScheduler(0, (x,y) ->
-    return 1 if x > y
-    return -1 if x < y
-    return 0
-  )
-  scheduler.add = (absolute, relative) -> (absolute + relative)
-  scheduler.toDateTimeOffset = (absolute) -> Math.floor(absolute)
-  scheduler.toRelative = (timeSpan) -> timeSpan
-  return scheduler
-
-getReducedStream = (stream, scheduler) ->
-  subject = new Rx.BehaviorSubject([])
-  stream
-    .observeOn(scheduler)
-    .timestamp(scheduler)
-    .reduce((acc, x) ->
-      x.time = (x.timestamp / TIME_OF_COMPLETION)*100
-      delete x.timestamp
-      x.id = x.value.id
-      x.content = x.value.content
-      delete x.value
-      acc.push(x)
-      return acc
-    ,[])
-    .subscribe((x) ->
-      subject.onNext(x)
-      # ignore onCompleted and onError
-    )
-  return subject
-
-vtscheduler = makeScheduler()
+vtscheduler = Utils.makeScheduler()
 
 s1 = Rx.Observable
   .interval(15, vtscheduler)
   .startWith(vtscheduler,2)
   .map(-> 2)
   .scan((x,y) -> x+y)
-  .map((x) -> {content: x, id: Math.floor(Math.random()*10000)})
-  .take(4)
-  .publish().refCount()
+  .let(Utils.prepareInputStream(vtscheduler, TIME_OF_COMPLETION))
 
 s2 = Rx.Observable
-  .interval(37, vtscheduler)
+  .interval(33, vtscheduler)
   .delay(2, vtscheduler)
   .map(-> 1)
   .scan((x,y) -> x+y)
-  .map((x) -> {content: x, id: Math.floor(Math.random()*10000)})
   .take(2)
-  .publish().refCount()
+  .let(Utils.prepareInputStream(vtscheduler, TIME_OF_COMPLETION))
 
 s3 = Rx.Observable.merge(s1, s2)
 
-rs1 = getReducedStream(s1, vtscheduler)
-rs2 = getReducedStream(s2, vtscheduler)
-rs3 = getReducedStream(s3, vtscheduler)
+rs1 = Utils.getSerializedStreamPromise(s1, vtscheduler, TIME_OF_COMPLETION)
+rs2 = Utils.getSerializedStreamPromise(s2, vtscheduler, TIME_OF_COMPLETION)
+rs3 = Utils.getSerializedStreamPromise(s3, vtscheduler, TIME_OF_COMPLETION)
 
 vtscheduler.start()
 

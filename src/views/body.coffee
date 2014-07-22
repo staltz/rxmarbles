@@ -1,5 +1,4 @@
 React = require 'react'
-Streams = require 'rxmarbles/controllers/streams'
 InputStream = require 'rxmarbles/views/input-stream'
 
 #
@@ -11,9 +10,7 @@ Body = React.createClass({
   render: ->
     return (
       React.DOM.div(null,
-        InputStream({stream: Streams.s1})
-        InputStream({stream: Streams.s2})
-        InputStream({stream: Streams.s3})
+        [InputStream({serializedStream: s}) for s in this.props.streams]
       )
     )
 })
