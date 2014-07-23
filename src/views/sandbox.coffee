@@ -4,7 +4,7 @@ InputStream = require 'rxmarbles/views/input-stream'
 #
 # Responsible for startup and connecting controller streams to the views
 #
-Body = React.createClass({
+Sandbox = React.createClass({
   getInitialState: -> {}
 
   render: ->
@@ -15,4 +15,4 @@ Body = React.createClass({
     )
 })
 
-module.exports = Body
+module.exports = Sandbox
