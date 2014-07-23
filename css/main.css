@@ -1,16 +1,17 @@
 .stream {
-  padding: 0;
   position: relative;
-  margin: 0 54px;
+  display: block;
+  width: 100%;
   height: 96px;
+  overflow: visible;
 }
 .stream .arrow {
   background-color: #323232;
   height: 2px;
   position: absolute;
   top: 48px;
-  left: -22px;
-  right: -22px;
+  left: 22px;
+  right: 22px;
 }
 .stream .arrow-head {
   width: 0;
@@ -19,34 +20,53 @@
   border-bottom: 8px solid transparent;
   border-left: 16px solid #323232;
   display: inline-block;
-  right: -23px;
+  right: 21px;
   position: absolute;
   top: 41px;
 }
-.stream .marble {
+.stream .marbles {
   position: absolute;
-  display: inline;
-  background-color: #3ea1cb;
+  left: 70px;
+  right: 70px;
+  top: 48px;
+  height: 1px;
+}
+.stream .marble-container {
   width: 32px;
   height: 32px;
-  border-radius: 32px;
-  border: 2px solid #323232;
+  position: relative;
+  display: inline-block;
+  margin: -16px;
+}
+.stream .marble-container .marble-content {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  margin: 0;
   text-align: center;
   line-height: 32px;
-  margin-left: -16px;
-  margin-top: 32px;
 }
-.stream .marble.marble-color-1 {
-  background-color: #3ea1cb;
+.stream .marble-container svg.marble {
+  overflow: visible;
+  width: 32px;
+  height: 32px;
 }
-.stream .marble.marble-color-2 {
-  background-color: #82d736;
+.stream .marble-container circle.marble {
+  stroke: #323232;
+  fill: #3ea1cb;
 }
-.stream .marble.marble-color-3 {
-  background-color: #ffcb46;
+.stream .marble-container circle.marble.marble-color-1 {
+  fill: #3ea1cb;
 }
-.stream .marble.marble-color-4 {
-  background-color: #ff6946;
+.stream .marble-container circle.marble.marble-color-2 {
+  fill: #82d736;
+}
+.stream .marble-container circle.marble.marble-color-3 {
+  fill: #ffcb46;
+}
+.stream .marble-container circle.marble.marble-color-4 {
+  fill: #ff6946;
 }
 body {
   background: #ececec;

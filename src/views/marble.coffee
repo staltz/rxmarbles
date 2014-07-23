@@ -11,12 +11,15 @@ Marble = React.createClass({
     colornum = (this.props.item.id % NUM_COLORS) + 1
 
     return (
-      React.DOM.li(
-        {
-          className: "marble marble-color-#{colornum}",
-          style: {left: "#{item.time}%"}
-        },
-        item.content
+      React.DOM.div({className: "marble-container", style: {left: "#{item.time}%"}},
+        React.DOM.svg({className: "marble", viewBox: "0 0 1 1"},
+          React.DOM.circle({
+            cx: 0.5, cy: 0.5, r: 0.5,
+            className: "marble marble-color-#{colornum}"
+            style: {"stroke-width": "0.07"}
+          })
+        ),
+        React.DOM.p({className: "marble-content"}, item.content)
       )
     )
 })

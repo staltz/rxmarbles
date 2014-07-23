@@ -17,10 +17,10 @@ InputStream = React.createClass({
   render: ->
     marbles = [Marble({item: i}) for i in this.state.serializedStream]
     return (
-      React.DOM.ul({className: 'stream'},
+      React.DOM.div({className: 'stream'},
         React.DOM.div(className: 'arrow', null),
-        marbles,
-        React.DOM.div(className: 'arrow-head', null)
+        React.DOM.div(className: 'arrow-head', null),
+        React.DOM.div({className: "marbles"}, marbles)
       )
     )
 })

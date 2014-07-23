@@ -8,18 +8,19 @@
 @arrow-color: @color-black;
 
 .stream {
-  padding: 0;
   position: relative;
-  margin: 0 (@stream-side-margin + @stream-arrow-padding);
-  height: @marble-size + (2 * @stream-vertical-margin);
+  display: block;
+  width: 100%;
+  height: (@marble-size + (2 * @stream-vertical-margin));
+  overflow: visible;
 
   .arrow {
     background-color: @arrow-color;
     height: @arrow-thickness;
     position: absolute;
     top: (@stream-vertical-margin + (@marble-size / 2));
-    left: -@stream-arrow-padding;
-    right: -@stream-arrow-padding;
+    left: @stream-arrow-padding;
+    right: @stream-arrow-padding;
   }
   .arrow-head {
     width: 0;
@@ -28,26 +29,46 @@
     border-bottom: @arrow-head-size solid transparent;
     border-left: (2 * @arrow-head-size) solid @arrow-color;
     display: inline-block;
-    right: (-@stream-arrow-padding - 1px);
+    right: (@stream-arrow-padding - 1px);
     position: absolute;
     top: (@stream-vertical-margin + (@marble-size / 2) - @arrow-head-size + (@arrow-thickness / 2));
   }
 
-  .marble {
+  .marbles {
     position: absolute;
-    display: inline;
-    background-color: @color-blue; // default color
+    left: (@stream-side-margin + @stream-arrow-padding + (@marble-size / 2));
+    right: (@stream-side-margin + @stream-arrow-padding + (@marble-size / 2));
+    top: (@stream-vertical-margin + (@marble-size / 2));
+    height: 1px;
+  }
+  .marble-container {
     width: @marble-size;
     height: @marble-size;
-    border-radius: @marble-size;
-    border: @arrow-thickness solid @color-black;
-    text-align: center;
-    line-height: @marble-size;
-    margin-left: -(@marble-size / 2);
-    margin-top: @stream-vertical-margin;
-    &.marble-color-1 { background-color: @color-blue; }
-    &.marble-color-2 { background-color: @color-green; }
-    &.marble-color-3 { background-color: @color-yellow; }
-    &.marble-color-4 { background-color: @color-red; }
+    position: relative;
+    display: inline-block;
+    margin: -(@marble-size / 2);
+
+    .marble-content {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      margin: 0;
+      text-align: center;
+      line-height: @marble-size;
+    }
+    svg.marble {
+      overflow: visible;
+      width: @marble-size;
+      height: @marble-size;
+    }
+    circle.marble {
+      stroke: @color-black;
+      fill: @color-blue;
+      &.marble-color-1 { fill: @color-blue; }
+      &.marble-color-2 { fill: @color-green; }
+      &.marble-color-3 { fill: @color-yellow; }
+      &.marble-color-4 { fill: @color-red; }
+    }
   }
 }
