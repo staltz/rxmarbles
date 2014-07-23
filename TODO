@@ -7,7 +7,9 @@
 + DONE Style the arrow head on the streams
 + DONE Refactor methods out of streams.coffee
 - TODO Style the marble function box
-- TODO Render the stream with Snap.svg?
+- TODO Make React component OutputStream (necessary?)
 - TODO Stream items can be dragged
   - Reference: http://jsfiddle.net/Af9Jt/2/
+- TODO Render the stream with Snap.svg?
+  - Each stream with a different regular polygon?
 - TODO Merged stream updates in real time when child streams are dragged
