@@ -61,8 +61,7 @@ Marble = React.createClass({
     return true
 
   render: ->
-    item = this.props.item
-    colornum = (item.id % NUM_COLORS) + 1
+    colornum = (this.props.item.id % NUM_COLORS) + 1
     roundedPos = Math.round(this.state.pos)+"%"
 
     return (
@@ -79,7 +78,7 @@ Marble = React.createClass({
             style: {"stroke-width": "0.07"}
           })
         ),
-        React.DOM.p({className: "marble-content"}, item.content)
+        React.DOM.p({className: "marble-content"}, this.props.item?.content)
       )
     )
 })
