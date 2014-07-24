@@ -83,6 +83,7 @@
   position: relative;
   display: inline-block;
   margin: -16px;
+  cursor: ew-resize;
 }
 .stream .marbles .marble-container .marble-content {
   position: absolute;
