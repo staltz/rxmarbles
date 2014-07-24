@@ -12,14 +12,14 @@ InputStream = React.createClass({
     }
 
   componentWillMount: ->
-    this.setState({serializedStream: this.props.serializedStream})
+    this.setState({serializedStream: this.props.data})
 
   render: ->
     marbles = [Marble({item: i}) for i in this.state.serializedStream]
     return (
-      React.DOM.div({className: 'stream'},
-        React.DOM.div(className: 'arrow', null),
-        React.DOM.div(className: 'arrow-head', null),
+      React.DOM.div({className: "stream"},
+        React.DOM.div(className: "arrow", null),
+        React.DOM.div(className: "arrow-head", null),
         React.DOM.div({className: "marbles"}, marbles)
       )
     )

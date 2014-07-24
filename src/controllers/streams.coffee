@@ -33,7 +33,6 @@ rs3 = Utils.getSerializedStreamPromise(s3, vtscheduler, TIME_OF_COMPLETION)
 vtscheduler.start()
 
 module.exports = {
-  s1: rs1
-  s2: rs2
-  s3: rs3
+  inputStreams: [rs1, rs2]
+  outputStream: rs3
 }

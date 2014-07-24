@@ -6,7 +6,7 @@
 + DONE Style the streams as a horizontal diagram
 + DONE Style the arrow head on the streams
 + DONE Refactor methods out of streams.coffee
-- TODO Sandbox view itself accesses controllers/streams
++ DONE Sandbox view itself accesses controllers/streams
 - TODO Style the marble function box
 - TODO Make React component OutputStream (necessary?)
 - TODO Stream items can be dragged
