@@ -1,3 +1,49 @@
+@import url(http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500);
+.sandbox {
+  background: #ffffff;
+  width: 820px;
+  margin: 0 auto;
+  margin-top: 20px;
+  border-radius: 2px;
+  -webkit-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
+  -moz-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
+  box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
+}
+.sandbox .function-box {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 24px;
+  text-align: center;
+  position: relative;
+}
+.sandbox .function-box::before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  -webkit-box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.17);
+  -moz-box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.17);
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.17);
+}
+.sandbox .function-box::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+}
+.sandbox .function-box .function-box-label {
+  font-family: Source Code Pro, monospace;
+  font-weight: 400;
+  font-size: 2rem;
+}
 .stream {
   position: relative;
   display: block;
@@ -31,14 +77,14 @@
   top: 48px;
   height: 1px;
 }
-.stream .marble-container {
+.stream .marbles .marble-container {
   width: 32px;
   height: 32px;
   position: relative;
   display: inline-block;
   margin: -16px;
 }
-.stream .marble-container .marble-content {
+.stream .marbles .marble-container .marble-content {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -47,37 +93,27 @@
   text-align: center;
   line-height: 32px;
 }
-.stream .marble-container svg.marble {
+.stream .marbles .marble-container svg.marble {
   overflow: visible;
   width: 32px;
   height: 32px;
 }
-.stream .marble-container circle.marble {
+.stream .marbles .marble-container circle.marble {
   stroke: #323232;
   fill: #3ea1cb;
 }
-.stream .marble-container circle.marble.marble-color-1 {
+.stream .marbles .marble-container circle.marble.marble-color-1 {
   fill: #3ea1cb;
 }
-.stream .marble-container circle.marble.marble-color-2 {
+.stream .marbles .marble-container circle.marble.marble-color-2 {
   fill: #82d736;
 }
-.stream .marble-container circle.marble.marble-color-3 {
+.stream .marbles .marble-container circle.marble.marble-color-3 {
   fill: #ffcb46;
 }
-.stream .marble-container circle.marble.marble-color-4 {
+.stream .marbles .marble-container circle.marble.marble-color-4 {
   fill: #ff6946;
 }
 body {
   background: #ececec;
-}
-section#rxmarblesapp {
-  background: #ffffff;
-  width: 820px;
-  margin: 0 auto;
-  margin-top: 20px;
-  border-radius: 2px;
-  box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
-  -moz-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
-  -webkit-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
 }

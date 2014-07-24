@@ -1,6 +1,41 @@
 
+.z-depth-calculator(
+  @dyTop, @blurTop, @opacityTop,
+  @dyBottom, @blurBottom, @opacityBottom)
+{
+  position: relative;
+  // top
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    -webkit-box-shadow: 0 @dyTop @blurTop 0 rgba(0,0,0,@opacityTop);
+       -moz-box-shadow: 0 @dyTop @blurTop 0 rgba(0,0,0,@opacityTop);
+            box-shadow: 0 @dyTop @blurTop 0 rgba(0,0,0,@opacityTop);
+  }
+  // bottom
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    -webkit-box-shadow: 0 @dyBottom @blurBottom 0 rgba(0,0,0,@opacityBottom);
+       -moz-box-shadow: 0 @dyBottom @blurBottom 0 rgba(0,0,0,@opacityBottom);
+            box-shadow: 0 @dyBottom @blurBottom 0 rgba(0,0,0,@opacityBottom);
+  }
+}
+
 .z-depth-1() {
-          box-shadow: 0px 1px 2px 1px rgba(0,0,0,0.17);
-     -moz-box-shadow: 0px 1px 2px 1px rgba(0,0,0,0.17);
   -webkit-box-shadow: 0px 1px 2px 1px rgba(0,0,0,0.17);
+     -moz-box-shadow: 0px 1px 2px 1px rgba(0,0,0,0.17);
+          box-shadow: 0px 1px 2px 1px rgba(0,0,0,0.17);
+}
+
+.z-depth-2() {
+  .z-depth-calculator(2px, 10px, 0.17, 2px, 5px, 0.26);
+}
+
+.z-depth-3() {
+  .z-depth-calculator(6px, 20px, 0.19, 6px, 17px, 0.2);
 }

@@ -7,7 +7,7 @@
 + DONE Style the arrow head on the streams
 + DONE Refactor methods out of streams.coffee
 + DONE Sandbox view itself accesses controllers/streams
-- TODO Style the marble function box
++ DONE Style the marble function box
 - TODO Make React component OutputStream (necessary?)
 - TODO Stream items can be dragged
   - Reference: http://jsfiddle.net/Af9Jt/2/
