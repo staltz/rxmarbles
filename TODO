@@ -19,4 +19,5 @@
 - TODO Dropdown to choose other examples
 - TODO Interactively add marbles to an InputStream
 - TODO Better affordances for Marble dragging
-
+- TODO Interactively remove marbles from an InputStream
+- TODO Render metastreams, make flatMap example
