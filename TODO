@@ -8,8 +8,11 @@
 + DONE Refactor methods out of streams.coffee
 + DONE Sandbox view itself accesses controllers/streams
 + DONE Style the marble function box
-- TODO Make React component OutputStream (necessary?)
++ DONE Defined required props for some React views
 - TODO Stream items can be dragged
   - Reference: http://jsfiddle.net/Af9Jt/2/
-- TODO Render each stream with a different regular polygon?
 - TODO Merged stream updates in real time when child streams are dragged
+- TODO Make React component OutputStream
+  - Stream is the base. InputStream can be dragged. OutputStream cannot be dragged
+- TODO Render each stream with a different regular polygon?
+- TODO Dropdown to choose other examples

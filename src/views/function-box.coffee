@@ -6,6 +6,10 @@ React = require 'react'
 #
 
 FunctionBox = React.createClass({
+  propTypes: {
+    label: React.PropTypes.string.isRequired
+  }
+
   render: ->
     return (
       React.DOM.div({className: "function-box"},

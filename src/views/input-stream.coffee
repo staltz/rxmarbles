@@ -5,6 +5,10 @@ Marble = require 'rxmarbles/views/marble'
 # Renders a stream meant as an input to the play interaction
 #
 InputStream = React.createClass({
+  propTypes: {
+    data: React.PropTypes.arrayOf(React.PropTypes.object).isRequired
+  }
+
   getInitialState: ->
     return {
       # A serialized stream is an Array representing some emitted items

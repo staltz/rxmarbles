@@ -6,9 +6,13 @@ React = require 'react'
 
 NUM_COLORS = 4
 Marble = React.createClass({
+  propTypes: {
+    item: React.PropTypes.object.isRequired
+  }
+
   render: ->
     item = this.props.item
-    colornum = (this.props.item.id % NUM_COLORS) + 1
+    colornum = (item.id % NUM_COLORS) + 1
 
     return (
       React.DOM.div({className: "marble-container", style: {left: "#{item.time}%"}},
