@@ -1,6 +1,4 @@
-React = require 'react'
 Sandbox = require 'rxmarbles/views/sandbox'
 
-React.renderComponent(
-  Sandbox(), document.getElementsByClassName("sandbox")[0]
-)
+sandboxContainer = document.querySelector(".sandbox")
+sandboxContainer.appendChild(Sandbox.render())
