@@ -1,26 +1,26 @@
 
 @marble-size: 32px;
 @arrow-thickness: 2px;
-@stream-vertical-margin: 32px;
-@stream-side-margin: 32px;
-@stream-arrow-padding: 22px;
+@diagram-vertical-margin: 32px;
+@diagram-side-margin: 32px;
+@diagram-arrow-padding: 22px;
 @arrow-head-size: 8px;
 @arrow-color: @color-black;
 
-.stream {
+.diagram {
   position: relative;
   display: block;
   width: 100%;
-  height: (@marble-size + (2 * @stream-vertical-margin));
+  height: (@marble-size + (2 * @diagram-vertical-margin));
   overflow: visible;
 
   .arrow {
     background-color: @arrow-color;
     height: @arrow-thickness;
     position: absolute;
-    top: (@stream-vertical-margin + (@marble-size / 2));
-    left: @stream-arrow-padding;
-    right: @stream-arrow-padding;
+    top: (@diagram-vertical-margin + (@marble-size / 2));
+    left: @diagram-arrow-padding;
+    right: @diagram-arrow-padding;
   }
   .arrow-head {
     width: 0;
@@ -29,16 +29,16 @@
     border-bottom: @arrow-head-size solid transparent;
     border-left: (2 * @arrow-head-size) solid @arrow-color;
     display: inline-block;
-    right: (@stream-arrow-padding - 1px);
+    right: (@diagram-arrow-padding - 1px);
     position: absolute;
-    top: (@stream-vertical-margin + (@marble-size / 2) - @arrow-head-size + (@arrow-thickness / 2));
+    top: (@diagram-vertical-margin + (@marble-size / 2) - @arrow-head-size + (@arrow-thickness / 2));
   }
 
   .marbles {
     position: absolute;
-    left: (@stream-side-margin + @stream-arrow-padding + (@marble-size / 2));
-    right: (@stream-side-margin + @stream-arrow-padding + (@marble-size / 2));
-    top: (@stream-vertical-margin + (@marble-size / 2));
+    left: (@diagram-side-margin + @diagram-arrow-padding + (@marble-size / 2));
+    right: (@diagram-side-margin + @diagram-arrow-padding + (@marble-size / 2));
+    top: (@diagram-vertical-margin + (@marble-size / 2));
     height: 1px;
 
     .marble-container {

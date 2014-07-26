@@ -1,6 +1,6 @@
 Rx = require 'rx'
 Streams = require 'rxmarbles/controllers/streams'
-InputStream = require 'rxmarbles/views/input-stream'
+InputDiagram = require 'rxmarbles/views/input-diagram'
 FunctionBox = require 'rxmarbles/views/function-box'
 Utils = require 'rxmarbles/views/utils'
 
@@ -11,21 +11,21 @@ Utils = require 'rxmarbles/views/utils'
 module.exports = {
   render: ->
     rootElement = document.createElement("div")
-    inputStreams = Utils.renderObservableDOMElement(
-      Rx.Observable.zipArray(Streams.inputStreams)
-        .map((serializedStreams) ->
-          return (InputStream.render(s) for s in serializedStreams)
+    inputDiagrams = Utils.renderObservableDOMElement(
+      Rx.Observable.zipArray(Streams.inputDiagrams)
+        .map((diagrams) ->
+          return (InputDiagram.render(d) for d in diagrams)
         )
     )
     functionBox = FunctionBox.render("merge")
-    outputStream = Utils.renderObservableDOMElement(
-      Streams.outputStream
-        .map((serializedStream) ->
-          return InputStream.render(serializedStream)
+    outputDiagram = Utils.renderObservableDOMElement(
+      Streams.outputDiagram
+        .map((diagram) ->
+          return InputDiagram.render(diagram)
         )
     )
-    rootElement.appendChild(inputStreams)
+    rootElement.appendChild(inputDiagrams)
     rootElement.appendChild(functionBox)
-    rootElement.appendChild(outputStream)
+    rootElement.appendChild(outputDiagram)
     return rootElement
 }

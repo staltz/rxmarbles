@@ -2,23 +2,23 @@ Rx = require 'rx'
 Marble = require 'rxmarbles/views/marble'
 
 #
-# Renders a stream meant as an input to the play interaction
+# Renders a stream diagram meant as an input to the sandbox
 #
 
 module.exports = {
-  render: (serializedStream) ->
-    stream = document.createElement("div")
-    stream.className = "stream"
+  render: (diagramData) ->
+    diagram = document.createElement("div")
+    diagram.className = "diagram"
     arrow = document.createElement("div")
     arrow.className = "arrow"
-    stream.appendChild(arrow)
+    diagram.appendChild(arrow)
     arrowHead = document.createElement("div")
     arrowHead.className = "arrow-head"
-    stream.appendChild(arrowHead)
+    diagram.appendChild(arrowHead)
     marbles = document.createElement("div")
     marbles.className = "marbles"
-    stream.appendChild(marbles)
-    for m in serializedStream
+    diagram.appendChild(marbles)
+    for m in diagramData
       marbles.appendChild(Marble.render(m))
-    return stream
+    return diagram
 }

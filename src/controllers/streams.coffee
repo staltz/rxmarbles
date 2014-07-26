@@ -26,13 +26,13 @@ s2 = Rx.Observable
 
 s3 = Rx.Observable.merge(s1, s2)
 
-rs1 = Utils.getSerializedStreamPromise(s1, vtscheduler, TIME_OF_COMPLETION)
-rs2 = Utils.getSerializedStreamPromise(s2, vtscheduler, TIME_OF_COMPLETION)
-rs3 = Utils.getSerializedStreamPromise(s3, vtscheduler, TIME_OF_COMPLETION)
+rs1 = Utils.getDiagramPromise(s1, vtscheduler, TIME_OF_COMPLETION)
+rs2 = Utils.getDiagramPromise(s2, vtscheduler, TIME_OF_COMPLETION)
+rs3 = Utils.getDiagramPromise(s3, vtscheduler, TIME_OF_COMPLETION)
 
 vtscheduler.start()
 
 module.exports = {
-  inputStreams: [rs1, rs2]
-  outputStream: rs3
+  inputDiagrams: [rs1, rs2]
+  outputDiagram: rs3
 }

@@ -14,12 +14,12 @@ makeScheduler = ->
 prepareInputStream = (scheduler, endTime) ->
   return ((stream) ->
     return stream
-      .map((x) -> {content: x, id: Math.floor(Math.random()*10000)})
+      .map((x) -> {content: x, id: Math.floor(Math.random()*1000000)})
       .takeUntilWithTime(endTime, scheduler)
       .publish().refCount()
   )
 
-getSerializedStreamPromise = (stream, scheduler, endTime) ->
+getDiagramPromise = (stream, scheduler, endTime) ->
   subject = new Rx.BehaviorSubject([])
   stream
     .observeOn(scheduler)
@@ -42,5 +42,5 @@ getSerializedStreamPromise = (stream, scheduler, endTime) ->
 module.exports = {
   makeScheduler: makeScheduler
   prepareInputStream: prepareInputStream
-  getSerializedStreamPromise: getSerializedStreamPromise
+  getDiagramPromise: getDiagramPromise
 }
