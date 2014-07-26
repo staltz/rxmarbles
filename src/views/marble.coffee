@@ -21,29 +21,35 @@ getDxDragStream = (element) ->
     )
     .concatAll()
 
+createMarbleSvg = (item) ->
+  colornum = (item.id % NUM_COLORS) + 1
+  marble = document.createElementNS(XMLNS, "svg")
+  marble.setAttributeNS(null, "class", "marble")
+  marble.setAttributeNS(null, "viewBox", "0 0 1 1")
+  circle = document.createElementNS(XMLNS, "circle")
+  circle.setAttributeNS(null, "cx", 0.5)
+  circle.setAttributeNS(null, "cy", 0.5)
+  circle.setAttributeNS(null, "r", 0.5)
+  circle.setAttributeNS(null, "class", "marble marble-color-#{colornum}")
+  circle.style["stroke-width"] = "0.07"
+  marble.appendChild(circle)
+  return marble
+
+createContentElement = (item) ->
+  content = document.createElement("p")
+  content.className = "marble-content"
+  content.textContent = item?.content
+  return content
+
 module.exports = {
   render: (item) ->
-    colornum = (item.id % NUM_COLORS) + 1
     container = document.createElement("div")
     container.className = "marble-container"
     container.leftPos = item.time
     container.style.left = item.time+"%"
-    marble = document.createElementNS(XMLNS, "svg")
-    marble.setAttributeNS(null, "class", "marble")
-    marble.setAttributeNS(null, "viewBox", "0 0 1 1")
-    circle = document.createElementNS(XMLNS, "circle")
-    circle.setAttributeNS(null, "cx", 0.5)
-    circle.setAttributeNS(null, "cy", 0.5)
-    circle.setAttributeNS(null, "r", 0.5)
-    circle.setAttributeNS(null, "class", "marble marble-color-#{colornum}")
-    circle.style["stroke-width"] = "0.07"
-    content = document.createElement("p")
-    content.className = "marble-content"
-    content.textContent = item?.content
 
-    marble.appendChild(circle)
-    container.appendChild(marble)
-    container.appendChild(content)
+    container.appendChild(createMarbleSvg(item))
+    container.appendChild(createContentElement(item))
 
     getDxDragStream(container)
       .subscribe((dx) ->
