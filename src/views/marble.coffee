@@ -13,7 +13,11 @@ getDxDragStream = (element) ->
       moveStream = Rx.Observable.fromEvent(document, "mousemove")
       upStream = Rx.Observable.fromEvent(document, "mouseup")
       dxStream = moveStream
-        .map((ev) -> ev.pageX)
+        .map((ev) ->
+          ev.stopPropagation
+          ev.preventDefault()
+          return ev.pageX
+        )
         .windowWithCount(2,1)
         .flatMap((result) -> result.toArray())
         .map((array) -> (array[1] - array[0]))
@@ -51,14 +55,23 @@ module.exports = {
     container.appendChild(createMarbleSvg(item))
     container.appendChild(createContentElement(item))
 
-    getDxDragStream(container)
-      .subscribe((dx) ->
+    container.leftStream = getDxDragStream(container)
+      .scan(item.time, (acc, dx) ->
         pxToPercentage = 100.0 / (container.parentElement.clientWidth)
-        newPos = container.leftPos + (dx * pxToPercentage)
-        newPos = 0 if newPos < 0
-        newPos = 100 if newPos > 100
-        container.leftPos = newPos
-        container.style.left = Math.round(newPos)+"%"
+        return acc + (dx * pxToPercentage)
       )
+      .map((pos) ->
+        return 0 if pos < 0
+        return 100 if pos > 100
+        return pos
+      )
+      .map(Math.round)
+
+    container.leftStream
+      .subscribe((leftPos) ->
+        container.style.left = leftPos + "%"
+        return true
+      )
+
     return container
 }
