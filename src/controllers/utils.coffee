@@ -19,6 +19,19 @@ prepareInputStream = (scheduler, endTime) ->
       .publish().refCount()
   )
 
+#
+# Creates an Rx.Observable from a diagram data (array of items data)
+#
+toStream = (diagramData, scheduler, endTime) ->
+  singleMarbleStreams = []
+  for item in diagramData
+    singleMarbleStreams.push(
+      Rx.Observable.just(item.d, scheduler).delay(item.t, scheduler)
+    )
+  return Rx.Observable
+    .merge(singleMarbleStreams)
+    .let(prepareInputStream(scheduler, endTime))
+
 getDiagramPromise = (stream, scheduler, endTime) ->
   subject = new Rx.BehaviorSubject([])
   stream
@@ -41,6 +54,6 @@ getDiagramPromise = (stream, scheduler, endTime) ->
 
 module.exports = {
   makeScheduler: makeScheduler
-  prepareInputStream: prepareInputStream
+  toStream: toStream
   getDiagramPromise: getDiagramPromise
 }

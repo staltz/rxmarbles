@@ -26,7 +26,7 @@ module.exports = {
       marblesContainer.appendChild(m)
 
     diagram.diagramDataStream = Rx.Observable
-      .combineLatest((m.leftStream for m in marbles), (args...) -> args)
+      .combineLatest((m.dataStream for m in marbles), (args...) -> args)
 
     return diagram
 }

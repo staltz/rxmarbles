@@ -67,6 +67,9 @@ module.exports = {
       .startWith(item.time)
       .distinctUntilChanged()
 
+    container.dataStream = container.leftStream
+      .map((leftPos) -> {t:leftPos, d:item.content})
+
     container.leftStream
       .subscribe((leftPos) ->
         container.style.left = leftPos + "%"
