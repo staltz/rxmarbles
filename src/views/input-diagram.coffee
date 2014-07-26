@@ -9,16 +9,24 @@ module.exports = {
   render: (diagramData) ->
     diagram = document.createElement("div")
     diagram.className = "diagram"
+
     arrow = document.createElement("div")
     arrow.className = "arrow"
     diagram.appendChild(arrow)
+
     arrowHead = document.createElement("div")
     arrowHead.className = "arrow-head"
     diagram.appendChild(arrowHead)
-    marbles = document.createElement("div")
-    marbles.className = "marbles"
-    diagram.appendChild(marbles)
-    for m in diagramData
-      marbles.appendChild(Marble.render(m))
+
+    marblesContainer = document.createElement("div")
+    marblesContainer.className = "marbles"
+    diagram.appendChild(marblesContainer)
+    marbles = (Marble.render(i) for i in diagramData)
+    for m in marbles
+      marblesContainer.appendChild(m)
+
+    diagram.diagramDataStream = Rx.Observable
+      .combineLatest((m.leftStream for m in marbles), (args...) -> args)
+
     return diagram
 }

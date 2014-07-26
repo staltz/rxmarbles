@@ -49,8 +49,6 @@ module.exports = {
   render: (item) ->
     container = document.createElement("div")
     container.className = "marble-container"
-    container.leftPos = item.time
-    container.style.left = item.time+"%"
 
     container.appendChild(createMarbleSvg(item))
     container.appendChild(createContentElement(item))
@@ -66,6 +64,8 @@ module.exports = {
         return pos
       )
       .map(Math.round)
+      .startWith(item.time)
+      .distinctUntilChanged()
 
     container.leftStream
       .subscribe((leftPos) ->
