@@ -10,8 +10,8 @@ END = 100 # Time of completion
 
 vtscheduler = Utils.makeScheduler()
 
-inputStream1 = Utils.toStream(Examples["merge"]["inputs"][1], vtscheduler, END)
 inputStream0 = Utils.toStream(Examples["merge"]["inputs"][0], vtscheduler, END)
+inputStream1 = Utils.toStream(Examples["merge"]["inputs"][1], vtscheduler, END)
 outputStream = Rx.Observable.merge(inputStream0, inputStream1)
 
 diagram0 = Utils.getDiagramPromise(inputStream0, vtscheduler, END)
