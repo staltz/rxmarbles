@@ -25,6 +25,25 @@ getDxDragStream = (element) ->
     )
     .concatAll()
 
+getLeftPosStream = (element, initialPos) ->
+  return getDxDragStream(element)
+    .scan(initialPos, (acc, dx) ->
+      pxToPercentage = 1
+      try
+        pxToPercentage = 100.0 / (element.parentElement.clientWidth)
+      catch err
+        console.warn(err)
+      return acc + (dx * pxToPercentage)
+    )
+    .map((pos) ->
+      return 0 if pos < 0
+      return 100 if pos > 100
+      return pos
+    )
+    .map(Math.round)
+    .startWith(initialPos)
+    .distinctUntilChanged()
+
 createMarbleSvg = (item) ->
   colornum = (item.id % NUM_COLORS) + 1
   marble = document.createElementNS(XMLNS, "svg")
@@ -53,24 +72,12 @@ module.exports = {
     container.appendChild(createMarbleSvg(item))
     container.appendChild(createContentElement(item))
 
-    container.leftStream = getDxDragStream(container)
-      .scan(item.time, (acc, dx) ->
-        pxToPercentage = 100.0 / (container.parentElement.clientWidth)
-        return acc + (dx * pxToPercentage)
-      )
-      .map((pos) ->
-        return 0 if pos < 0
-        return 100 if pos > 100
-        return pos
-      )
-      .map(Math.round)
-      .startWith(item.time)
-      .distinctUntilChanged()
+    leftPosStream = getLeftPosStream(container, item.time)
 
-    container.dataStream = container.leftStream
+    container.dataStream = leftPosStream
       .map((leftPos) -> {t:leftPos, d:item.content})
 
-    container.leftStream
+    leftPosStream
       .subscribe((leftPos) ->
         container.style.left = leftPos + "%"
         return true
