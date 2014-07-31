@@ -17,6 +17,7 @@ createInputDiagramElements = ->
     Rx.Observable.combineLatest(InputDiagrams, (args...) -> args)
       .take(1)
       .map((diagrams) ->
+        console.log("render new input diagrams")
         return (InputDiagramView.render(d) for d in diagrams)
       )
       .doAction((diagramViews) -> # TODO generalize me
@@ -32,12 +33,14 @@ createInputDiagramElements = ->
 
 createOutputDiagramElement = ->
   OutputDiagram = require 'rxmarbles/controllers/output-diagram'
-  outputDiagramElement = Utils.renderObservableDOMElement(
-    OutputDiagram
-      .map((diagram) ->
-        return OutputDiagramView.render(diagram)
-      )
-  )
+  outputDiagramElement = OutputDiagramView.render(OutputDiagram)
+  # outputDiagramElement = Utils.renderObservableDOMElement(
+  #   OutputDiagram
+  #     .map((diagram) ->
+  #       console.log("render new output diagram")
+  #       return OutputDiagramView.render(diagram)
+  #     )
+  # )
   return outputDiagramElement
 
 module.exports = {

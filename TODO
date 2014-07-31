@@ -13,7 +13,17 @@
 + DONE Controllers deserialize InputStream exported serializedStream
 + DONE Merged stream updates in real time when child streams are dragged
 + DONE Refactor views: components OutputStream, InputStream, Stream
+- TODO Introduce virtual-dom for views
+  + introduce virtual-dom at least for views/output-diagram
+  - Refactor views/output-diagram (into views/diagram?)
+  - Carefully introduce virtual-dom for MarbleView
+  - How do we get mouseDownStream from vdom? Still, dont do the MVC refactor yet
+  subscribe to the dragStream in views/marble
+  - Use virtual-dom also in views/sandbox
 - TODO Refactor to conform to MVC philosophy
+  - Marble should export only mouseDownStream, mouseMoveStream, mouseUpStream
+  - All the intelligent streams in Marble should go to some controller class
+   which observes Marble.mouse____Stream
 - TODO More generalized handling of examples
   - Make another example (perhaps debounce)
   - Generalize away from the specific details of the merge example

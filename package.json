@@ -9,7 +9,9 @@
   "license": "BSD 3-Clause",
   "main": "js/app.js",
   "dependencies": {
-    "rx": "~2.2.28"
+    "rx": "~2.2.28",
+    "virtual-dom": "0.0.19",
+    "vtree": "0.0.19"
   },
   "devDependencies": {
     "browserify": "~2.36.0",

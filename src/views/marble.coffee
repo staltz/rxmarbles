@@ -54,28 +54,28 @@ createRootElement = (draggable) ->
 createMarbleSvg = (item) ->
   colornum = (item.id % NUM_COLORS) + 1
   marble = document.createElementNS(XMLNS, "svg")
-  marble.setAttributeNS(null, "class", "marble")
-  marble.setAttributeNS(null, "viewBox", "0 0 1 1")
+  marble.setAttribute("class", "marble")
+  marble.setAttribute("viewBox", "0 0 1 1")
   circle = document.createElementNS(XMLNS, "circle")
-  circle.setAttributeNS(null, "cx", 0.5)
-  circle.setAttributeNS(null, "cy", 0.5)
-  circle.setAttributeNS(null, "r", 0.5)
-  circle.setAttributeNS(null, "class", "marble marble-color-#{colornum}")
+  circle.setAttribute("cx", 0.5)
+  circle.setAttribute("cy", 0.5)
+  circle.setAttribute("r", 0.5)
+  circle.setAttribute("class", "marble marble-color-#{colornum}")
   circle.style["stroke-width"] = "0.07"
   marble.appendChild(circle)
   return marble
-
-getLeftPosStream = (item, draggable, element) ->
-  if draggable
-    return getInteractiveLeftPosStream(element, item.time)
-  else
-    return Rx.Observable.just(item.time)
 
 createContentElement = (item) ->
   content = document.createElement("p")
   content.className = "marble-content"
   content.textContent = item?.content
   return content
+
+getLeftPosStream = (item, draggable, element) ->
+  if draggable
+    return getInteractiveLeftPosStream(element, item.time)
+  else
+    return Rx.Observable.just(item.time)
 
 module.exports = {
   render: (item, draggable = false) ->
