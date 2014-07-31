@@ -25,7 +25,7 @@ getDxDragStream = (element) ->
     )
     .concatAll()
 
-getLeftPosStream = (element, initialPos) ->
+getInteractiveLeftPosStream = (element, initialPos) ->
   return getDxDragStream(element)
     .scan(initialPos, (acc, dx) ->
       pxToPercentage = 1
@@ -44,6 +44,13 @@ getLeftPosStream = (element, initialPos) ->
     .startWith(initialPos)
     .distinctUntilChanged()
 
+createRootElement = (draggable) ->
+  container = document.createElement("div")
+  container.className = "marble-container"
+  if draggable
+    container.className += " draggable"
+  return container
+
 createMarbleSvg = (item) ->
   colornum = (item.id % NUM_COLORS) + 1
   marble = document.createElementNS(XMLNS, "svg")
@@ -58,6 +65,12 @@ createMarbleSvg = (item) ->
   marble.appendChild(circle)
   return marble
 
+getLeftPosStream = (item, draggable, element) ->
+  if draggable
+    return getInteractiveLeftPosStream(element, item.time)
+  else
+    return Rx.Observable.just(item.time)
+
 createContentElement = (item) ->
   content = document.createElement("p")
   content.className = "marble-content"
@@ -65,18 +78,16 @@ createContentElement = (item) ->
   return content
 
 module.exports = {
-  render: (item) ->
-    container = document.createElement("div")
-    container.className = "marble-container"
-
+  render: (item, draggable = false) ->
+    # Create DOM elements
+    container = createRootElement(draggable)
     container.appendChild(createMarbleSvg(item))
     container.appendChild(createContentElement(item))
 
-    leftPosStream = getLeftPosStream(container, item.time)
-
+    # Define public and private streams
+    leftPosStream = getLeftPosStream(item, draggable, container)
     container.dataStream = leftPosStream
       .map((leftPos) -> {time: leftPos, content: item.content, id: item.id})
-
     leftPosStream
       .subscribe((leftPos) ->
         container.style.left = leftPos + "%"

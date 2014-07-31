@@ -1,5 +1,6 @@
 Rx = require 'rx'
 InputDiagramView = require 'rxmarbles/views/input-diagram'
+OutputDiagramView = require 'rxmarbles/views/output-diagram'
 FunctionBox = require 'rxmarbles/views/function-box'
 Utils = require 'rxmarbles/views/utils'
 
@@ -34,7 +35,7 @@ createOutputDiagramElement = ->
   outputDiagramElement = Utils.renderObservableDOMElement(
     OutputDiagram
       .map((diagram) ->
-        return InputDiagramView.render(diagram)
+        return OutputDiagramView.render(diagram)
       )
   )
   return outputDiagramElement

@@ -12,13 +12,15 @@
 + DONE Marbles can be dragged
 + DONE Controllers deserialize InputStream exported serializedStream
 + DONE Merged stream updates in real time when child streams are dragged
-- TODO Make React component OutputStream
-  - Stream is the base. InputStream can be dragged. OutputStream cannot be dragged
++ DONE Refactor views: components OutputStream, InputStream, Stream
+- TODO Refactor to conform to MVC philosophy
 - TODO More generalized handling of examples
   - Make another example (perhaps debounce)
   - Generalize away from the specific details of the merge example
 >>> v0.1.0
 
+- TODO Styling for dragging a marble
+  - z-depth and side arrows
 - TODO Tackle performance issues
 - TODO Render each stream with a different regular polygon?
 - TODO Dropdown to choose other examples

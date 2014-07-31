@@ -83,6 +83,8 @@
   position: relative;
   display: inline-block;
   margin: -16px;
+}
+.diagram .marbles .marble-container.draggable {
   cursor: ew-resize;
 }
 .diagram .marbles .marble-container .marble-content {
