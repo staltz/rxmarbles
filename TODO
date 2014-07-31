@@ -17,6 +17,8 @@
 - TODO More generalized handling of examples
   - Make another example (perhaps debounce)
   - Generalize away from the specific details of the merge example
+>>> v0.1.0
+
 - TODO Tackle performance issues
 - TODO Render each stream with a different regular polygon?
 - TODO Dropdown to choose other examples
