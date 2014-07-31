@@ -75,7 +75,7 @@ module.exports = {
     leftPosStream = getLeftPosStream(container, item.time)
 
     container.dataStream = leftPosStream
-      .map((leftPos) -> {t:leftPos, d:item.content})
+      .map((leftPos) -> {time: leftPos, content: item.content, id: item.id})
 
     leftPosStream
       .subscribe((leftPos) ->

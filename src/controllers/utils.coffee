@@ -11,26 +11,33 @@ makeScheduler = ->
   scheduler.toRelative = (timeSpan) -> timeSpan
   return scheduler
 
-prepareInputStream = (scheduler, endTime) ->
-  return ((stream) ->
-    return stream
-      .map((x) -> {content: x, id: Math.floor(Math.random()*1000000)})
-      .takeUntilWithTime(endTime, scheduler)
-      .publish().refCount()
-  )
+prepareInputDiagramItem = (item) ->
+  result = {}
+  result.time = if typeof item.time is "undefined" then item.t else item.time
+  result.content = if typeof item.content is "undefined" then item.d else item.content
+  result.id = if item.id? then item.id else Math.floor(Math.random()*1000000)
+  return result
+
+prepareInputDiagram = (diagram) ->
+  return (prepareInputDiagramItem(i) for i in diagram)
+
+prepareInputDiagramStream = (diagramStream) ->
+  return diagramStream.map(prepareInputDiagram)
 
 #
-# Creates an Rx.Observable from a diagram data (array of items data)
+# Creates an (virtual time) Rx.Observable from diagram
+# data (array of data items).
 #
-toStream = (diagramData, scheduler, endTime) ->
+toVTStream = (diagramData, scheduler, endTime) ->
   singleMarbleStreams = []
   for item in diagramData
     singleMarbleStreams.push(
-      Rx.Observable.just(item.d, scheduler).delay(item.t, scheduler)
+      Rx.Observable.just(item, scheduler).delay(item.t or item.time, scheduler)
     )
   return Rx.Observable
     .merge(singleMarbleStreams)
-    .let(prepareInputStream(scheduler, endTime))
+    .takeUntilWithTime(endTime, scheduler)
+    .publish().refCount()
 
 getDiagramPromise = (stream, scheduler, endTime) ->
   subject = new Rx.BehaviorSubject([])
@@ -39,8 +46,8 @@ getDiagramPromise = (stream, scheduler, endTime) ->
     .timestamp(scheduler)
     .map((x) -> {
       time: (x.timestamp / endTime)*100
-      id: x.value.id
       content: x.value.content
+      id: x.value.id
     })
     .reduce((acc, x) ->
       acc.push(x)
@@ -48,12 +55,14 @@ getDiagramPromise = (stream, scheduler, endTime) ->
     ,[])
     .subscribe((x) ->
       subject.onNext(x)
-      # ignore onCompleted and onError
+      return true
     )
-  return subject
+  return subject.asObservable()
 
 module.exports = {
   makeScheduler: makeScheduler
-  toStream: toStream
+  toVTStream: toVTStream
+  prepareInputDiagramStream: prepareInputDiagramStream
+  prepareInputDiagram: prepareInputDiagram
   getDiagramPromise: getDiagramPromise
 }
