@@ -1,6 +1,7 @@
 Rx = require 'rx'
 Utils = require 'rxmarbles/controllers/utils'
 InputDiagrams = require 'rxmarbles/controllers/input-diagrams'
+SelectedExample = require 'rxmarbles/controllers/selected-example'
 Examples = require 'rxmarbles/models/examples'
 
 END = 100 # Time of completion
@@ -9,15 +10,18 @@ END = 100 # Time of completion
 # Exports the diagram stream representing the output diagram.
 #
 
-example = Examples["merge"] # TODO generalize me
-
-outputDiagramStream = Rx.Observable
-  .combineLatest(InputDiagrams[0], InputDiagrams[1], (args...) -> args)
-  .map((diagrams) ->
+outputDiagramStream = InputDiagrams.continuous$
+  .filter((x) -> x isnt null)
+  .flatMapLatest((arrayOfDiagramStreams) ->
+    return Rx.Observable.combineLatest(arrayOfDiagramStreams, (args...) -> args)
+  )
+  .combineLatest(SelectedExample.stream, (diagrams, example) ->
+    endTime = END+1
     vtscheduler = Utils.makeScheduler()
-    inputVTStreams = (Utils.toVTStream(d, vtscheduler, END+1) for d in diagrams)
-    outputVTStream = Rx.Observable.merge(inputVTStreams[0], inputVTStreams[1])
-    outputDiagram = Utils.getDiagramPromise(outputVTStream, vtscheduler, END+1)
+    inputVTStreams = (Utils.toVTStream(d, vtscheduler, endTime) for d in diagrams)
+    outputVTStream = example["function"](inputVTStreams)
+    outputVTStream = outputVTStream.takeUntilWithTime(endTime, vtscheduler)
+    outputDiagram = Utils.getDiagramPromise(outputVTStream, vtscheduler, endTime)
     vtscheduler.start()
     return outputDiagram
   )

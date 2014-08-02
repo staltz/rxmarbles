@@ -14,12 +14,11 @@
 + DONE Merged stream updates in real time when child streams are dragged
 + DONE Refactor views: components OutputStream, InputStream, Stream
 + DONE Introduce virtual-dom for output stream view
-- TODO More generalized handling of examples
-  - Make another example (perhaps debounce)
-  - Generalize away from the specific details of the merge example
++ DONE More generalized handling of examples
+- TODO Dropdown to choose other examples
 >>> v0.1.0
 
-- TODO Dropdown to choose other examples
+- TODO Examples for Observable Instance Methods, such as debounce
 - TODO RxMarbles title and proposition value
 - TODO Webpage footer
 - TODO Styling for dragging a marble

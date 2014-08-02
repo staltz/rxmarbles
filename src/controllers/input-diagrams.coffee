@@ -1,4 +1,6 @@
+Rx = require 'rx'
 Examples = require 'rxmarbles/models/examples'
+SelectedExample = require 'rxmarbles/controllers/selected-example'
 Utils = require 'rxmarbles/controllers/utils'
 Sandbox = require 'rxmarbles/views/sandbox'
 
@@ -6,12 +8,19 @@ Sandbox = require 'rxmarbles/views/sandbox'
 # Exports an array of diagram streams representing the input diagrams.
 #
 
-example = Examples["merge"] # TODO generalize me
+arrayOfInitialInputDiagrams$ = new Rx.BehaviorSubject(null)
+SelectedExample.stream
+  .map((example) ->
+    return example["inputs"].map(Utils.prepareInputDiagram)
+  )
+  .subscribe((x) ->
+    arrayOfInitialInputDiagrams$.onNext(x)
+    return true
+  )
 
-diagram0 = Utils.prepareInputDiagram(example["inputs"][0])
-diagram1 = Utils.prepareInputDiagram(example["inputs"][1])
+continuous$ = Sandbox.getStreamOfArrayOfLiveInputDiagramStreams()
 
-diagramStream0 = Sandbox.getDiagramDataStreams()[0].startWith(diagram0)
-diagramStream1 = Sandbox.getDiagramDataStreams()[1].startWith(diagram1)
-
-module.exports = [diagramStream0, diagramStream1]
+module.exports = {
+  initial$: arrayOfInitialInputDiagrams$
+  continuous$: continuous$
+}

@@ -45,7 +45,7 @@ getDiagramPromise = (stream, scheduler, endTime) ->
     .observeOn(scheduler)
     .timestamp(scheduler)
     .map((x) -> {
-      time: (x.timestamp / endTime)*100
+      time: (x.timestamp / endTime)*100 # converts timestamp to % of endTime
       content: x.value.content
       id: x.value.id
     })

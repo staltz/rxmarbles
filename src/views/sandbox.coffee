@@ -8,41 +8,43 @@ Utils = require 'rxmarbles/views/utils'
 # Responsible for startup and connecting controller streams to the views
 #
 
-firstDiagramDataStream = new Rx.Subject()
-secondDiagramDataStream = new Rx.Subject()
+streamOfArrayOfLiveInputDiagramStreams = new Rx.BehaviorSubject(null)
 
 createInputDiagramElements = ->
   InputDiagrams = require 'rxmarbles/controllers/input-diagrams'
   inputDiagramElements = Utils.renderObservableDOMElement(
-    Rx.Observable.combineLatest(InputDiagrams, (args...) -> args)
-      .take(1)
+    InputDiagrams.initial$
       .map((diagrams) ->
-        console.log("render new input diagrams")
         return (InputDiagramView.render(d) for d in diagrams)
       )
-      .doAction((diagramViews) -> # TODO generalize me
-        diagramViews[0].dataStream.subscribe((z) ->
-          firstDiagramDataStream.onNext(z)
-        )
-        diagramViews[1].dataStream.subscribe((z) ->
-          secondDiagramDataStream.onNext(z)
+      .doAction((diagramViews) ->
+        streamOfArrayOfLiveInputDiagramStreams.onNext(
+          (diagram.dataStream for diagram in diagramViews)
         )
       )
   )
   return inputDiagramElements
 
+createFunctionBoxElement = ->
+  SelectedExample = require 'rxmarbles/controllers/selected-example'
+  return Utils.renderObservableDOMElement(
+    SelectedExample.stream
+      .map((example) -> FunctionBox.render(example.key))
+  )
+
 createOutputDiagramElement = ->
   OutputDiagram = require 'rxmarbles/controllers/output-diagram'
   return OutputDiagramView.render(OutputDiagram)
 
+
 module.exports = {
-  getDiagramDataStreams: -> # TODO generalize me
-    return [firstDiagramDataStream.asObservable(), secondDiagramDataStream.asObservable()]
+  getStreamOfArrayOfLiveInputDiagramStreams: ->
+    return streamOfArrayOfLiveInputDiagramStreams
 
   render: ->
     rootElement = document.createElement("div")
     rootElement.appendChild(createInputDiagramElements())
-    rootElement.appendChild(FunctionBox.render("merge"))
+    rootElement.appendChild(createFunctionBoxElement())
     rootElement.appendChild(createOutputDiagramElement())
     return rootElement
 }
