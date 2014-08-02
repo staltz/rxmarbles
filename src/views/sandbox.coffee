@@ -33,15 +33,7 @@ createInputDiagramElements = ->
 
 createOutputDiagramElement = ->
   OutputDiagram = require 'rxmarbles/controllers/output-diagram'
-  outputDiagramElement = OutputDiagramView.render(OutputDiagram)
-  # outputDiagramElement = Utils.renderObservableDOMElement(
-  #   OutputDiagram
-  #     .map((diagram) ->
-  #       console.log("render new output diagram")
-  #       return OutputDiagramView.render(diagram)
-  #     )
-  # )
-  return outputDiagramElement
+  return OutputDiagramView.render(OutputDiagram)
 
 module.exports = {
   getDiagramDataStreams: -> # TODO generalize me

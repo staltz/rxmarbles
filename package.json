@@ -11,7 +11,7 @@
   "dependencies": {
     "rx": "~2.2.28",
     "virtual-dom": "0.0.19",
-    "vtree": "0.0.19"
+    "virtual-hyperscript": "4.4.0"
   },
   "devDependencies": {
     "browserify": "~2.36.0",

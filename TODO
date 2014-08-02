@@ -13,9 +13,7 @@
 + DONE Controllers deserialize InputStream exported serializedStream
 + DONE Merged stream updates in real time when child streams are dragged
 + DONE Refactor views: components OutputStream, InputStream, Stream
-- TODO Introduce virtual-dom for views
-  + introduce virtual-dom at least for views/output-diagram
-  - Looks like virtual-hyperscript supports SVG!
++ DONE Introduce virtual-dom for output stream view
 - TODO Refactor to conform to MVC philosophy
   - Marble should export only mouseDownStream, mouseMoveStream, mouseUpStream
   - All the intelligent streams in Marble should go to some controller class
