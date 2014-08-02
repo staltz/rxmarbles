@@ -15,11 +15,7 @@
 + DONE Refactor views: components OutputStream, InputStream, Stream
 - TODO Introduce virtual-dom for views
   + introduce virtual-dom at least for views/output-diagram
-  - Refactor views/output-diagram (into views/diagram?)
-  - Carefully introduce virtual-dom for MarbleView
-  - How do we get mouseDownStream from vdom? Still, dont do the MVC refactor yet
-  subscribe to the dragStream in views/marble
-  - Use virtual-dom also in views/sandbox
+  - Looks like virtual-hyperscript supports SVG!
 - TODO Refactor to conform to MVC philosophy
   - Marble should export only mouseDownStream, mouseMoveStream, mouseUpStream
   - All the intelligent streams in Marble should go to some controller class
@@ -29,12 +25,15 @@
   - Generalize away from the specific details of the merge example
 >>> v0.1.0
 
+- TODO Dropdown to choose other examples
+- TODO RxMarbles title and proposition value
+- TODO Webpage footer
 - TODO Styling for dragging a marble
   - z-depth and side arrows
-- TODO Tackle performance issues
 - TODO Render each stream with a different regular polygon?
-- TODO Dropdown to choose other examples
 - TODO Interactively add marbles to an InputStream
-- TODO Better affordances for Marble dragging
 - TODO Interactively remove marbles from an InputStream
+- TODO Add many examples to the dropdown
 - TODO Render metastreams, make flatMap example
+- TODO Use virtual-dom for all views, only when virtual-dom events work
+  - See modules under Raynos/mercury
