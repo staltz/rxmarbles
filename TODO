@@ -14,10 +14,6 @@
 + DONE Merged stream updates in real time when child streams are dragged
 + DONE Refactor views: components OutputStream, InputStream, Stream
 + DONE Introduce virtual-dom for output stream view
-- TODO Refactor to conform to MVC philosophy
-  - Marble should export only mouseDownStream, mouseMoveStream, mouseUpStream
-  - All the intelligent streams in Marble should go to some controller class
-   which observes Marble.mouse____Stream
 - TODO More generalized handling of examples
   - Make another example (perhaps debounce)
   - Generalize away from the specific details of the merge example
@@ -35,3 +31,16 @@
 - TODO Render metastreams, make flatMap example
 - TODO Use virtual-dom for all views, only when virtual-dom events work
   - See modules under Raynos/mercury
+  - TODO Refactor to conform to MVC philosophy
+    - Model is the representation of data and state
+      - Input: interpreted interaction streams
+      - Output: data streams
+    - View renders to DOM and interfaces with the user
+      - Input: data streams
+      - Output: raw interaction streams
+    - Controller: interprets user interaction and notifies model of changes
+      - Input: raw interaction streams
+      - Output: interpreted interaction streams
+    - Marble should export only mouseDownStream, mouseMoveStream, mouseUpStream
+    - All the intelligent streams in Marble should go to some controller class
+      which observes Marble.mouse____Stream
