@@ -18,11 +18,16 @@
 + DONE FunctionBox dropdown to choose other examples
 >>> v0.1.0
 
+- TODO Fix Firefox SVG marble styling
+- TODO Fix Firefox <select> clicks
 - TODO Examples for Observable Instance Methods, such as debounce
+  - Should each example have an 'apply' field? (which is a function)
 >>> v0.2.0
 
 - TODO RxMarbles title and proposition value
 - TODO Webpage footer
+- TODO Fix Safari SVG marble styling
+- TODO README.md
 >>> v0.2.1
 
 - TODO Styling for dragging a marble
