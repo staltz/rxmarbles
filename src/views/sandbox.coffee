@@ -29,7 +29,7 @@ createFunctionBoxElement = ->
   SelectedExample = require 'rxmarbles/controllers/selected-example'
   return Utils.renderObservableDOMElement(
     SelectedExample.stream
-      .map((example) -> FunctionBox.render(example.key))
+      .map((example) -> FunctionBox.render(example))
   )
 
 createOutputDiagramElement = ->

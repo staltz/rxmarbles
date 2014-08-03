@@ -15,16 +15,22 @@
 + DONE Refactor views: components OutputStream, InputStream, Stream
 + DONE Introduce virtual-dom for output stream view
 + DONE More generalized handling of examples
-- TODO FunctionBox dropdown to choose other examples
++ DONE FunctionBox dropdown to choose other examples
 >>> v0.1.0
 
 - TODO Examples for Observable Instance Methods, such as debounce
+>>> v0.2.0
+
 - TODO RxMarbles title and proposition value
 - TODO Webpage footer
+>>> v0.2.1
+
 - TODO Styling for dragging a marble
   - z-depth and side arrows
 - TODO Render each stream with a different regular polygon?
 - TODO Render also the stream completion time marker?
+>>> v0.2.2
+
 - TODO Interactively add marbles to an InputStream
 - TODO Interactively remove marbles from an InputStream
 - TODO Add many examples to the dropdown

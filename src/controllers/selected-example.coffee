@@ -1,11 +1,12 @@
 Rx = require 'rx'
 Examples = require 'rxmarbles/models/examples'
+FunctionBox = require 'rxmarbles/views/function-box'
 
 #
 # Exports a stream of the currently selected example.
 #
 
-selectedExampleKey$ = Rx.Observable.just("concat")
+selectedExampleKey$ = FunctionBox.getSelected$().startWith("concat")
 
 selectedExample$ = selectedExampleKey$
   .map((key) ->

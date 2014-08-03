@@ -6,6 +6,8 @@ h = require 'hyperscript'
 Rx = require 'rx'
 Examples = require 'rxmarbles/models/examples'
 
+selected$ = new Rx.Subject()
+
 renderSelectOptionsArray = (examples) ->
   options = []
   for key,example of examples
@@ -21,16 +23,26 @@ setupClickBehavior = (functionBoxElement, selectElement) ->
     selectElement.dispatchEvent(event)
     return true
   )
+  # We should use Rx.Observable.from(selectElement, "change") but it doesnt work
+  selectElement.addEventListener("change", (ev) ->
+    selected$.onNext(ev.target.value)
+    return true
+  )
+  return true
 
 module.exports = {
-  render: (label) ->
+  getSelected$: ->
+    return selected$
+
+  render: (example) ->
     functionBoxElement = h("div.function-box", [
-      h("span.function-box-label", label)
+      h("span.function-box-label", example.label)
       selectElement = h("select", renderSelectOptionsArray(Examples))
-      h("div.function-box-dropdown", [
+      dropdown = h("div.function-box-dropdown", [
         h("span.function-box-dropdown-arrow")
       ])
     ])
+    selectElement.value = example.key
     setupClickBehavior(functionBoxElement, selectElement)
     return functionBoxElement
 }
