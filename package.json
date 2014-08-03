@@ -27,6 +27,7 @@
     "watchify": "~0.4.1"
   },
   "scripts": {
+    "preinstall": "rm -rf build && rm -rf node_modules",
     "postinstall": "mkdir build && mkdir build/src && ln -s ../build/src node_modules/rxmarbles"
   }
 }

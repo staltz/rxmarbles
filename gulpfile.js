@@ -22,7 +22,7 @@ gulp.task('less', function() {
     .pipe(less({
       paths: [ path.join(__dirname, 'styles', 'includes') ]
     }))
-    .pipe(gulp.dest('./css'));
+    .pipe(gulp.dest('./dist/css'));
 });
 
 gulp.task('browserify', ['coffee'], function() {
@@ -39,7 +39,7 @@ gulp.task('uglify', ['browserify'], function() {
   gutil.log(gutil.colors.yellow("Minifying with uglify..."));
   return gulp.src(['./build/browserified-js/*.js'])
     .pipe(uglify())
-    .pipe(gulp.dest('./js'));
+    .pipe(gulp.dest('./dist/js'));
 })
 
 gulp.task('post-clean-up', ['uglify'], function() {
@@ -52,7 +52,7 @@ gulp.task('build', ['less', 'post-clean-up']);
 
 gulp.task('dev-build', ['less', 'browserify'], function() {
   return gulp.src(['./build/browserified-js/*.js'])
-    .pipe(gulp.dest('./js'))
+    .pipe(gulp.dest('./dist/js'))
 });
 
 gulp.task('default', function() {
