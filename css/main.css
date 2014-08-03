@@ -1,0 +1,122 @@
+@import url(http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500);
+.sandbox {
+  background: #ffffff;
+  width: 820px;
+  margin: 0 auto;
+  margin-top: 20px;
+  border-radius: 2px;
+  -webkit-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
+  -moz-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
+  box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
+}
+.sandbox .function-box {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 24px;
+  text-align: center;
+  position: relative;
+}
+.sandbox .function-box::before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  -webkit-box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.17);
+  -moz-box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.17);
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.17);
+}
+.sandbox .function-box::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+}
+.sandbox .function-box .function-box-label {
+  font-family: Source Code Pro, monospace;
+  font-weight: 400;
+  font-size: 2rem;
+}
+.diagram {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 96px;
+  overflow: visible;
+}
+.diagram .arrow {
+  background-color: #323232;
+  height: 2px;
+  position: absolute;
+  top: 48px;
+  left: 22px;
+  right: 22px;
+}
+.diagram .arrow-head {
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 16px solid #323232;
+  display: inline-block;
+  right: 21px;
+  position: absolute;
+  top: 41px;
+}
+.diagram .marbles {
+  position: absolute;
+  left: 70px;
+  right: 70px;
+  top: 48px;
+  height: 1px;
+}
+.diagram .marbles .marble-container {
+  width: 32px;
+  height: 32px;
+  position: relative;
+  display: inline-block;
+  margin: -16px;
+}
+.diagram .marbles .marble-container.draggable {
+  cursor: ew-resize;
+}
+.diagram .marbles .marble-container .marble-content {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  margin: 0;
+  text-align: center;
+  line-height: 32px;
+}
+.diagram .marbles .marble-container svg.marble {
+  overflow: visible;
+  width: 32px;
+  height: 32px;
+}
+.diagram .marbles .marble-container circle.marble {
+  stroke: #323232;
+  fill: #3ea1cb;
+}
+.diagram .marbles .marble-container circle.marble.marble-color-1 {
+  fill: #3ea1cb;
+}
+.diagram .marbles .marble-container circle.marble.marble-color-2 {
+  fill: #82d736;
+}
+.diagram .marbles .marble-container circle.marble.marble-color-3 {
+  fill: #ffcb46;
+}
+.diagram .marbles .marble-container circle.marble.marble-color-4 {
+  fill: #ff6946;
+}
+body {
+  background: #ececec;
+}
