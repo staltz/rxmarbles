@@ -13,6 +13,7 @@
   border: 1px solid rgba(0, 0, 0, 0.06);
   padding: 24px;
   text-align: center;
+  cursor: pointer;
   position: relative;
 }
 .sandbox .function-box::before {
@@ -43,6 +44,46 @@
   font-family: Source Code Pro, monospace;
   font-weight: 400;
   font-size: 2rem;
+}
+.sandbox .function-box select {
+  z-index: 2000;
+  position: absolute;
+  opacity: 0.01;
+  width: 0px;
+  height: 0px;
+  left: 54px;
+  margin-top: 10px;
+}
+.sandbox .function-box .function-box-dropdown {
+  width: 32px;
+  height: 32px;
+  background-color: transparent;
+  display: inline-block;
+  position: absolute;
+  left: 22px;
+  margin-top: 4px;
+  transition-property: box-shadow;
+  transition-duration: 100ms;
+}
+.sandbox .function-box .function-box-dropdown .function-box-dropdown-arrow {
+  width: 0;
+  height: 0;
+  border-right: 8px solid transparent;
+  border-top: 14px solid #bbbbbb;
+  border-left: 8px solid transparent;
+  display: inline-block;
+  margin-top: 9px;
+  transition-property: border-top;
+  transition-duration: 100ms;
+}
+.sandbox .function-box:hover .function-box-dropdown {
+  background-color: white;
+  -webkit-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
+  -moz-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
+  box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
+}
+.sandbox .function-box:hover .function-box-dropdown .function-box-dropdown-arrow {
+  border-top: 14px solid #888888;
 }
 .diagram {
   position: relative;
