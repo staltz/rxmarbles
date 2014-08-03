@@ -15,7 +15,7 @@
 + DONE Refactor views: components OutputStream, InputStream, Stream
 + DONE Introduce virtual-dom for output stream view
 + DONE More generalized handling of examples
-- TODO Dropdown to choose other examples
+- TODO FunctionBox dropdown to choose other examples
 >>> v0.1.0
 
 - TODO Examples for Observable Instance Methods, such as debounce
