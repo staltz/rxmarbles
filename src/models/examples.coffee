@@ -2,6 +2,7 @@ Rx = require 'rx'
 
 module.exports = {
   "amb": {
+    "label": "amb()"
     "function": Rx.Observable.amb
     "inputs": [
       [{t:10, d:20}, {t:20, d:40}, {t:30, d:60}, {t:45, d:80}]
@@ -10,6 +11,7 @@ module.exports = {
     ]
   }
   "concat": {
+    "label": "concat()"
     "function": Rx.Observable.concat
     "inputs": [
       [{t:0, d:1}, {t:15, d:1}, {t:50, d:1}]
@@ -17,6 +19,7 @@ module.exports = {
     ]
   }
   "merge": {
+    "label": "merge()"
     "function": Rx.Observable.merge
     "inputs": [
       [{t:0, d:20}, {t:15, d:40}, {t:30, d:60}, {t:45, d:80}, {t:60, d:100}]

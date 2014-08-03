@@ -4,32 +4,33 @@
 #
 h = require 'hyperscript'
 Rx = require 'rx'
+Examples = require 'rxmarbles/models/examples'
+
+renderSelectOptionsArray = (examples) ->
+  options = []
+  for key,example of examples
+    if not examples.hasOwnProperty(key)
+      continue
+    options.push(h("option", {value: key}, example["label"]))
+  return options
+
+setupClickBehavior = (functionBoxElement, selectElement) ->
+  Rx.Observable.fromEvent(functionBoxElement, "click").subscribe(->
+    event = document.createEvent('MouseEvents');
+    event.initMouseEvent('mousedown', true, true, window);
+    selectElement.dispatchEvent(event)
+    return true
+  )
 
 module.exports = {
   render: (label) ->
     functionBoxElement = h("div.function-box", [
       h("span.function-box-label", label)
-      select = h("select", [
-        # h("optgroup", {label:"Type 1 functions"}, [
-        h("option", {value:"amb"}, "amb()")
-        h("option", {value:"concat"}, "concat()")
-        h("option", {value:"merge"}, "merge()")
-        # ])
-        # h("optgroup", {label:"Type 2 functions"}, [
-        #   h("option", {value:"debounce"}, "debounce()")
-        #   h("option", {value:"delay"}, "delay()")
-        #   h("option", {value:"take"}, "take()")
-        # ])
-      ])
+      selectElement = h("select", renderSelectOptionsArray(Examples))
       h("div.function-box-dropdown", [
         h("span.function-box-dropdown-arrow")
       ])
     ])
-    Rx.Observable.fromEvent(functionBoxElement, "click").subscribe(->
-      event = document.createEvent('MouseEvents');
-      event.initMouseEvent('mousedown', true, true, window);
-      select.dispatchEvent(event)
-      return true
-    )
+    setupClickBehavior(functionBoxElement, selectElement)
     return functionBoxElement
 }
