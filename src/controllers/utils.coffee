@@ -11,11 +11,30 @@ makeScheduler = ->
   scheduler.toRelative = (timeSpan) -> timeSpan
   return scheduler
 
+calculateMarbleContentHash = (content) ->
+  SOME_PRIME_NUMBER = 877
+  contentHash = 0
+  if (typeof content == "string")
+    contentHash = content
+      .split("")
+      .map((x) -> x.charCodeAt(0))
+      .reduce((x,y) -> x+y)
+  else if (typeof content == "number")
+    contentHash = content * SOME_PRIME_NUMBER
+  return contentHash
+
+calculateMarbleDataHash = (marbleData) ->
+  SMALL_PRIME = 7
+  LARGE_PRIME = 1046527
+  MAX = 100000
+  contentHash = calculateMarbleContentHash(marbleData.content)
+  return ((marbleData.time + contentHash + SMALL_PRIME)*LARGE_PRIME) % MAX
+
 prepareInputDiagramItem = (item) ->
   result = {}
   result.time = if typeof item.time is "undefined" then item.t else item.time
   result.content = if typeof item.content is "undefined" then item.d else item.content
-  result.id = if item.id? then item.id else Math.floor(Math.random()*1000000)
+  result.id = if item.id? then item.id else calculateMarbleDataHash(result)
   return result
 
 prepareInputDiagram = (diagram) ->
