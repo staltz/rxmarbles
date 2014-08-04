@@ -11,7 +11,7 @@ SVG_VIEWBOX = "0 0 1 1"
 SVG_CX = 0.5
 SVG_CY = 0.5
 SVG_R = 0.47
-SVG_BORDER_WIDTH = "0.07"
+SVG_BORDER_WIDTH = "0.07px"
 
 getDxDragStream = (element) ->
   return Rx.Observable.fromEvent(element, "mousedown")
@@ -67,7 +67,7 @@ createMarbleSvg = (item) ->
   circle.setAttribute("cy", SVG_CY)
   circle.setAttribute("r", SVG_R)
   circle.setAttribute("class", "marble marble-color-#{colornum}")
-  circle.style["stroke-width"] = SVG_BORDER_WIDTH
+  circle.setAttribute("stroke-width", SVG_BORDER_WIDTH)
   marble.appendChild(circle)
   return marble
 
@@ -92,8 +92,8 @@ virtualRender = (marbleData) ->
       svg("circle", {
         attributes: {
           class: "marble marble-color-#{colornum}", cx:SVG_CX, cy:SVG_CY, r:SVG_R,
+          "stroke-width": SVG_BORDER_WIDTH
         }
-        style: {"stroke-width": SVG_BORDER_WIDTH}
       })
     ]),
     h("p.marble-content", {}, content)
