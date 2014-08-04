@@ -19,9 +19,10 @@
 >>> v0.1.0
 
 + DONE Fix Firefox SVG marble styling
-- TODO Fix Firefox <select> clicks
 - TODO Examples for Observable Instance Methods, such as debounce
   - Should each example have an 'apply' field? (which is a function)
+- TODO Fix Firefox <select> clicks
+  - Also, UX-wise, make the world's best function box <select> alternative
 >>> v0.2.0
 
 - TODO RxMarbles title and proposition value
