@@ -9,14 +9,14 @@
   -moz-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
   box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
 }
-.sandbox .function-box {
+.sandbox .operator-box {
   border: 1px solid rgba(0, 0, 0, 0.06);
   padding: 24px;
   text-align: center;
   cursor: pointer;
   position: relative;
 }
-.sandbox .function-box::before {
+.sandbox .operator-box::before {
   content: '';
   display: block;
   position: absolute;
@@ -28,7 +28,7 @@
   -moz-box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.17);
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.17);
 }
-.sandbox .function-box::after {
+.sandbox .operator-box::after {
   content: '';
   display: block;
   position: absolute;
@@ -40,12 +40,12 @@
   -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
 }
-.sandbox .function-box .function-box-label {
+.sandbox .operator-box .operator-box-label {
   font-family: Source Code Pro, monospace;
   font-weight: 400;
   font-size: 2rem;
 }
-.sandbox .function-box select {
+.sandbox .operator-box select {
   z-index: 2000;
   position: absolute;
   opacity: 0.01;
@@ -54,7 +54,7 @@
   left: 54px;
   margin-top: 10px;
 }
-.sandbox .function-box .function-box-dropdown {
+.sandbox .operator-box .operator-box-dropdown {
   width: 32px;
   height: 32px;
   background-color: transparent;
@@ -65,7 +65,7 @@
   transition-property: box-shadow;
   transition-duration: 100ms;
 }
-.sandbox .function-box .function-box-dropdown .function-box-dropdown-arrow {
+.sandbox .operator-box .operator-box-dropdown .operator-box-dropdown-arrow {
   width: 0;
   height: 0;
   border-right: 8px solid transparent;
@@ -76,13 +76,13 @@
   transition-property: border-top;
   transition-duration: 100ms;
 }
-.sandbox .function-box:hover .function-box-dropdown {
+.sandbox .operator-box:hover .operator-box-dropdown {
   background-color: white;
   -webkit-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
   -moz-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
   box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
 }
-.sandbox .function-box:hover .function-box-dropdown .function-box-dropdown-arrow {
+.sandbox .operator-box:hover .operator-box-dropdown .operator-box-dropdown-arrow {
   border-top: 14px solid #888888;
 }
 .diagram {
