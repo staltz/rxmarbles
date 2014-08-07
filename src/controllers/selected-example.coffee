@@ -1,12 +1,12 @@
 Rx = require 'rx'
 Examples = require 'rxmarbles/models/examples'
-FunctionBox = require 'rxmarbles/views/function-box'
+OperatorBox = require 'rxmarbles/views/operator-box'
 
 #
 # Exports a stream of the currently selected example.
 #
 
-selectedExampleKey$ = FunctionBox.getSelected$().startWith("concat")
+selectedExampleKey$ = OperatorBox.getSelected$().startWith("concat")
 
 selectedExample$ = selectedExampleKey$
   .map((key) ->

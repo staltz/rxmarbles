@@ -1,5 +1,5 @@
 #
-# Renders a box representing the Reactive function being applied on the input
+# Renders a box representing the Rx operator being applied on the input
 # streams.
 #
 h = require 'hyperscript'
@@ -16,8 +16,8 @@ renderSelectOptionsArray = (examples) ->
     options.push(h("option", {value: key}, example["label"]))
   return options
 
-setupClickBehavior = (functionBoxElement, selectElement) ->
-  Rx.Observable.fromEvent(functionBoxElement, "click").subscribe(->
+setupClickBehavior = (operatorBoxElement, selectElement) ->
+  Rx.Observable.fromEvent(operatorBoxElement, "click").subscribe(->
     event = document.createEvent('MouseEvents');
     event.initMouseEvent('mousedown', true, true, window);
     selectElement.dispatchEvent(event)
@@ -35,14 +35,14 @@ module.exports = {
     return selected$
 
   render: (example) ->
-    functionBoxElement = h("div.function-box", [
-      h("span.function-box-label", example.label)
+    operatorBoxElement = h("div.operator-box", [
+      h("span.operator-box-label", example.label)
       selectElement = h("select", renderSelectOptionsArray(Examples))
-      dropdown = h("div.function-box-dropdown", [
-        h("span.function-box-dropdown-arrow")
+      dropdown = h("div.operator-box-dropdown", [
+        h("span.operator-box-dropdown-arrow")
       ])
     ])
     selectElement.value = example.key
-    setupClickBehavior(functionBoxElement, selectElement)
-    return functionBoxElement
+    setupClickBehavior(operatorBoxElement, selectElement)
+    return operatorBoxElement
 }

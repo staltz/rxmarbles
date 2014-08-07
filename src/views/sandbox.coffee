@@ -1,7 +1,7 @@
 Rx = require 'rx'
 InputDiagramView = require 'rxmarbles/views/input-diagram'
+OperatorBox = require 'rxmarbles/views/operator-box'
 OutputDiagramView = require 'rxmarbles/views/output-diagram'
-FunctionBox = require 'rxmarbles/views/function-box'
 Utils = require 'rxmarbles/views/utils'
 
 #
@@ -25,11 +25,11 @@ createInputDiagramElements = ->
   )
   return inputDiagramElements
 
-createFunctionBoxElement = ->
+createOperatorBoxElement = ->
   SelectedExample = require 'rxmarbles/controllers/selected-example'
   return Utils.renderObservableDOMElement(
     SelectedExample.stream
-      .map((example) -> FunctionBox.render(example))
+      .map((example) -> OperatorBox.render(example))
   )
 
 createOutputDiagramElement = ->
@@ -44,7 +44,7 @@ module.exports = {
   render: ->
     rootElement = document.createElement("div")
     rootElement.appendChild(createInputDiagramElements())
-    rootElement.appendChild(createFunctionBoxElement())
+    rootElement.appendChild(createOperatorBoxElement())
     rootElement.appendChild(createOutputDiagramElement())
     return rootElement
 }
