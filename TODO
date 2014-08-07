@@ -19,25 +19,29 @@
 >>> v0.1.0
 
 + DONE Fix Firefox SVG marble styling
-- TODO Fix Firefox <select> clicks
+- TODO Make side menu with list of operators
+  - views/operators-menu
+- TODO RxMarbles title and proposition value
 - TODO Examples for Observable Instance Methods, such as debounce
   - Should each example have an 'apply' field? (which is a function)
 >>> v0.2.0
 
-- TODO RxMarbles title and proposition value
 - TODO Webpage footer
-- TODO Fix Safari SVG marble styling
 - TODO README.md
->>> v0.2.1
-
 - TODO Styling for dragging a marble
   - z-depth and side arrows
+>>> v0.2.1
+
 - TODO Render each stream with a different regular polygon?
 - TODO Render also the stream completion time marker?
 >>> v0.2.2
 
 - TODO Interactively add marbles to an InputStream
 - TODO Interactively remove marbles from an InputStream
+>>> v0.3.0
+
+- TODO Interactively add errors to an InputStream
+- TODO Hovering over a diagram shows mapping arrows
 - TODO Add many examples to the dropdown
 - TODO Render metastreams, make flatMap example
 - TODO Use virtual-dom for all views, only when virtual-dom events work
