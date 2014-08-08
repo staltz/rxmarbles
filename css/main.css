@@ -1,9 +1,9 @@
 @import url(http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500);
+@import url(http://fonts.googleapis.com/css?family=Arvo);
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro);
 .sandbox {
   background: #ffffff;
   width: 820px;
-  margin: 0 auto;
-  margin-top: 20px;
   border-radius: 2px;
   -webkit-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
   -moz-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
@@ -13,7 +13,6 @@
   border: 1px solid rgba(0, 0, 0, 0.06);
   padding: 24px;
   text-align: center;
-  cursor: pointer;
   position: relative;
 }
 .sandbox .operator-box::before {
@@ -44,46 +43,6 @@
   font-family: Source Code Pro, monospace;
   font-weight: 400;
   font-size: 2rem;
-}
-.sandbox .operator-box select {
-  z-index: 2000;
-  position: absolute;
-  opacity: 0.01;
-  width: 0px;
-  height: 0px;
-  left: 54px;
-  margin-top: 10px;
-}
-.sandbox .operator-box .operator-box-dropdown {
-  width: 32px;
-  height: 32px;
-  background-color: transparent;
-  display: inline-block;
-  position: absolute;
-  left: 22px;
-  margin-top: 4px;
-  transition-property: box-shadow;
-  transition-duration: 100ms;
-}
-.sandbox .operator-box .operator-box-dropdown .operator-box-dropdown-arrow {
-  width: 0;
-  height: 0;
-  border-right: 8px solid transparent;
-  border-top: 14px solid #bbbbbb;
-  border-left: 8px solid transparent;
-  display: inline-block;
-  margin-top: 9px;
-  transition-property: border-top;
-  transition-duration: 100ms;
-}
-.sandbox .operator-box:hover .operator-box-dropdown {
-  background-color: white;
-  -webkit-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
-  -moz-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
-  box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
-}
-.sandbox .operator-box:hover .operator-box-dropdown .operator-box-dropdown-arrow {
-  border-top: 14px solid #888888;
 }
 .diagram {
   position: relative;
@@ -258,4 +217,62 @@
 }
 body {
   background: #ececec;
+  color: #323232;
+  font-family: 'Source Sans Pro', sans-serif;
+}
+.page-row {
+  position: relative;
+  width: 1060px;
+  margin: 0 auto;
+}
+.page-row > * {
+  display: inline-block;
+  margin-left: -20px;
+}
+.page-row > *:first-child {
+  width: 220px;
+  margin-right: 20px;
+}
+.page-row > *:last-child {
+  width: 820px;
+}
+.page-row + .page-row {
+  margin-top: 10px;
+}
+.page-title {
+  font-family: 'Arvo', serif;
+  color: #7c7c7c;
+}
+.value-proposition {
+  color: #7c7c7c;
+}
+.operators-menu-container {
+  padding-right: 36px;
+  box-sizing: border-box;
+}
+.sandbox {
+  position: absolute;
+}
+ul.operators-menu {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  border-top: 1px solid #d4d4d4;
+  overflow-y: scroll;
+}
+ul.operators-menu li > a {
+  color: #7c7c7c;
+  font-size: 1.2rem;
+  line-height: 2rem;
+  position: relative;
+  display: block;
+}
+ul.operators-menu li > a:hover {
+  color: #323232;
+}
+ul.operators-menu li > a:hover:after {
+  content: "\276F";
+  display: inline-block;
+  position: absolute;
+  right: 0;
 }
