@@ -262,8 +262,8 @@ ul.operators-menu {
 }
 ul.operators-menu li > a {
   color: #7c7c7c;
-  font-size: 1.2rem;
-  line-height: 2rem;
+  font-size: 1rem;
+  line-height: 1.6rem;
   position: relative;
   display: block;
 }
@@ -274,5 +274,5 @@ ul.operators-menu li > a:hover:after {
   content: "\276F";
   display: inline-block;
   position: absolute;
-  right: 0;
+  right: 5px;
 }
