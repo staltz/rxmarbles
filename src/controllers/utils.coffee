@@ -63,11 +63,15 @@ getDiagramPromise = (stream, scheduler, endTime) ->
   stream
     .observeOn(scheduler)
     .timestamp(scheduler)
-    .map((x) -> {
-      time: (x.timestamp / endTime)*100 # converts timestamp to % of endTime
-      content: x.value.content
-      id: x.value.id
-    })
+    .map((x) ->
+      if typeof x.value isnt "object"
+        x.value = {content: x.value, id: calculateMarbleContentHash(x.value)}
+      return {
+        time: (x.timestamp / endTime)*100 # converts timestamp to % of endTime
+        content: x.value.content
+        id: x.value.id
+      }
+    )
     .reduce((acc, x) ->
       acc.push(x)
       return acc
@@ -75,6 +79,7 @@ getDiagramPromise = (stream, scheduler, endTime) ->
     .subscribe((x) ->
       subject.onNext(x)
       return true
+    -> console.warn("Error in the diagram promise stream") ;0
     )
   return subject.asObservable()
 

@@ -19,7 +19,7 @@ outputDiagramStream = InputDiagrams.continuous$
     endTime = END+1
     vtscheduler = Utils.makeScheduler()
     inputVTStreams = (Utils.toVTStream(d, vtscheduler, endTime) for d in diagrams)
-    outputVTStream = example["function"](inputVTStreams)
+    outputVTStream = example["apply"](inputVTStreams, vtscheduler)
     outputVTStream = outputVTStream.takeUntilWithTime(endTime, vtscheduler)
     outputDiagram = Utils.getDiagramPromise(outputVTStream, vtscheduler, endTime)
     vtscheduler.start()

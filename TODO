@@ -21,9 +21,9 @@
 + DONE Fix Firefox SVG marble styling
 + DONE Side menu with list of operators
 + DONE RxMarbles title and proposition value
-- TODO Examples for Observable Instance Methods, such as debounce
-  - Should each example have an 'apply' field? (which is a function)
++ DONE Examples for Observable Instance Methods
 - TODO OperatorsMenu should stretch its height
+- TODO More examples
 - TODO Version number at the bottom of the page
   - from package.json
 >>> v0.2.0
