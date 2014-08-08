@@ -23,6 +23,9 @@
 + DONE RxMarbles title and proposition value
 - TODO Examples for Observable Instance Methods, such as debounce
   - Should each example have an 'apply' field? (which is a function)
+- TODO OperatorsMenu should stretch its height
+- TODO Version number at the bottom of the page
+  - from package.json
 >>> v0.2.0
 
 - TODO Webpage footer
