@@ -8,9 +8,78 @@
 @animation-duration-quick: 100ms;
 @animation-duration-normal: 200ms;
 @animation-duration-slow: 400ms;
+@page-row-width: 1060px;
+@sandbox-width: 820px;
 
 @import url(http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500);
+@import url(http://fonts.googleapis.com/css?family=Arvo);
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro);
 
 body {
   background: @color-almost-white;
+
+  // Default typography
+  color: @color-black;
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+.page-row {
+  position: relative;
+	width: @page-row-width;
+	margin: 0 auto;
+  >* {
+    display: inline-block;
+    margin-left: -20px;
+  }
+  >*:first-child {
+    width: (@page-row-width - @sandbox-width - 20px);
+    margin-right: 20px;
+  }
+  >*:last-child {
+    width: @sandbox-width;
+  }
+}
+.page-row + .page-row {
+  margin-top: 10px;
+}
+
+.page-title {
+  font-family: 'Arvo', serif;
+  color: @color-grey-dark;
+}
+.value-proposition {
+  color: @color-grey-dark;
+}
+
+.operators-menu-container {
+  padding-right: 36px;
+  box-sizing: border-box;
+}
+
+.sandbox {
+  position: absolute;
+}
+
+ul.operators-menu {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  border-top: 1px solid @color-grey-light;
+  overflow-y: scroll;
+  li > a {
+    color: @color-grey-dark;
+    font-size: 1.2rem;
+    line-height: 2rem;
+    position: relative;
+    display: block;
+    &:hover {
+      color: @color-black;
+    }
+    &:hover:after {
+      content: "\276F";
+      display: inline-block;
+      position: absolute;
+      right: 0;
+    }
+  }
 }

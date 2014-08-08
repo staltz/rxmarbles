@@ -1,12 +1,13 @@
 Rx = require 'rx'
 Examples = require 'rxmarbles/models/examples'
-OperatorBox = require 'rxmarbles/views/operator-box'
+OperatorsMenu = require 'rxmarbles/views/operators-menu'
 
 #
 # Exports a stream of the currently selected example.
 #
 
-selectedExampleKey$ = OperatorBox.getSelected$().startWith("concat")
+urlHash = window.location.hash.replace("#","") or "merge"
+selectedExampleKey$ = OperatorsMenu.getSelected$().startWith(urlHash)
 
 selectedExample$ = selectedExampleKey$
   .map((key) ->

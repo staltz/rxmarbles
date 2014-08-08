@@ -19,9 +19,8 @@
 >>> v0.1.0
 
 + DONE Fix Firefox SVG marble styling
-- TODO Make side menu with list of operators
-  - views/operators-menu
-- TODO RxMarbles title and proposition value
++ DONE Side menu with list of operators
++ DONE RxMarbles title and proposition value
 - TODO Examples for Observable Instance Methods, such as debounce
   - Should each example have an 'apply' field? (which is a function)
 >>> v0.2.0
