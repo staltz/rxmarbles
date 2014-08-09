@@ -11,7 +11,7 @@
 }
 .sandbox .operator-box {
   border: 1px solid rgba(0, 0, 0, 0.06);
-  padding: 24px;
+  padding: 22px;
   text-align: center;
   position: relative;
 }
@@ -231,11 +231,11 @@ a {
 }
 .page-row > * {
   display: inline-block;
-  margin-left: -20px;
+  margin-left: -22px;
 }
 .page-row > *:first-child {
-  width: 220px;
-  margin-right: 20px;
+  width: 218px;
+  margin-right: 22px;
 }
 .page-row > *:last-child {
   width: 820px;
@@ -283,6 +283,6 @@ ul.operators-menu li > a:hover:after {
 .footer {
   position: absolute;
   bottom: 0;
-  right: 20px;
+  right: 22px;
   color: #7c7c7c;
 }

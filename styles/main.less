@@ -1,15 +1,9 @@
 @import "colors";
+@import "dimens";
 @import "mixins";
 @import "sandbox";
 @import "diagram";
 @import "gh-fork-ribbon";
-
-@sandbox-side-padding: 22px;
-@animation-duration-quick: 100ms;
-@animation-duration-normal: 200ms;
-@animation-duration-slow: 400ms;
-@page-row-width: 1060px;
-@sandbox-width: 820px;
 
 @import url(http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500);
 @import url(http://fonts.googleapis.com/css?family=Arvo);
@@ -34,18 +28,18 @@ a {
 	margin: 0 auto;
   >* {
     display: inline-block;
-    margin-left: -20px;
+    margin-left: -@space-medium;
   }
   >*:first-child {
-    width: (@page-row-width - @sandbox-width - 20px);
-    margin-right: 20px;
+    width: (@page-row-width - @sandbox-width - @space-medium);
+    margin-right: @space-medium;
   }
   >*:last-child {
     width: @sandbox-width;
   }
 }
 .page-row + .page-row {
-  margin-top: 10px;
+  margin-top: @space-small;
 }
 
 .page-title {
@@ -84,7 +78,7 @@ ul.operators-menu {
       content: "\276F";
       display: inline-block;
       position: absolute;
-      right: 5px;
+      right: @space-tiny;
     }
   }
 }
@@ -92,6 +86,6 @@ ul.operators-menu {
 .footer {
   position: absolute;
   bottom: 0;
-  right: 20px;
+  right: @space-medium;
   color: @color-grey-dark;
 }
