@@ -23,7 +23,6 @@
 + DONE RxMarbles title and proposition value
 + DONE Examples for Observable Instance Methods
 - TODO OperatorsMenu should stretch its height
-- TODO More examples
 - TODO Version number at the bottom of the page
   - from package.json
 >>> v0.2.0
@@ -38,14 +37,23 @@
 - TODO Render also the stream completion time marker?
 >>> v0.2.2
 
+- TODO Render metastreams in 'window' example
+- TODO Add examples groupBy, flatMap, concatMap, switch
+>>> v0.3.0
+
 - TODO Interactively add marbles to an InputStream
 - TODO Interactively remove marbles from an InputStream
->>> v0.3.0
+>>> v0.4.0
+
+- TODO Render lists of marbles for the buffer example
+>>> v0.5.0
+
+- TODO Fix bugs for first release
+  - cross browser issues, etc
+>>> v1.0.0
 
 - TODO Interactively add errors to an InputStream
 - TODO Hovering over a diagram shows mapping arrows
-- TODO Add many examples to the dropdown
-- TODO Render metastreams, make flatMap example
 - TODO Use virtual-dom for all views, only when virtual-dom events work
   - See modules under Raynos/mercury
   - TODO Refactor to conform to MVC philosophy
