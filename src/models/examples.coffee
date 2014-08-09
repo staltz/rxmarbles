@@ -68,7 +68,7 @@ module.exports = {
   "throttle": {
     "label": "throttle"
     "inputs": [
-      [{t:0, d:1}, {t:30, d:2}, {t:35, d:3}, {t:40, d:4}, {t:45, d:5}, {t:90, d:6}]
+      [{t:0, d:1}, {t:26, d:2}, {t:34, d:3}, {t:40, d:4}, {t:45, d:5}, {t:90, d:6}]
     ]
     "apply": (inputs, scheduler) -> inputs[0].throttle(20, scheduler)
   }
