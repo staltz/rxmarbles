@@ -1,6 +1,6 @@
 {
   "name": "rxmarbles",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "Andre Staltz",
   "repository": {
     "type": "git",
@@ -29,6 +29,6 @@
   },
   "scripts": {
     "preinstall": "rm -rf build && rm -rf node_modules",
-    "postinstall": "mkdir build && mkdir build/src && ln -s ../build/src node_modules/rxmarbles"
+    "postinstall": "mkdir build && mkdir build/src && ln -s ../build/src node_modules/rxmarbles && ln -s ../package.json node_modules/package.json"
   }
 }

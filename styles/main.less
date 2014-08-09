@@ -16,11 +16,16 @@
 @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro);
 
 body {
+  position: relative;
   background: @color-almost-white;
 
   // Default typography
   color: @color-black;
   font-family: 'Source Sans Pro', sans-serif;
+}
+
+a {
+  color: @color-blue;
 }
 
 .page-row {
@@ -81,5 +86,15 @@ ul.operators-menu {
       position: absolute;
       right: 5px;
     }
+  }
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  right: 20px;
+  color: @color-grey-dark;
+  #app-version {
+    margin-right: 0.3em;
   }
 }

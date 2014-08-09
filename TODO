@@ -23,37 +23,37 @@
 + DONE RxMarbles title and proposition value
 + DONE Examples for Observable Instance Methods
 + DONE OperatorsMenu should stretch its height
-- TODO Version number and author at the bottom of the page
-  - from package.json
++ DONE Version number and author at the bottom of the page
 >>> v0.2.0
 
-- TODO Webpage footer
 - TODO README.md
 - TODO Styling for dragging a marble
   - z-depth and side arrows
->>> v0.2.1
-
-- TODO Render each stream with a different regular polygon?
-- TODO Render also the stream completion time marker?
->>> v0.2.2
-
-- TODO Render metastreams in 'window' example
-- TODO Add examples groupBy, flatMap, concatMap, switch
->>> v0.3.0
-
-- TODO Interactively add marbles to an InputStream
-- TODO Interactively remove marbles from an InputStream
->>> v0.4.0
-
-- TODO Render lists of marbles for the buffer example
->>> v0.5.0
-
 - TODO Fix bugs for first release
   - cross browser issues, etc
 >>> v1.0.0
 
+- TODO Render each stream with a different regular polygon?
+- TODO Render also the stream completion time marker?
+>>> v1.1.0
+
+- TODO Render metastreams in 'window' example
+- TODO Add examples groupBy, flatMap, concatMap, switch
+>>> v1.2.0
+
+- TODO Interactively add marbles to an InputStream
+- TODO Interactively remove marbles from an InputStream
+>>> v1.3.0
+
+- TODO Render lists of marbles for the buffer example
+>>> v1.4.0
+
 - TODO Interactively add errors to an InputStream
+>>> v1.5.0
+
 - TODO Hovering over a diagram shows mapping arrows
+>>> v1.6.0
+
 - TODO Use virtual-dom for all views, only when virtual-dom events work
   - See modules under Raynos/mercury
   - TODO Refactor to conform to MVC philosophy
