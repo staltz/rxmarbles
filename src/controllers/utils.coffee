@@ -1,3 +1,7 @@
+#
+# Conversion from virtual time streams out to diagram data, and
+# vice-versa, and related functions.
+#
 Rx = require 'rx'
 
 makeScheduler = ->

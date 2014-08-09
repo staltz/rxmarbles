@@ -1,3 +1,6 @@
+#
+# The database of all predefined examples in the app.
+#
 Rx = require 'rx'
 
 module.exports = {

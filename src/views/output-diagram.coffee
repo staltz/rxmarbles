@@ -1,5 +1,5 @@
 #
-# Renders a stream diagram meant as an output to the sandbox
+# Renders a stream diagram meant as an output to the sandbox.
 #
 Rx = require 'rx'
 h = require 'virtual-hyperscript'

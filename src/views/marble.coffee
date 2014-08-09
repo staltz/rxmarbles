@@ -1,5 +1,5 @@
 #
-# Renders a circle or similar shape to represent an emitted item on a stream
+# Renders a circle or similar shape to represent an emitted item on a stream.
 #
 Rx = require 'rx'
 h = require 'virtual-hyperscript'

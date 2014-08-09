@@ -1,9 +1,8 @@
-Rx = require 'rx'
-Marble = require 'rxmarbles/views/marble'
-
 #
 # Renders a stream diagram meant as an input to the sandbox.
 #
+Rx = require 'rx'
+Marble = require 'rxmarbles/views/marble'
 
 createArrowBodyElement = ->
   arrowBody = document.createElement("div")

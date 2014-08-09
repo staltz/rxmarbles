@@ -1,12 +1,12 @@
+#
+# Responsible for rendering the sandbox element and connecting controller
+# streams to the views.
+#
 Rx = require 'rx'
 InputDiagramView = require 'rxmarbles/views/input-diagram'
 OperatorBox = require 'rxmarbles/views/operator-box'
 OutputDiagramView = require 'rxmarbles/views/output-diagram'
 Utils = require 'rxmarbles/views/utils'
-
-#
-# Responsible for startup and connecting controller streams to the views
-#
 
 streamOfArrayOfLiveInputDiagramStreams = new Rx.BehaviorSubject(null)
 

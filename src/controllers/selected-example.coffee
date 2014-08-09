@@ -1,10 +1,9 @@
-Rx = require 'rx'
-Examples = require 'rxmarbles/models/examples'
-OperatorsMenu = require 'rxmarbles/views/operators-menu'
-
 #
 # Exports a stream of the currently selected example.
 #
+Rx = require 'rx'
+Examples = require 'rxmarbles/models/examples'
+OperatorsMenu = require 'rxmarbles/views/operators-menu'
 
 urlHash = window.location.hash.replace("#","") or "merge"
 selectedExampleKey$ = OperatorsMenu.getSelected$().startWith(urlHash)

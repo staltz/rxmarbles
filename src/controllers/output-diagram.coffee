@@ -1,3 +1,6 @@
+#
+# Exports the diagram stream representing the output diagram.
+#
 Rx = require 'rx'
 Utils = require 'rxmarbles/controllers/utils'
 InputDiagrams = require 'rxmarbles/controllers/input-diagrams'
@@ -5,10 +8,6 @@ SelectedExample = require 'rxmarbles/controllers/selected-example'
 Examples = require 'rxmarbles/models/examples'
 
 END = 100 # Time of completion
-
-#
-# Exports the diagram stream representing the output diagram.
-#
 
 outputDiagramStream = InputDiagrams.continuous$
   .filter((x) -> x isnt null)

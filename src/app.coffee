@@ -1,3 +1,6 @@
+#
+# App entry-point.
+#
 Sandbox = require 'rxmarbles/views/sandbox'
 OperatorsMenu = require 'rxmarbles/views/operators-menu'
 Package = require 'package.json'
