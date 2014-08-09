@@ -8,7 +8,7 @@ Examples = require 'rxmarbles/models/examples'
 selected$ = new Rx.Subject()
 
 renderMenuItem = (example) ->
-  link = h("a", {href: "##{example.key}"}, example.label)
+  link = h("a", {href: "##{example.key}"}, example.key)
   Rx.Observable.fromEvent(link, "click").subscribe(->
     selected$.onNext(example.key)
     return true
