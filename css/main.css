@@ -216,9 +216,13 @@
   transform: rotate(-45deg);
 }
 body {
+  position: relative;
   background: #ececec;
   color: #323232;
   font-family: 'Source Sans Pro', sans-serif;
+}
+a {
+  color: #3ea1cb;
 }
 .page-row {
   position: relative;
@@ -275,4 +279,13 @@ ul.operators-menu li > a:hover:after {
   display: inline-block;
   position: absolute;
   right: 5px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  right: 20px;
+  color: #7c7c7c;
+}
+.footer #app-version {
+  margin-right: 0.3em;
 }
