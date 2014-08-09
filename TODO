@@ -29,6 +29,7 @@
 - TODO README.md
 - TODO Styling for dragging a marble
   - z-depth and side arrows
+- TODO Categories subheaders in the operators menu
 - TODO Fix bugs for first release
   - cross browser issues, etc
 >>> v1.0.0

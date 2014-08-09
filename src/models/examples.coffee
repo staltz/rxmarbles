@@ -163,7 +163,7 @@ module.exports = {
   }
 
   "combineLatest": {
-    "label": "combineLatest"
+    "label": "combineLatest((x, y) => \"\" + x + y)"
     "inputs": [
       [{t:0, d:1}, {t:20, d:2}, {t:65, d:3}, {t:75, d:4}, {t:92, d:5}]
       [{t:10, d:"A"}, {t:25, d:"B"}, {t:50, d:"C"}, {t:57, d:"D"}]

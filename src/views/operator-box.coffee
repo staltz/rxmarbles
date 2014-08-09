@@ -4,10 +4,11 @@
 #
 h = require 'hyperscript'
 
+renderLabel = (label) ->
+  attrs = if label.length > 20 then {style: {"font-size": "1.5rem"}} else {}
+  return h("span.operator-box-label", attrs, label)
+
 module.exports = {
   render: (example) ->
-    operatorBoxElement = h("div.operator-box", [
-      h("span.operator-box-label", example.label)
-    ])
-    return operatorBoxElement
+    return h("div.operator-box", [ renderLabel(example.label) ])
 }
