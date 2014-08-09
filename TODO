@@ -48,11 +48,14 @@
 - TODO Render lists of marbles for the buffer example
 >>> v1.4.0
 
-- TODO Interactively add errors to an InputStream
+- TODO Save a png snapshot of the sandbox
 >>> v1.5.0
 
-- TODO Hovering over a diagram shows mapping arrows
+- TODO Interactively add errors to an InputStream
 >>> v1.6.0
+
+- TODO Hovering over a diagram shows mapping arrows
+>>> v1.7.0
 
 - TODO Use virtual-dom for all views, only when virtual-dom events work
   - See modules under Raynos/mercury
