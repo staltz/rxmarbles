@@ -7,6 +7,17 @@ Examples = require 'rxmarbles/models/examples'
 
 selected$ = new Rx.Subject()
 
+getDocumentHeight = ->
+  body = document.body
+  html = document.documentElement
+  return Math.max(
+    body.scrollHeight,
+    body.offsetHeight,
+    html.clientHeight,
+    html.scrollHeight,
+    html.offsetHeight
+  )
+
 renderMenuItem = (example) ->
   link = h("a", {href: "##{example.key}"}, example.key)
   Rx.Observable.fromEvent(link, "click").subscribe(->
@@ -14,6 +25,13 @@ renderMenuItem = (example) ->
     return true
   )
   return h("li", [link])
+
+fixListHeight = (listElement) ->
+  Rx.Observable.timer(1).subscribe(->
+    height = getDocumentHeight() - listElement.getBoundingClientRect().top
+    listElement.style.height = "#{height}px"
+    return true
+  )
 
 module.exports = {
   getSelected$: ->
@@ -24,7 +42,9 @@ module.exports = {
     for own key,value of Examples
       value.key = key
       menuItems.push(value)
-    return h("ul.operators-menu",
+    listElement = h("ul.operators-menu",
       (renderMenuItem(example) for example in menuItems)
     )
+    fixListHeight(listElement)
+    return listElement
 }

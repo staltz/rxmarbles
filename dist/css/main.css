@@ -257,8 +257,8 @@ ul.operators-menu {
   margin: 0;
   padding: 0;
   list-style-type: none;
-  border-top: 1px solid #d4d4d4;
   overflow-y: scroll;
+  height: 2px;
 }
 ul.operators-menu li > a {
   color: #7c7c7c;

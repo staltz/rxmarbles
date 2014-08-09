@@ -22,8 +22,8 @@
 + DONE Side menu with list of operators
 + DONE RxMarbles title and proposition value
 + DONE Examples for Observable Instance Methods
-- TODO OperatorsMenu should stretch its height
-- TODO Version number at the bottom of the page
++ DONE OperatorsMenu should stretch its height
+- TODO Version number and author at the bottom of the page
   - from package.json
 >>> v0.2.0
 
