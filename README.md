@@ -1,7 +1,7 @@
 RxMarbles
 =========
 
-A webapp for experimenting with diagrams of Rx Observables, for learning purposes.
+A webapp for experimenting with diagrams of [Rx](http://reactive-extensions.github.io/RxJS/) Observables, for learning purposes.
 
 ![Example merge](https://raw.githubusercontent.com/staltz/rxmarbles/master/dist/img/example_merge.png)
 
@@ -24,5 +24,7 @@ gulp
 ```
 
 And access the site on your local machine as `file:///path/to/rxmarblesrepo/index.html`.
+
+To build the project with no watch mode, run the task `gulp dev-build`.
 
 Make a [pull request](https://github.com/staltz/rxmarbles/pulls) when you're ready.
