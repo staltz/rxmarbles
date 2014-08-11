@@ -33,6 +33,7 @@
 - TODO Categories subheaders in the operators menu
 - TODO Fix bugs for first release
   - cross browser issues, etc
+  - uglify JS for production
 >>> v1.0.0
 
 - TODO Render each stream with a different regular polygon?
