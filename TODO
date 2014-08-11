@@ -27,7 +27,7 @@
 >>> v0.2.0
 
 + DONE Add reference to RxJS and its version in the footer
-- TODO README.md
++ DONE README.md
 - TODO Styling for dragging a marble
   - z-depth and side arrows
 - TODO Categories subheaders in the operators menu
