@@ -124,7 +124,7 @@
 .github-fork-ribbon {
   position: absolute;
   padding: 2px 0;
-  background-color: #bbbbbb;
+  background-color: #a7a7a7;
   background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(rgba(0, 0, 0, 0.15)));
   background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
   background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
@@ -267,6 +267,14 @@ ul.operators-menu {
   list-style-type: none;
   overflow-y: scroll;
   height: 2px;
+}
+ul.operators-menu li.category {
+  text-transform: uppercase;
+  font-size: 0.7em;
+  color: #a7a7a7;
+}
+ul.operators-menu li + li.category {
+  margin-top: 22px;
 }
 ul.operators-menu li > a {
   color: #7c7c7c;
