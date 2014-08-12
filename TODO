@@ -34,6 +34,7 @@
 - TODO Polish for first release
   - cross browser issues, etc
   - uglify JS for production
+  - Loading state before the sandbox shows with content
 >>> v1.0.0
 
 - TODO Render each stream with a different regular polygon?
