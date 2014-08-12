@@ -48,6 +48,11 @@
       margin: -(@marble-size / 2);
       &.draggable {
         cursor: ew-resize;
+        &:hover {
+          svg.marble {
+            .svg-z-depth-1();
+          }
+        }
       }
 
       .marble-content {

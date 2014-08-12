@@ -11,7 +11,7 @@ SVG_VIEWBOX = "0 0 1 1"
 SVG_CX = 0.5
 SVG_CY = 0.5
 SVG_R = 0.47
-SVG_BORDER_WIDTH = "0.07px"
+SVG_BORDER_WIDTH = "0.06px"
 
 getDxDragStream = (element) ->
   return Rx.Observable.fromEvent(element, "mousedown")
