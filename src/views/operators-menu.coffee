@@ -7,6 +7,41 @@ Examples = require 'rxmarbles/models/examples'
 
 selected$ = new Rx.Subject()
 
+renderExampleCategory = (categoryName) ->
+  return h("li.category", "#{categoryName}")
+
+renderExampleItem = (example) ->
+  link = h("a", {href: "##{example.key}"}, example.key)
+  Rx.Observable.fromEvent(link, "click").subscribe(->
+    selected$.onNext(example.key)
+    return true
+  )
+  return h("li", [link])
+
+renderExampleItems = (examples) ->
+  return (renderExampleItem(example) for example in examples)
+
+#
+# Returns a hashmap of category headers to lists of examples in that category.
+#
+organizeExamplesByCategory = (examples) ->
+  categoryMap = {}
+  for own key,value of examples
+    value.key = key
+    if categoryMap.hasOwnProperty(value.category)
+      categoryMap[value.category].push(value)
+    else
+      categoryMap[value.category] = [value]
+  return categoryMap
+
+renderMenuContent = (examples) ->
+  listItems = []
+  categoryMap = organizeExamplesByCategory(examples)
+  for own categoryName,categoryExamples of categoryMap
+    listItems.push(renderExampleCategory(categoryName))
+    listItems = listItems.concat(renderExampleItems(categoryExamples))
+  return listItems
+
 getDocumentHeight = ->
   body = document.body
   html = document.documentElement
@@ -17,14 +52,6 @@ getDocumentHeight = ->
     html.scrollHeight,
     html.offsetHeight
   )
-
-renderMenuItem = (example) ->
-  link = h("a", {href: "##{example.key}"}, example.key)
-  Rx.Observable.fromEvent(link, "click").subscribe(->
-    selected$.onNext(example.key)
-    return true
-  )
-  return h("li", [link])
 
 fixListHeight = (listElement) ->
   Rx.Observable.timer(1).subscribe(->
@@ -38,13 +65,7 @@ module.exports = {
     return selected$
 
   render: ->
-    menuItems = []
-    for own key,value of Examples
-      value.key = key
-      menuItems.push(value)
-    listElement = h("ul.operators-menu",
-      (renderMenuItem(example) for example in menuItems)
-    )
+    listElement = h("ul.operators-menu", renderMenuContent(Examples))
     fixListHeight(listElement)
     return listElement
 }

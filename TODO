@@ -29,8 +29,9 @@
 + DONE Add reference to RxJS and its version in the footer
 + DONE README.md
 + DONE Styling for dragging a marble
-- TODO Categories subheaders in the operators menu
-- TODO Fix bugs for first release
++ DONE Categories subheaders in the operators menu
+- TODO "Coming soon" examples, rendered in OperatorsMenu
+- TODO Polish for first release
   - cross browser issues, etc
   - uglify JS for production
 >>> v1.0.0

@@ -3,6 +3,15 @@
 #
 Rx = require 'rx'
 
+categories = {
+  "transform": "Transforming Operators"
+  "combine": "Combining Operators"
+  "filter": "Filtering Operators"
+  "math": "Mathematical Operators"
+  "boolean": "Boolean Operators"
+  "conditional": "Conditional Operators"
+}
+
 module.exports = {
   "map": {
     "label": "map(x => 10 * x)"
@@ -12,14 +21,26 @@ module.exports = {
     "apply": (inputs) -> inputs[0].map((x) ->
       return {content: x.content*10, time: x.time, id: x.id}
     )
+    "category": categories["transform"]
   }
 
-  "filter": {
-    "label": "filter(x => x > 10)"
+  "merge": {
+    "label": "merge"
     "inputs": [
-      [{t:5, d:2}, {t:15, d:30}, {t:25, d:22}, {t:35, d:5}, {t:45, d:60}, {t:55, d:1}]
+      [{t:0, d:20}, {t:15, d:40}, {t:30, d:60}, {t:45, d:80}, {t:60, d:100}]
+      [{t:37, d:1}, {t:68, d:1}]
     ]
-    "apply": (inputs) -> inputs[0].filter((x) -> x.content > 10)
+    "apply": (inputs) -> Rx.Observable.merge(inputs)
+    "category": categories["combine"]
+  }
+
+  "first": {
+    "label": "first"
+    "inputs": [
+      [{t:30, d:1}, {t:40, d:2}, {t:65, d:3}, {t:75, d:4}]
+    ]
+    "apply": (inputs) -> inputs[0].first()
+    "category": categories["filter"]
   }
 
   "scan": {
@@ -30,6 +51,7 @@ module.exports = {
     "apply": (inputs) -> inputs[0].scan((x, y) ->
       return {content: x.content + y.content, time: x.time, id: x.id+y.id}
     )
+    "category": categories["transform"]
   }
 
   "aggregate": {
@@ -40,6 +62,7 @@ module.exports = {
     "apply": (inputs) -> inputs[0].aggregate((x, y) ->
       return {content: x.content + y.content, time: x.time, id: x.id+y.id}
     )
+    "category": categories["math"]
   }
 
   "average": {
@@ -48,6 +71,7 @@ module.exports = {
       [{t:5, d:1}, {t:15, d:2}, {t:30, d:2}, {t:50, d:2}, {t:65, d:5}]
     ]
     "apply": (inputs) -> inputs[0].average((x) -> x.content)
+    "category": categories["math"]
   }
 
   "min": {
@@ -60,6 +84,7 @@ module.exports = {
       return -1 if x.content < y.content
       return 0
     )
+    "category": categories["math"]
   }
 
   "max": {
@@ -72,6 +97,7 @@ module.exports = {
       return -1 if x.content < y.content
       return 0
     )
+    "category": categories["math"]
   }
 
   "count": {
@@ -80,6 +106,7 @@ module.exports = {
       [{t:5, d:2}, {t:15, d:30}, {t:25, d:22}, {t:35, d:5}, {t:45, d:60}, {t:55, d:1}]
     ]
     "apply": (inputs) -> inputs[0].count((x) -> x.content > 10)
+    "category": categories["math"]
   }
 
   "contains": {
@@ -88,6 +115,7 @@ module.exports = {
       [{t:5, d:2}, {t:15, d:30}, {t:25, d:22}, {t:35, d:5}, {t:45, d:60}, {t:55, d:1}]
     ]
     "apply": (inputs) -> inputs[0].contains({content:22}, (x,y) -> x.content == y.content)
+    "category": categories["boolean"]
   }
 
   "all": {
@@ -96,6 +124,7 @@ module.exports = {
       [{t:5, d:1}, {t:15, d:2}, {t:25, d:3}, {t:35, d:4}, {t:65, d:5}]
     ]
     "apply": (inputs) -> inputs[0].all((x) -> x.content < 10)
+    "category": categories["boolean"]
   }
 
   # #TODO Debug and fix
@@ -112,16 +141,6 @@ module.exports = {
   #   )
   # }
 
-  "amb": {
-    "label": "amb"
-    "inputs": [
-      [{t:10, d:20}, {t:20, d:40}, {t:30, d:60}]
-      [{t:5, d:1}, {t:15, d:2}, {t:25, d:3}]
-      [{t:20, d:0}, {t:32, d:0}, {t:44, d:0}]
-    ]
-    "apply": (inputs) -> Rx.Observable.amb(inputs)
-  }
-
   "concat": {
     "label": "concat"
     "inputs": [
@@ -129,15 +148,7 @@ module.exports = {
       [{t:13, d:2}, {t:30, d:2}]
     ]
     "apply": (inputs) -> Rx.Observable.concat(inputs)
-  }
-
-  "merge": {
-    "label": "merge"
-    "inputs": [
-      [{t:0, d:20}, {t:15, d:40}, {t:30, d:60}, {t:45, d:80}, {t:60, d:100}]
-      [{t:37, d:1}, {t:68, d:1}]
-    ]
-    "apply": (inputs) -> Rx.Observable.merge(inputs)
+    "category": categories["combine"]
   }
 
   # #TODO debug and fix
@@ -155,6 +166,7 @@ module.exports = {
       [{t:0, d:1}, {t:10, d:2}]
     ]
     "apply": (inputs, scheduler) -> inputs[0].delay(20, scheduler)
+    "category": categories["transform"]
   }
 
   "throttle": {
@@ -163,6 +175,7 @@ module.exports = {
       [{t:0, d:1}, {t:26, d:2}, {t:34, d:3}, {t:40, d:4}, {t:45, d:5}, {t:90, d:6}]
     ]
     "apply": (inputs, scheduler) -> inputs[0].throttle(20, scheduler)
+    "category": categories["transform"]
   }
 
   "combineLatest": {
@@ -173,6 +186,7 @@ module.exports = {
     ]
     "apply": (inputs) ->
       return Rx.Observable.combineLatest(inputs[0], inputs[1], (x,y)->"#{x.content}#{y.content}")
+    "category": categories["combine"]
   }
 
   "zip": {
@@ -183,6 +197,7 @@ module.exports = {
     ]
     "apply": (inputs) ->
       return Rx.Observable.zip(inputs[0], inputs[1], (x,y)->"#{x.content}#{y.content}")
+    "category": categories["combine"]
   }
 
   "sample": {
@@ -192,6 +207,7 @@ module.exports = {
       [{t:10, d:"A"}, {t:25, d:"B"}, {t:33, d:"C"}, {t:70, d:"D"}]
     ]
     "apply": (inputs) -> inputs[0].sample(inputs[1])
+    "category": categories["combine"]
   }
 
   "startWith": {
@@ -200,14 +216,16 @@ module.exports = {
       [{t:30, d:2}, {t:40, d:3}]
     ]
     "apply": (inputs, scheduler) -> inputs[0].startWith(scheduler, 1)
+    "category": categories["combine"]
   }
 
-  "first": {
-    "label": "first"
+  "filter": {
+    "label": "filter(x => x > 10)"
     "inputs": [
-      [{t:30, d:1}, {t:40, d:2}, {t:65, d:3}, {t:75, d:4}]
+      [{t:5, d:2}, {t:15, d:30}, {t:25, d:22}, {t:35, d:5}, {t:45, d:60}, {t:55, d:1}]
     ]
-    "apply": (inputs) -> inputs[0].first()
+    "apply": (inputs) -> inputs[0].filter((x) -> x.content > 10)
+    "category": categories["filter"]
   }
 
   "last": {
@@ -216,6 +234,7 @@ module.exports = {
       [{t:30, d:1}, {t:40, d:2}, {t:65, d:3}, {t:75, d:4}]
     ]
     "apply": (inputs) -> inputs[0].last()
+    "category": categories["filter"]
   }
 
   "elementAt": {
@@ -224,6 +243,7 @@ module.exports = {
       [{t:30, d:1}, {t:40, d:2}, {t:65, d:3}, {t:75, d:4}]
     ]
     "apply": (inputs, scheduler) -> inputs[0].elementAt(2)
+    "category": categories["filter"]
   }
 
   "find": {
@@ -232,6 +252,7 @@ module.exports = {
       [{t:5, d:2}, {t:15, d:30}, {t:25, d:22}, {t:35, d:5}, {t:45, d:60}, {t:55, d:1}]
     ]
     "apply": (inputs, scheduler) -> inputs[0].find((x) -> x.content > 10)
+    "category": categories["filter"]
   }
 
   "take": {
@@ -240,6 +261,7 @@ module.exports = {
       [{t:30, d:1}, {t:40, d:2}, {t:65, d:3}, {t:75, d:4}]
     ]
     "apply": (inputs, scheduler) -> inputs[0].take(2, scheduler)
+    "category": categories["filter"]
   }
 
   "skip": {
@@ -248,6 +270,7 @@ module.exports = {
       [{t:30, d:1}, {t:40, d:2}, {t:65, d:3}, {t:75, d:4}]
     ]
     "apply": (inputs) -> inputs[0].skip(2)
+    "category": categories["filter"]
   }
 
   "takeUntil": {
@@ -257,6 +280,7 @@ module.exports = {
       [{t:47, d:0}, {t:73, d:0}]
     ]
     "apply": (inputs) -> inputs[0].takeUntil(inputs[1])
+    "category": categories["filter"]
   }
 
   "skipUntil": {
@@ -266,6 +290,7 @@ module.exports = {
       [{t:47, d:0}, {t:73, d:0}]
     ]
     "apply": (inputs) -> inputs[0].skipUntil(inputs[1])
+    "category": categories["filter"]
   }
 
   "distinct": {
@@ -274,6 +299,7 @@ module.exports = {
       [{t:5, d:1}, {t:20, d:2}, {t:35, d:2}, {t:60, d:1}, {t:70, d:3}]
     ]
     "apply": (inputs) -> inputs[0].distinct((x) -> x.content)
+    "category": categories["filter"]
   }
 
   "distinctUntilChanged": {
@@ -282,5 +308,17 @@ module.exports = {
       [{t:5, d:1}, {t:20, d:2}, {t:35, d:2}, {t:60, d:1}, {t:70, d:3}]
     ]
     "apply": (inputs) -> inputs[0].distinctUntilChanged((x) -> x.content)
+    "category": categories["filter"]
+  }
+
+  "amb": {
+    "label": "amb"
+    "inputs": [
+      [{t:10, d:20}, {t:20, d:40}, {t:30, d:60}]
+      [{t:5, d:1}, {t:15, d:2}, {t:25, d:3}]
+      [{t:20, d:0}, {t:32, d:0}, {t:44, d:0}]
+    ]
+    "apply": (inputs) -> Rx.Observable.amb(inputs)
+    "category": categories["conditional"]
   }
 }

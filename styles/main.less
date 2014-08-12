@@ -65,6 +65,14 @@ ul.operators-menu {
   list-style-type: none;
   overflow-y: scroll;
   height: 2px;
+  li.category {
+    text-transform: uppercase;
+    font-size: 0.7em;
+    color: @color-grey;
+  }
+  li + li.category {
+    margin-top: @space-medium;
+  }
   li > a {
     color: @color-grey-dark;
     font-size: 1rem;
