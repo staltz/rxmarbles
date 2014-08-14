@@ -13,4 +13,6 @@ operatorsMenuContainer.appendChild(OperatorsMenu.render())
 
 document.querySelector("#app-version").textContent = "v#{Package.version}"
 rxVersion = Package.dependencies.rx.replace(/(~|\^|\.\+)*/g, "")
-document.querySelector("#rxjs-version").textContent = "v#{rxVersion}"
+rxElement = document.querySelector("#rxjs-version")
+rxElement.textContent = "RxJS v#{rxVersion}"
+rxElement.href = "https://github.com/Reactive-Extensions/RxJS/tree/v#{rxVersion}"
