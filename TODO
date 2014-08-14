@@ -33,10 +33,11 @@
 + DONE "Coming soon" sign, rendered in OperatorsMenu
 - TODO Polish for first release
   - Make marble content not selectable
-  - cross browser issues, etc
-  - uglify JS for production
   - Loading state before the sandbox shows with content
   - Usability hint about dragging
+  - Analytics
+  - cross browser issues, etc
+  - uglify JS for production
 >>> v1.0.0
 
 - TODO More trivial examples
