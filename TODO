@@ -35,6 +35,7 @@
   - cross browser issues, etc
   - uglify JS for production
   - Loading state before the sandbox shows with content
+  - Usability hint about dragging
 >>> v1.0.0
 
 - TODO Render each stream with a different regular polygon?
