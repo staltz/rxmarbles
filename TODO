@@ -36,6 +36,7 @@
   - Loading state before the sandbox shows with content
   - Usability hint about dragging
   - Analytics
+  - Favicon?
   - cross browser issues, etc
   - uglify JS for production
 >>> v1.0.0
