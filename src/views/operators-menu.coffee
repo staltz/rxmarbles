@@ -40,6 +40,8 @@ renderMenuContent = (examples) ->
   for own categoryName,categoryExamples of categoryMap
     listItems.push(renderExampleCategory(categoryName))
     listItems = listItems.concat(renderExampleItems(categoryExamples))
+  listItems.push(h("li.category", "More"))
+  listItems.push(h("li", "Coming soon..."))
   return listItems
 
 getDocumentHeight = ->

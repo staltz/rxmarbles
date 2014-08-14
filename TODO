@@ -30,7 +30,7 @@
 + DONE README.md
 + DONE Styling for dragging a marble
 + DONE Categories subheaders in the operators menu
-- TODO "Coming soon" examples, rendered in OperatorsMenu
++ DONE "Coming soon" sign, rendered in OperatorsMenu
 - TODO Polish for first release
   - cross browser issues, etc
   - uglify JS for production
@@ -38,6 +38,7 @@
   - Usability hint about dragging
 >>> v1.0.0
 
+- TODO More trivial examples
 - TODO Render each stream with a different regular polygon?
 - TODO Render also the stream completion time marker?
 >>> v1.1.0
