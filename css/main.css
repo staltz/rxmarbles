@@ -276,10 +276,13 @@ ul.operators-menu li.category {
 ul.operators-menu li + li.category {
   margin-top: 22px;
 }
-ul.operators-menu li > a {
+ul.operators-menu li {
   color: #7c7c7c;
   font-size: 1rem;
   line-height: 1.6rem;
+}
+ul.operators-menu li > a {
+  color: #7c7c7c;
   position: relative;
   display: block;
 }
