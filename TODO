@@ -46,25 +46,29 @@
 - TODO Render also the stream completion time marker?
 >>> v1.1.0
 
+- TODO Embeddable rxmarbles
+  - app.coffee 'exports' a function which can be called in <script> in index.html
+>>> v1.2.0
+
 - TODO Render metastreams in 'window' example
 - TODO Add examples groupBy, flatMap, concatMap, switch
->>> v1.2.0
+>>> v1.3.0
 
 - TODO Interactively add marbles to an InputStream
 - TODO Interactively remove marbles from an InputStream
->>> v1.3.0
-
-- TODO Render lists of marbles for the buffer example
 >>> v1.4.0
 
-- TODO Save a png snapshot of the sandbox
+- TODO Render lists of marbles for the buffer example
 >>> v1.5.0
 
-- TODO Interactively add errors to an InputStream
+- TODO Save a png snapshot of the sandbox
 >>> v1.6.0
 
-- TODO Hovering over a diagram shows mapping arrows
+- TODO Interactively add errors to an InputStream
 >>> v1.7.0
+
+- TODO Hovering over a diagram shows mapping arrows
+>>> v1.8.0
 
 - TODO Use virtual-dom for all views, only when virtual-dom events work
   - See modules under Raynos/mercury
