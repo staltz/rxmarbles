@@ -12,6 +12,7 @@
   width: 100%;
   height: (@marble-size + (2 * @diagram-vertical-margin));
   overflow: visible;
+  .text-unselectable();
 
   .arrow {
     background-color: @arrow-color;
@@ -63,6 +64,7 @@
         margin: 0;
         text-align: center;
         line-height: @marble-size;
+        .text-unselectable();
       }
       svg.marble {
         overflow: visible;
