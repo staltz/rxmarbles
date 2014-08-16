@@ -3,6 +3,7 @@
 # streams to the views.
 #
 Rx = require 'rx'
+h = require 'hyperscript'
 InputDiagramView = require 'rxmarbles/views/input-diagram'
 OperatorBox = require 'rxmarbles/views/operator-box'
 OutputDiagramView = require 'rxmarbles/views/output-diagram'
@@ -42,9 +43,9 @@ module.exports = {
     return streamOfArrayOfLiveInputDiagramStreams
 
   render: ->
-    rootElement = document.createElement("div")
-    rootElement.appendChild(createInputDiagramElements())
-    rootElement.appendChild(createOperatorBoxElement())
-    rootElement.appendChild(createOutputDiagramElement())
-    return rootElement
+    return h("div.sandbox", [
+      createInputDiagramElements()
+      createOperatorBoxElement()
+      createOutputDiagramElement()
+    ])
 }

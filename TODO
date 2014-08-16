@@ -33,7 +33,7 @@
 + DONE "Coming soon" sign, rendered in OperatorsMenu
 - TODO Polish for first release
   + DONE Make marble content not selectable
-  - Loading state before the sandbox shows with content
+  + DONE Loading state before the sandbox shows with content
   - Usability hint about dragging
   - Analytics
   - Favicon?

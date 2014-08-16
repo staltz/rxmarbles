@@ -5,7 +5,8 @@ Sandbox = require 'rxmarbles/views/sandbox'
 OperatorsMenu = require 'rxmarbles/views/operators-menu'
 Package = require 'package.json'
 
-sandboxContainer = document.querySelector(".sandbox")
+sandboxContainer = document.querySelector("#sandbox-container")
+sandboxContainer.innerHTML = ""
 sandboxContainer.appendChild(Sandbox.render())
 
 operatorsMenuContainer = document.querySelector(".operators-menu-container")

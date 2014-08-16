@@ -55,8 +55,34 @@ a {
   box-sizing: border-box;
 }
 
-.sandbox {
+#sandbox-container {
   position: absolute;
+}
+
+.loading {
+  margin: 0;
+  color: @color-grey-dark;
+  @keyframes dots-1 { from { opacity: 0; } 25% { opacity: 1; } }
+  @keyframes dots-2 { from { opacity: 0; } 50% { opacity: 1; } }
+  @keyframes dots-3 { from { opacity: 0; } 75% { opacity: 1; } }
+  @-webkit-keyframes dots-1 { from { opacity: 0; } 25% { opacity: 1; } }
+  @-webkit-keyframes dots-2 { from { opacity: 0; } 50% { opacity: 1; } }
+  @-webkit-keyframes dots-3 { from { opacity: 0; } 75% { opacity: 1; } }
+
+  .ellipsis span {
+      animation: dots-1 900ms infinite steps(1);
+      -webkit-animation: dots-1 900ms infinite steps(1);
+  }
+
+  .ellipsis span:first-child + span {
+      animation-name: dots-2;
+      -webkit-animation-name: dots-2;
+  }
+
+  .ellipsis span:first-child + span + span {
+      animation-name: dots-3;
+      -webkit-animation-name: dots-3;
+  }
 }
 
 ul.operators-menu {
