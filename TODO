@@ -34,11 +34,11 @@
 - TODO Polish for first release
   + DONE Make marble content not selectable
   + DONE Loading state before the sandbox shows with content
+  + DONE Optimizing app.js size, and using uglify for production
   - Usability hint about dragging
   - Analytics
   - Favicon?
   - cross browser issues, etc
-  - uglify JS for production
 >>> v1.0.0
 
 - TODO More trivial examples

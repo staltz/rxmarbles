@@ -25,12 +25,23 @@ gulp.task('less', function() {
     .pipe(gulp.dest('./dist/css'));
 });
 
-gulp.task('browserify', ['coffee'], function() {
+gulp.task('dev-browserify', ['coffee'], function() {
   gutil.log(gutil.colors.yellow("Packing with browserify..."));
   return gulp.src(['./build/src/**/*.js'])
     .pipe(browserify({
       insertGlobals: true,
       debug: true
+    }))
+    .pipe(gulp.dest('./build/browserified-js'));
+});
+
+gulp.task('browserify', ['coffee'], function() {
+  gutil.log(gutil.colors.yellow("Packing with browserify..."));
+  return gulp.src(['./build/src/**/*.js'])
+    .pipe(browserify({
+      insertGlobals: false,
+      debug: false,
+      detectGlobals: false
     }))
     .pipe(gulp.dest('./build/browserified-js'));
 });
@@ -42,15 +53,19 @@ gulp.task('uglify', ['browserify'], function() {
     .pipe(gulp.dest('./dist/js'));
 })
 
+// Useless for now
 gulp.task('post-clean-up', ['uglify'], function() {
   gutil.log(gutil.colors.yellow("Cleaning up temporary files..."));
-  return gulp.src(['./build/src/**/*', './build/browserified-js'], { read: false })
+  return gulp.src(
+      [__dirname+'/build/src/**/*', __dirname+'/build/browserified-js/**/*'],
+      {read: false}
+    )
     .pipe(rimraf());
 });
 
-gulp.task('build', ['less', 'post-clean-up']);
+gulp.task('build', ['less', 'uglify']);
 
-gulp.task('dev-build', ['less', 'browserify'], function() {
+gulp.task('dev-build', ['less', 'dev-browserify'], function() {
   return gulp.src(['./build/browserified-js/*.js'])
     .pipe(gulp.dest('./dist/js'))
 });
