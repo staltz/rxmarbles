@@ -37,7 +37,7 @@
   + DONE Optimizing app.js size, and using uglify for production
   - Usability hint about dragging
   - Analytics
-  - Favicon?
+  + DONE Customized favicon
   - cross browser issues, etc
 >>> v1.0.0
 
