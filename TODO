@@ -35,9 +35,9 @@
   + DONE Make marble content not selectable
   + DONE Loading state before the sandbox shows with content
   + DONE Optimizing app.js size, and using uglify for production
+  + DONE Customized favicon
   - Usability hint about dragging
   - Analytics
-  + DONE Customized favicon
   - cross browser issues, etc
 >>> v1.0.0
 
