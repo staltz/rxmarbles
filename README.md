@@ -5,6 +5,12 @@ A webapp for experimenting with diagrams of [Rx](http://reactive-extensions.gith
 
 ![Example merge](https://raw.githubusercontent.com/staltz/rxmarbles/master/dist/img/example_merge.png)
 
+#### Features:
+
+- Visualize example diagrams for each operator in Rx
+- Drag an item ("marble") on an Observable to see how the operator reacts
+- Direct link to any example diagram, e.g., http://rxmarbles.com/#merge
+
 ## Implementation
 
 The source code is written in [CoffeeScript](http://coffeescript.org/). The architecture is a simple MVC heavily dependent on RxJS. Some parts of the views render to the DOM using pure JavaScript APIs for DOM manipulation, some other parts use [virtual-dom](https://github.com/Matt-Esch/virtual-dom/) for optimizing performance.
