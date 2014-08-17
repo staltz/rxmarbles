@@ -9,7 +9,7 @@ A webapp for experimenting with diagrams of [Rx](http://reactive-extensions.gith
 
 - Visualize example diagrams for each operator in Rx
 - Drag an item ("marble") on an Observable to see how the operator reacts
-- Direct link to any example diagram, e.g., http://rxmarbles.com/#merge
+- Direct link to any example diagram, e.g., http://rxmarbles.com/#delay
 
 ## Implementation
 
