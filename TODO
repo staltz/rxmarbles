@@ -37,8 +37,10 @@
   + DONE Optimizing app.js size, and using uglify for production
   + DONE Customized favicon
   + DONE Added Google Analytics tracking
-- TODO Remove the no-longer-needed loading indicator
->>> v1.0.0
++ DONE Remove the no-longer-needed loading indicator
+>>> v0.3.0 ## RC
+
+Release v1.0.0 if v0.3.0 RC seems stable
 
 - TODO More trivial examples
 - TODO Render each stream with a different regular polygon
