@@ -23,6 +23,8 @@ Fork and git clone the repository.
 npm install
 ```
 
+The roadmap is entirely specified in the [TODO](https://github.com/staltz/rxmarbles/blob/master/TODO) file, which follows the [git-done](https://github.com/staltz/git-done) syntax. You can also use `git done` instead of `git commit` if you wish. For minor bug fixes, you won't need to deal with the TODO file. But if you're building a feature, remember to write a `+ DONE` entry before you commit and send the pull request.
+
 The build system is gulp. To develop, run in watch mode using the default task:
 
 ```
@@ -31,6 +33,6 @@ gulp
 
 And access the site on your local machine as `file:///path/to/rxmarblesrepo/index.html`.
 
-To build the project with no watch mode, run the task `gulp dev-build`.
+To build the project with no watch mode, run the task `gulp dev-build` (development) or `gulp build` (production).
 
 Make a [pull request](https://github.com/staltz/rxmarbles/pulls) when you're ready.
