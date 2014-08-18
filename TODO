@@ -39,8 +39,7 @@
   + DONE Added Google Analytics tracking
 + DONE Remove the no-longer-needed loading indicator
 >>> v0.3.0 ## RC
-
-Release v1.0.0 if v0.3.0 RC seems stable
+>>> v1.0.0
 
 - TODO More trivial examples
 - TODO Render each stream with a different regular polygon
