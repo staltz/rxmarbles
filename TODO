@@ -48,6 +48,7 @@
 
 - TODO Embeddable rxmarbles
   - app.coffee 'exports' a function which can be called in <script> in index.html
+- TODO Short text description of each operator, and link to official docs
 >>> v1.2.0
 
 - TODO Animation for sandbox appearing when example selected
