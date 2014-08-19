@@ -1,80 +1,80 @@
-+ DONE React framework with hello world
-+ DONE Upgrade to React 0.11
-+ DONE Render streams with React and HTML
-+ DONE Add HTML5 boilerplate, normalize.css
-+ DONE Make styles as lesscss, gulp task to compile it to main.css
-+ DONE Style the streams as a horizontal diagram
-+ DONE Style the arrow head on the streams
-+ DONE Refactor methods out of streams.coffee
-+ DONE Sandbox view itself accesses controllers/streams
-+ DONE Style the marble function box
-+ DONE Defined required props for some React views
-+ DONE Marbles can be dragged
-+ DONE Controllers deserialize InputStream exported serializedStream
-+ DONE Merged stream updates in real time when child streams are dragged
-+ DONE Refactor views: components OutputStream, InputStream, Stream
-+ DONE Introduce virtual-dom for output stream view
-+ DONE More generalized handling of examples
-+ DONE FunctionBox dropdown to choose other examples
+DONE React framework with hello world
+DONE Upgrade to React 0.11
+DONE Render streams with React and HTML
+DONE Add HTML5 boilerplate, normalize.css
+DONE Make styles as lesscss, gulp task to compile it to main.css
+DONE Style the streams as a horizontal diagram
+DONE Style the arrow head on the streams
+DONE Refactor methods out of streams.coffee
+DONE Sandbox view itself accesses controllers/streams
+DONE Style the marble function box
+DONE Defined required props for some React views
+DONE Marbles can be dragged
+DONE Controllers deserialize InputStream exported serializedStream
+DONE Merged stream updates in real time when child streams are dragged
+DONE Refactor views: components OutputStream, InputStream, Stream
+DONE Introduce virtual-dom for output stream view
+DONE More generalized handling of examples
+DONE FunctionBox dropdown to choose other examples
 >>> v0.1.0
 
-+ DONE Fix Firefox SVG marble styling
-+ DONE Side menu with list of operators
-+ DONE RxMarbles title and proposition value
-+ DONE Examples for Observable Instance Methods
-+ DONE OperatorsMenu should stretch its height
-+ DONE Version number and author at the bottom of the page
+DONE Fix Firefox SVG marble styling
+DONE Side menu with list of operators
+DONE RxMarbles title and proposition value
+DONE Examples for Observable Instance Methods
+DONE OperatorsMenu should stretch its height
+DONE Version number and author at the bottom of the page
 >>> v0.2.0
 
-+ DONE Add reference to RxJS and its version in the footer
-+ DONE README.md
-+ DONE Styling for dragging a marble
-+ DONE Categories subheaders in the operators menu
-+ DONE "Coming soon" sign, rendered in OperatorsMenu
-+ DONE Polish for first release
-  + DONE Make marble content not selectable
-  + DONE Loading state before the sandbox shows with content
-  + DONE Optimizing app.js size, and using uglify for production
-  + DONE Customized favicon
-  + DONE Added Google Analytics tracking
-+ DONE Remove the no-longer-needed loading indicator
+DONE Add reference to RxJS and its version in the footer
+DONE README.md
+DONE Styling for dragging a marble
+DONE Categories subheaders in the operators menu
+DONE "Coming soon" sign, rendered in OperatorsMenu
+DONE Polish for first release
+  DONE Make marble content not selectable
+  DONE Loading state before the sandbox shows with content
+  DONE Optimizing app.js size, and using uglify for production
+  DONE Customized favicon
+  DONE Added Google Analytics tracking
+DONE Remove the no-longer-needed loading indicator
 >>> v0.3.0 ## RC
 >>> v1.0.0
 
-- TODO More trivial examples
-- TODO Render each stream with a different regular polygon
-- TODO Render also the stream completion time marker
+TODO More trivial examples
+TODO Render each stream with a different regular polygon
+TODO Render also the stream completion time marker
 >>> v1.1.0
 
-- TODO Embeddable rxmarbles
+TODO Embeddable rxmarbles
   - app.coffee 'exports' a function which can be called in <script> in index.html
-- TODO Short text description of each operator, and link to official docs
+TODO Short text description of each operator, and link to official docs
 >>> v1.2.0
 
-- TODO Animation for sandbox appearing when example selected
-- TODO Render metastreams in 'window' example
-- TODO Add examples groupBy, flatMap, concatMap, switch
+TODO Animation for sandbox appearing when example selected
+TODO Render metastreams in 'window' example
+TODO Add examples groupBy, flatMap, concatMap, switch
 >>> v1.3.0
 
-- TODO Interactively add marbles to an InputStream
-- TODO Interactively remove marbles from an InputStream
+TODO Interactively add marbles to an InputStream
+TODO Interactively remove marbles from an InputStream
 >>> v1.4.0
 
-- TODO Render lists of marbles for the buffer example
+TODO Render lists of marbles for the buffer example
 >>> v1.5.0
 
-- TODO Save a png snapshot of the sandbox
+TODO Save a png snapshot of the sandbox
 >>> v1.6.0
 
-- TODO Interactively add errors to an InputStream
+TODO Interactively add errors to an InputStream
 >>> v1.7.0
 
-- TODO Hovering over a diagram shows mapping arrows
+TODO Hovering over a diagram shows mapping arrows
 >>> v1.8.0
 
-- TODO Use virtual-dom for all views, only when virtual-dom events work
+TODO Use virtual-dom for all views, only when virtual-dom events work
   - See modules under Raynos/mercury
-  - TODO Refactor to conform to MVC philosophy
+  TODO Refactor to conform to MVC philosophy
     - Model is the representation of data and state
       - Input: interpreted interaction streams
       - Output: data streams
