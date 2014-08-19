@@ -60,6 +60,8 @@
 - TODO Interactively remove marbles from an InputStream
 >>> v1.4.0
 
+- TODO Allows customizing the expression in some operators
+  - Use `new Function("...")`
 - TODO Render lists of marbles for the buffer example
 >>> v1.5.0
 
