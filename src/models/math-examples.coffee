@@ -50,5 +50,13 @@ module.exports = {
       return 0
     )
   }
+
+  "sum": {
+    "label": "sum"
+    "inputs": [
+      [{t:5, d:1}, {t:15, d:2}, {t:25, d:3}, {t:35, d:4}, {t:65, d:5}]
+    ]
+    "apply": (inputs) -> inputs[0].sum((x) -> x.content)
+  }
 }
 

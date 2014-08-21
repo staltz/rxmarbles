@@ -9,6 +9,14 @@ module.exports = {
     "apply": (inputs) -> inputs[0].all((x) -> x.content < 10)
   }
 
+  "any": {
+    "label": "any(x => x > 10)"
+    "inputs": [
+      [{t:5, d:2}, {t:15, d:30}, {t:25, d:22}, {t:35, d:5}, {t:45, d:60}, {t:55, d:1}]
+    ]
+    "apply": (inputs) -> inputs[0].any((x) -> x.content > 10)
+  }
+
   "contains": {
     "label": "contains(22)"
     "inputs": [
