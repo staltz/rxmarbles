@@ -39,7 +39,7 @@ module.exports = {
       [{t:5, d:1}, {t:15, d:2}, {t:25, d:3}, {t:35, d:4}, {t:65, d:5}]
       [{t:2, d:1}, {t:20, d:2}, {t:40, d:3}, {t:70, d:4}, {t:77, d:5}]
     ]
-    "apply": (inputs) -> inputs[1].sequenceEqual(inputs[0], (x,y) ->
+    "apply": (inputs) -> inputs[0].sequenceEqual(inputs[1], (x,y) ->
       return (x.content == y.content)
     )
   }

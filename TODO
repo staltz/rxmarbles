@@ -45,6 +45,8 @@ DONE Added examples: sum, any, delayWithSelector
 TODO Add more examples
 TODO Render each stream with a different regular polygon
 TODO Render also the stream completion time marker
+TODO Fix referential transparency inconsistency
+  Replace controllers/output combineLatest with combinePrevious
 TODO Disambiguate simultaneous marbles
   Vertically spread them
   Change example takeLast(1) to takeLast(2)
