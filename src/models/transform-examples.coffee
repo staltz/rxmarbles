@@ -19,6 +19,14 @@ module.exports = {
     )
   }
 
+  "findIndex": {
+    "label": "findIndex(x => x > 10)"
+    "inputs": [
+      [{t:5, d:2}, {t:15, d:30}, {t:25, d:22}, {t:35, d:5}, {t:45, d:60}, {t:55, d:1}]
+    ]
+    "apply": (inputs, scheduler) -> inputs[0].findIndex((x) -> x.content > 10)
+  }
+
   "map": {
     "label": "map(x => 10 * x)"
     "inputs": [

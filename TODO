@@ -45,10 +45,16 @@ DONE Added examples: sum, any, delayWithSelector
 TODO Add more examples
 TODO Render each stream with a different regular polygon
 TODO Render also the stream completion time marker
+TODO Disambiguate simultaneous marbles
+  Vertically spread them
+  Change example takeLast(1) to takeLast(2)
 >>> v1.1.0
 
 TODO Embeddable rxmarbles
-  - app.coffee 'exports' a function which can be called in <script> in index.html
+  app.coffee 'exports' a function which can be called in <script> in index.html
+>>> v1.1.1
+
+TODO Browser back button selects past operators
 TODO Short text description of each operator, and link to official docs
 >>> v1.2.0
 
