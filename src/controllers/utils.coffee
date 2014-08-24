@@ -59,7 +59,7 @@ toVTStream = (diagramData, scheduler, endTime) ->
     )
   return Rx.Observable
     .merge(singleMarbleStreams)
-    .takeUntilWithTime(endTime, scheduler)
+    .takeUntilWithTime(endTime+1, scheduler)
     .publish().refCount()
 
 getDiagramPromise = (stream, scheduler, endTime) ->

@@ -15,11 +15,11 @@ outputDiagramStream = InputDiagrams.continuous$
     return Rx.Observable.combineLatest(arrayOfDiagramStreams, (args...) -> args)
   )
   .combineLatest(SelectedExample.stream, (diagrams, example) ->
-    endTime = END+1
+    endTime = END
     vtscheduler = Utils.makeScheduler()
     inputVTStreams = (Utils.toVTStream(d, vtscheduler, endTime) for d in diagrams)
     outputVTStream = example["apply"](inputVTStreams, vtscheduler)
-    outputVTStream = outputVTStream.takeUntilWithTime(endTime, vtscheduler)
+    outputVTStream = outputVTStream.takeUntilWithTime(endTime+1, vtscheduler)
     outputDiagram = Utils.getDiagramPromise(outputVTStream, vtscheduler, endTime)
     vtscheduler.start()
     return outputDiagram
