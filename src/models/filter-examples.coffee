@@ -57,6 +57,32 @@ module.exports = {
     "apply": (inputs) -> inputs[0].last()
   }
 
+  "pausable": {
+    "label": "pausable"
+    "inputs": [
+      [{t:0, d:1}, {t:10, d:2}, {t:20, d:3}, {t:30, d:4}, {t:40, d:5}, {t:50, d:6}, {t:60, d:7}, {t:70, d:8}, {t:80, d:9}]
+      [{t:15, d:true}, {t:35, d:false}, {t:55, d:true}]
+    ]
+    "apply": (inputs) ->
+      inputs[0].subscribe((x) -> 0)
+      subject = new Rx.Subject()
+      inputs[1].subscribe((x) -> subject.onNext(x.content) ;0)
+      return inputs[0].pausable(subject)
+  }
+
+  "pausableBuffered": {
+    "label": "pausableBuffered"
+    "inputs": [
+      [{t:0, d:1}, {t:10, d:2}, {t:20, d:3}, {t:30, d:4}, {t:40, d:5}, {t:50, d:6}, {t:60, d:7}, {t:70, d:8}, {t:80, d:9}]
+      [{t:15, d:true}, {t:35, d:false}, {t:55, d:true}]
+    ]
+    "apply": (inputs) ->
+      inputs[0].subscribe((x) -> 0)
+      subject = new Rx.Subject()
+      inputs[1].subscribe((x) -> subject.onNext(x.content) ;0)
+      return inputs[0].pausableBuffered(subject)
+  }
+
   "skip": {
     "label": "skip(2)"
     "inputs": [
