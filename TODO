@@ -58,6 +58,8 @@ TODO Embeddable rxmarbles
 >>> v1.1.1
 
 TODO Browser back button selects past operators
+TODO Render stream errors
+TODO Add examples related to errors
 TODO Short text description of each operator, and link to official docs
 >>> v1.2.0
 
