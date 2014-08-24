@@ -25,14 +25,6 @@ module.exports = {
     "apply": (inputs) -> inputs[0].contains({content:22}, (x,y) -> x.content == y.content)
   }
 
-  # "isEmpty": {
-  #   "label": "isEmpty"
-  #   "inputs": [
-  #     []
-  #   ]
-  #   "apply": (inputs) -> inputs[0].isEmpty()
-  # }
-
   "sequenceEqual": {
     "label": "sequenceEqual"
     "inputs": [

@@ -47,24 +47,21 @@ module.exports = {
     )
   }
 
-  # "switch": {
-  #   "comingsoon": true
-  # }
-
-  # #TODO debug and fix
-  # "repeat": {
-  #   "label": "repeat(3)"
-  #   "inputs": [
-  #     [{t:0, d:1}, {t:10, d:2}]
-  #   ]
-  #   "apply": (inputs) -> inputs[0].repeat(3)
-  # }
-
   "throttle": {
     "label": "throttle"
     "inputs": [
       [{t:0, d:1}, {t:26, d:2}, {t:34, d:3}, {t:40, d:4}, {t:45, d:5}, {t:90, d:6}]
     ]
-    "apply": (inputs, scheduler) -> inputs[0].throttle(20, scheduler)
+    "apply": (inputs, scheduler) -> inputs[0].throttle(10, scheduler)
+  }
+
+  "throttleWithSelector": {
+    "label": "throttleWithSelector(x => Rx.Observable.timer(10 * x))"
+    "inputs": [
+      [{t:0, d:1}, {t:26, d:2}, {t:34, d:1}, {t:40, d:1}, {t:45, d:2}, {t:90, d:1}]
+    ]
+    "apply": (inputs, scheduler) -> inputs[0].throttleWithSelector((x) ->
+      return Rx.Observable.timer(Number(x.content) * 10, 1000, scheduler)
+    )
   }
 }
