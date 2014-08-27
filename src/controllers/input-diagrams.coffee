@@ -9,9 +9,7 @@ Sandbox = require 'rxmarbles/views/sandbox'
 
 arrayOfInitialInputDiagrams$ = new Rx.BehaviorSubject(null)
 SelectedExample.stream
-  .map((example) ->
-    return example["inputs"].map(Utils.prepareInputDiagram)
-  )
+  .map((example) -> example["inputs"].map(Utils.prepareInputDiagram))
   .subscribe((x) ->
     arrayOfInitialInputDiagrams$.onNext(x)
     return true

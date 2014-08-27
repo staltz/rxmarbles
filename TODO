@@ -43,9 +43,10 @@ DONE Remove the no-longer-needed loading indicator
 
 DONE Added examples: sum, any, delayWithSelector
 DONE Fixed output marbles timing mismatch with input marbles
-TODO Add more examples
-TODO Render each stream with a different regular polygon
 TODO Render also the stream completion time marker
+>>> v1.0.3
+
+TODO Render each stream with a different regular polygon
 TODO Fix referential transparency inconsistency
   Replace controllers/output combineLatest with combinePrevious
 TODO Disambiguate simultaneous marbles

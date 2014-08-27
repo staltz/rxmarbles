@@ -34,18 +34,32 @@ calculateMarbleDataHash = (marbleData) ->
   contentHash = calculateMarbleContentHash(marbleData.content)
   return ((marbleData.time + contentHash + SMALL_PRIME)*LARGE_PRIME) % MAX
 
-prepareInputDiagramItem = (item) ->
-  result = {}
-  result.time = if typeof item.time is "undefined" then item.t else item.time
-  result.content = if typeof item.content is "undefined" then item.d else item.content
-  result.id = if item.id? then item.id else calculateMarbleDataHash(result)
+prepareInputDiagramNotification = (notification) ->
+  if typeof notification.time isnt "undefined"
+    return notification
+  result = {
+    time: notification.t
+    content: notification.d
+  }
+  result.id = calculateMarbleDataHash(result)
   return result
 
+extractNotifications = (diagram) -> diagram.slice(0,-1)
+
 prepareInputDiagram = (diagram) ->
-  return (prepareInputDiagramItem(i) for i in diagram)
+  notifications = extractNotifications(diagram)
+  [..., last] = diagram
+  preparedDiagram = (prepareInputDiagramNotification(n) for n in notifications)
+  preparedDiagram.end = if typeof last is 'number' then last else 100
+  return preparedDiagram
 
 prepareInputDiagramStream = (diagramStream) ->
   return diagramStream.map(prepareInputDiagram)
+
+justIncomplete = (item, scheduler) ->
+  return new Rx.AnonymousObservable((observer) ->
+    return scheduler.schedule( -> observer.onNext(item) ;0 )
+  )
 
 #
 # Creates an (virtual time) Rx.Observable from diagram
@@ -56,6 +70,7 @@ toVTStream = (diagramData, scheduler, endTime) ->
   for item in diagramData
     singleMarbleStreams.push(
       Rx.Observable.just(item, scheduler).delay(item.t or item.time, scheduler)
+      # justIncomplete(item, scheduler).delay(item.t or item.time, scheduler)
     )
   return Rx.Observable
     .merge(singleMarbleStreams)
@@ -63,6 +78,7 @@ toVTStream = (diagramData, scheduler, endTime) ->
     .publish().refCount()
 
 getDiagramPromise = (stream, scheduler, endTime) ->
+  diagram = []
   subject = new Rx.BehaviorSubject([])
   stream
     .observeOn(scheduler)
@@ -80,10 +96,15 @@ getDiagramPromise = (stream, scheduler, endTime) ->
       acc.push(x)
       return acc
     ,[])
-    .subscribe((x) ->
-      subject.onNext(x)
+    .subscribe((x) -> # onNext
+      diagram = x
+      subject.onNext(diagram)
       return true
-    -> console.warn("Error in the diagram promise stream") ;0
+    -> # onError
+      console.warn("Error in the diagram promise stream") ;0
+    -> # onComplete
+      diagram.end = scheduler.now()
+      return true
     )
   return subject.asObservable()
 
