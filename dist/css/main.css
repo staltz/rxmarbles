@@ -131,6 +131,22 @@
 .diagram .marbles .marble-container circle.marble.marble-color-4 {
   fill: #ff6946;
 }
+.diagram .marbles .completion {
+  display: inline-block;
+  position: relative;
+  width: 2px;
+  height: 40px;
+  background-color: #323232;
+  margin-top: -40px;
+}
+.diagram .marbles .completion.draggable {
+  cursor: ew-resize;
+}
+.diagram .marbles .completion.draggable:hover {
+  -webkit-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
+  -moz-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
+  box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
+}
 .github-fork-ribbon {
   position: absolute;
   padding: 2px 0;

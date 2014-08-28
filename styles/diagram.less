@@ -4,6 +4,7 @@
 @diagram-vertical-margin: @space-large;
 @arrow-side-padding: @space-large;
 @arrow-head-size: 8px;
+@completion-height: 40px;
 @arrow-color: @color-black;
 
 .diagram {
@@ -78,6 +79,21 @@
         &.marble-color-2 { fill: @color-green; }
         &.marble-color-3 { fill: @color-yellow; }
         &.marble-color-4 { fill: @color-red; }
+      }
+    }
+
+    .completion {
+      display: inline-block;
+      position: relative;
+      width: @arrow-thickness;
+      height: @completion-height;
+      background-color: @arrow-color;
+      margin-top: -@completion-height;
+      &.draggable {
+        cursor: ew-resize;
+        &:hover {
+          .z-depth-1();
+        }
       }
     }
   }

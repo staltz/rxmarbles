@@ -3,6 +3,7 @@
 #
 Rx = require 'rx'
 Marble = require 'rxmarbles/views/marble'
+Completion = require 'rxmarbles/views/completion'
 
 createArrowBodyElement = ->
   arrowBody = document.createElement("div")
@@ -14,9 +15,10 @@ createArrowHeadElement = ->
   arrowHead.className = "arrow-head"
   return arrowHead
 
-createMarblesContainerElement = (marbleViews) ->
+createMarblesContainerElement = (marbleViews, completionTime) ->
   marblesContainer = document.createElement("div")
   marblesContainer.className = "marbles"
+  marblesContainer.appendChild(Completion.render(completionTime))
   for m in marbleViews
     marblesContainer.appendChild(m)
   return marblesContainer
@@ -33,7 +35,7 @@ module.exports = {
     diagram.appendChild(createArrowBodyElement())
     diagram.appendChild(createArrowHeadElement())
     marbleViews = (Marble.render(i, true) for i in diagramData)
-    diagram.appendChild(createMarblesContainerElement(marbleViews))
+    diagram.appendChild(createMarblesContainerElement(marbleViews, diagramData.end))
     diagram.dataStream = makeDataStream(marbleViews)
     return diagram
 }

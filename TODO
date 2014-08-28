@@ -43,7 +43,11 @@ DONE Remove the no-longer-needed loading indicator
 
 DONE Added examples: sum, any, delayWithSelector
 DONE Fixed output marbles timing mismatch with input marbles
-TODO Render also the stream completion time marker
+DONE Render the stream completion time marker on input diagrams
+TODO Style the completion marker: more click region, larger height
+TODO Attach completion time on input diagram dataStream
+TODO Controller logic to include completion time
+TODO Render nondraggable Completion for output diagram
 >>> v1.0.3
 
 TODO Render each stream with a different regular polygon

@@ -2,6 +2,7 @@
 # Renders a circle or similar shape to represent an emitted item on a stream.
 #
 Rx = require 'rx'
+Utils = require 'rxmarbles/views/utils'
 h = require 'virtual-hyperscript'
 svg = require 'virtual-hyperscript/svg'
 
@@ -12,43 +13,6 @@ SVG_CX = 0.5
 SVG_CY = 0.5
 SVG_R = 0.47
 SVG_BORDER_WIDTH = "0.06px"
-
-getDxDragStream = (element) ->
-  return Rx.Observable.fromEvent(element, "mousedown")
-    .map( ->
-      moveStream = Rx.Observable.fromEvent(document, "mousemove")
-      upStream = Rx.Observable.fromEvent(document, "mouseup")
-      dxStream = moveStream
-        .map((ev) ->
-          ev.stopPropagation
-          ev.preventDefault()
-          return ev.pageX
-        )
-        .windowWithCount(2,1)
-        .flatMap((result) -> result.toArray())
-        .map((array) -> (array[1] - array[0]))
-      return dxStream.takeUntil(upStream)
-    )
-    .concatAll()
-
-getInteractiveLeftPosStream = (element, initialPos) ->
-  return getDxDragStream(element)
-    .scan(initialPos, (acc, dx) ->
-      pxToPercentage = 1
-      try
-        pxToPercentage = 100.0 / (element.parentElement.clientWidth)
-      catch err
-        console.warn(err)
-      return acc + (dx * pxToPercentage)
-    )
-    .map((pos) ->
-      return 0 if pos < 0
-      return 100 if pos > 100
-      return pos
-    )
-    .map(Math.round)
-    .startWith(initialPos)
-    .distinctUntilChanged()
 
 createRootElement = (draggable) ->
   container = document.createElement("div")
@@ -79,7 +43,7 @@ createContentElement = (item) ->
 
 getLeftPosStream = (item, draggable, element) ->
   if draggable
-    return getInteractiveLeftPosStream(element, item.time)
+    return Utils.getInteractiveLeftPosStream(element, item.time)
   else
     return Rx.Observable.just(item.time)
 
@@ -113,7 +77,6 @@ render = (item, draggable = false) ->
       container.style.left = leftPos + "%"
       return true
     )
-
   return container
 
 module.exports = {

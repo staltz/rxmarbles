@@ -44,7 +44,12 @@ prepareInputDiagramNotification = (notification) ->
   result.id = calculateMarbleDataHash(result)
   return result
 
-extractNotifications = (diagram) -> diagram.slice(0,-1)
+extractNotifications = (diagram) ->
+  [..., last] = diagram
+  if typeof last is 'number'
+    return diagram.slice(0,-1)
+  else
+    return diagram
 
 prepareInputDiagram = (diagram) ->
   notifications = extractNotifications(diagram)
