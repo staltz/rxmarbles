@@ -4,11 +4,17 @@
 Rx = require 'rx'
 h = require 'virtual-hyperscript'
 Marble = require 'rxmarbles/views/marble'
+Completion = require 'rxmarbles/views/completion'
 VDOM = {
   createElement: require 'virtual-dom/create-element'
   diff: require 'virtual-dom/diff'
   patch: require 'virtual-dom/patch'
 }
+
+makeDiagramBodyChildren = (diagramData) ->
+  marbleViews = (Marble.virtualRender(m) for m in diagramData)
+  children = [Completion.virtualRender(diagramData.end)].concat(marbleViews)
+  return children
 
 virtualRender = (diagramData) ->
   if diagramData is null
@@ -17,7 +23,7 @@ virtualRender = (diagramData) ->
     return h("div.diagram", {}, [
       h("div.diagram-arrow")
       h("div.diagram-arrowHead")
-      h("div.diagram-body", (Marble.virtualRender(m) for m in diagramData))
+      h("div.diagram-body", {}, makeDiagramBodyChildren(diagramData))
     ])
 
 module.exports = {

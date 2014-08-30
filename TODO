@@ -46,7 +46,7 @@ DONE Fixed output marbles timing mismatch with input marbles
 DONE Render the stream completion time marker on input diagrams
 DONE Style the completion marker: more click region, larger height
 DONE Refactor diagram styles and classnames
-TODO Render nondraggable Completion for output diagram
+DONE Render nondraggable Completion for output diagram
 TODO Attach completion time on input diagram dataStream
 TODO Controller logic to include completion time
 >>> v1.1.0

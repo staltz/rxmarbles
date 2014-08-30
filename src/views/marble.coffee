@@ -3,7 +3,7 @@
 #
 Rx = require 'rx'
 Utils = require 'rxmarbles/views/utils'
-h = require 'virtual-hyperscript'
+vh = require 'virtual-hyperscript'
 svg = require 'virtual-hyperscript/svg'
 
 XMLNS = "http://www.w3.org/2000/svg"
@@ -47,23 +47,6 @@ getLeftPosStream = (item, draggable, element) ->
   else
     return Rx.Observable.just(item.time)
 
-virtualRender = (marbleData) ->
-  colornum = (marbleData.id % 4) + 1
-  leftPos = "#{marbleData.time}%"
-  content = "#{marbleData.content}"
-  return h("div.marble.js-marble", {style: {"left": leftPos}}, [
-    svg("svg", {attributes: {class: "marble-inner", viewBox: SVG_VIEWBOX}}, [
-      svg("circle", {
-        attributes: {
-          class: "marble-shape marble-shape--color#{colornum}",
-          cx:SVG_CX, cy:SVG_CY, r:SVG_R,
-          "stroke-width": SVG_BORDER_WIDTH
-        }
-      })
-    ]),
-    h("p.marble-content", {}, content)
-  ])
-
 render = (item, draggable = false) ->
   # Create DOM elements
   container = createRootElement(draggable)
@@ -79,6 +62,23 @@ render = (item, draggable = false) ->
       return true
     )
   return container
+
+virtualRender = (marbleData) ->
+  colornum = (marbleData.id % 4) + 1
+  leftPos = "#{marbleData.time}%"
+  content = "#{marbleData.content}"
+  return vh("div.marble.js-marble", {style: {"left": leftPos}}, [
+    svg("svg", {attributes: {class: "marble-inner", viewBox: SVG_VIEWBOX}}, [
+      svg("circle", {
+        attributes: {
+          class: "marble-shape marble-shape--color#{colornum}",
+          cx:SVG_CX, cy:SVG_CY, r:SVG_R,
+          "stroke-width": SVG_BORDER_WIDTH
+        }
+      })
+    ]),
+    vh("p.marble-content", {}, content)
+  ])
 
 module.exports = {
   render: render
