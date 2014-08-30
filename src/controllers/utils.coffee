@@ -16,16 +16,13 @@ makeScheduler = ->
   return scheduler
 
 calculateMarbleContentHash = (content) ->
-  SOME_PRIME_NUMBER = 877
-  contentHash = 0
   if (typeof content == "string")
-    contentHash = content
-      .split("")
+    return content.split("")
       .map((x) -> x.charCodeAt(0))
       .reduce((x,y) -> x+y)
   else if (typeof content == "number")
-    contentHash = content * SOME_PRIME_NUMBER
-  return contentHash
+    SOME_PRIME_NUMBER = 877
+    return content * SOME_PRIME_NUMBER
 
 calculateMarbleDataHash = (marbleData) ->
   SMALL_PRIME = 7
