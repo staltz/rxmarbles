@@ -5,7 +5,9 @@ h = require 'hyperscript'
 Utils = require 'rxmarbles/views/utils'
 
 render = (completionTime) ->
-  element = h("div.completion.draggable", {}, [ h("div.completion-marker") ])
+  element = h("div.diagramCompletion.is-draggable", {}, [
+    h("div.diagramCompletion-inner")
+  ])
   element.dataStream = Utils.getInteractiveLeftPosStream(element, completionTime)
   element.dataStream
     .subscribe((leftPos) ->

@@ -1,5 +1,10 @@
 
-@operator-box-dropdown-size: 32px;
+@sandbox-width: 820px;
+@sandbox-side-padding: @space-medium;
+
+.sandbox-container {
+  position: absolute;
+}
 
 .sandbox {
   background: @color-white;
@@ -14,7 +19,7 @@
     .z-depth-2;
 
     .operator-box-label {
-      font-family: Source Code Pro, monospace;
+      font-family: @font-code;
       font-weight: 400;
       font-size: 2rem;
     }

@@ -1,0 +1,51 @@
+
+@diagram-vertical-margin: @space-large;
+@diagram-arrow-thickness: 2px;
+@diagram-arrow-side-padding: @space-large;
+@diagram-arrow-head-size: 8px;
+@diagram-arrow-color: @color-black;
+@diagram-marble-size: @space-large;
+@diagram-completion-height: 44px;
+
+@import "diagramCompletion";
+@import "marble";
+
+.diagram {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: (@diagram-marble-size + (2 * @diagram-vertical-margin));
+  overflow: visible;
+  cursor: default;
+  .m-text-unselectable();
+}
+
+.diagram-arrow {
+  background-color: @diagram-arrow-color;
+  height: @diagram-arrow-thickness;
+  position: absolute;
+  top: (@diagram-vertical-margin + (@diagram-marble-size / 2));
+  left: @sandbox-side-padding;
+  right: @sandbox-side-padding;
+}
+
+.diagram-arrowHead {
+  width: 0;
+  height: 0;
+  border-top: @diagram-arrow-head-size solid transparent;
+  border-bottom: @diagram-arrow-head-size solid transparent;
+  border-left: (2 * @diagram-arrow-head-size) solid @diagram-arrow-color;
+  display: inline-block;
+  right: (@sandbox-side-padding - 1px);
+  position: absolute;
+  top: (@diagram-vertical-margin + (@diagram-marble-size / 2) - @diagram-arrow-head-size + (@diagram-arrow-thickness / 2));
+}
+
+.diagram-body {
+  position: absolute;
+  left: (@diagram-arrow-side-padding + @sandbox-side-padding + (@diagram-marble-size / 2));
+  right: (@diagram-arrow-side-padding + @sandbox-side-padding + (@diagram-marble-size / 2));
+  top: (@diagram-vertical-margin + (@diagram-marble-size / 2));
+  height: @diagram-completion-height;
+  margin-top: -(@diagram-completion-height / 2);
+}

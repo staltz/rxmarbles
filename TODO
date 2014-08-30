@@ -45,11 +45,11 @@ DONE Added examples: sum, any, delayWithSelector
 DONE Fixed output marbles timing mismatch with input marbles
 DONE Render the stream completion time marker on input diagrams
 DONE Style the completion marker: more click region, larger height
-TODO Refactor diagram styles and classnames
+DONE Refactor diagram styles and classnames
 TODO Render nondraggable Completion for output diagram
 TODO Attach completion time on input diagram dataStream
 TODO Controller logic to include completion time
->>> v1.0.3
+>>> v1.1.0
 
 TODO Render each stream with a different regular polygon
 TODO Fix referential transparency inconsistency
@@ -57,41 +57,41 @@ TODO Fix referential transparency inconsistency
 TODO Disambiguate simultaneous marbles
   Vertically spread them
   Change example takeLast(1) to takeLast(2)
->>> v1.1.0
+>>>
 
 TODO Embeddable rxmarbles
   app.coffee 'exports' a function which can be called in <script> in index.html
->>> v1.1.1
+>>>
 
 TODO Browser back button selects past operators
 TODO Render stream errors
 TODO Add examples related to errors
 TODO Short text description of each operator, and link to official docs
->>> v1.2.0
+>>>
 
 TODO Animation for sandbox appearing when example selected
   Also animation for clicking on operator box http://publicis-indonesia.github.io/Waves/
 TODO Render metastreams in 'window' example
 TODO Add examples groupBy, flatMap, concatMap, switch
->>> v1.3.0
+>>>
 
 TODO Interactively add marbles to an InputStream
 TODO Interactively remove marbles from an InputStream
->>> v1.4.0
+>>>
 
 TODO Allows customizing the expression in some operators
   - Use `new Function("...")`
 TODO Render lists of marbles for the buffer example
->>> v1.5.0
+>>>
 
 TODO Save a png snapshot of the sandbox
->>> v1.6.0
+>>>
 
 TODO Interactively add errors to an InputStream
->>> v1.7.0
+>>>
 
 TODO Hovering over a diagram shows mapping arrows
->>> v1.8.0
+>>>
 
 TODO Use virtual-dom for all views, only when virtual-dom events work
   - See modules under Raynos/mercury

@@ -1,0 +1,22 @@
+
+.diagramCompletion {
+  display: inline-block;
+  position: relative;
+  width: (8*@diagram-arrow-thickness);
+  height: @diagram-completion-height;
+  margin: 0 (-4*@diagram-arrow-thickness);
+}
+
+.diagramCompletion-inner {
+  width: @diagram-arrow-thickness;
+  height: 100%;
+  margin-left: (3.5*@diagram-arrow-thickness);
+  background-color: @diagram-arrow-color;
+}
+
+.diagramCompletion.is-draggable {
+  cursor: ew-resize;
+  &:hover .diagramCompletion-inner {
+    .z-depth-1();
+  }
+}

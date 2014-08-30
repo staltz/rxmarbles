@@ -16,21 +16,21 @@ SVG_BORDER_WIDTH = "0.06px"
 
 createRootElement = (draggable) ->
   container = document.createElement("div")
-  container.className = "marble-container"
+  container.className = "marble js-marble"
   if draggable
-    container.className += " draggable"
+    container.className += " is-draggable"
   return container
 
 createMarbleSvg = (item) ->
   colornum = (item.id % NUM_COLORS) + 1
   marble = document.createElementNS(XMLNS, "svg")
-  marble.setAttribute("class", "marble")
+  marble.setAttribute("class", "marble-inner")
   marble.setAttribute("viewBox", SVG_VIEWBOX)
   circle = document.createElementNS(XMLNS, "circle")
   circle.setAttribute("cx", SVG_CX)
   circle.setAttribute("cy", SVG_CY)
   circle.setAttribute("r", SVG_R)
-  circle.setAttribute("class", "marble marble-color-#{colornum}")
+  circle.setAttribute("class", "marble-shape marble-shape--color#{colornum}")
   circle.setAttribute("stroke-width", SVG_BORDER_WIDTH)
   marble.appendChild(circle)
   return marble
@@ -51,11 +51,12 @@ virtualRender = (marbleData) ->
   colornum = (marbleData.id % 4) + 1
   leftPos = "#{marbleData.time}%"
   content = "#{marbleData.content}"
-  return h("div.marble-container", {style: {"left": leftPos}}, [
-    svg("svg", {attributes: {class: "marble", viewBox: SVG_VIEWBOX}}, [
+  return h("div.marble.js-marble", {style: {"left": leftPos}}, [
+    svg("svg", {attributes: {class: "marble-inner", viewBox: SVG_VIEWBOX}}, [
       svg("circle", {
         attributes: {
-          class: "marble marble-color-#{colornum}", cx:SVG_CX, cy:SVG_CY, r:SVG_R,
+          class: "marble-shape marble-shape--color#{colornum}",
+          cx:SVG_CX, cy:SVG_CY, r:SVG_R,
           "stroke-width": SVG_BORDER_WIDTH
         }
       })

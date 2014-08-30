@@ -12,7 +12,7 @@ createMarblesContainerElement = (diagramData) ->
   return children
 
 makeDataStream = (diagramElement) ->
-  marbleViews = diagramElement.querySelectorAll(".marble-container")
+  marbleViews = diagramElement.querySelectorAll(".js-marble")
   return Rx.Observable.combineLatest(
     (m.dataStream for m in marbleViews), (args...) -> args
   )
@@ -20,9 +20,9 @@ makeDataStream = (diagramElement) ->
 module.exports = {
   render: (diagramData) ->
     diagram = h("div.diagram", {}, [
-      h("div.arrow")
-      h("div.arrow-head")
-      h("div.marbles", {}, createMarblesContainerElement(diagramData))
+      h("div.diagram-arrow")
+      h("div.diagram-arrowHead")
+      h("div.diagram-body", {}, createMarblesContainerElement(diagramData))
     ])
     diagram.dataStream = makeDataStream(diagram)
     return diagram

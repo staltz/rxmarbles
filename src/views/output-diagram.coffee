@@ -10,22 +10,18 @@ VDOM = {
   patch: require 'virtual-dom/patch'
 }
 
-virtualRenderMarbles = (diagramData) ->
-  return h("div.marbles", (Marble.virtualRender(m) for m in diagramData))
-
 virtualRender = (diagramData) ->
   if diagramData is null
     return h("div.diagram")
   else
     return h("div.diagram", {}, [
-      h("div.arrow")
-      h("div.arrow-head")
-      virtualRenderMarbles(diagramData)
+      h("div.diagram-arrow")
+      h("div.diagram-arrowHead")
+      h("div.diagram-body", (Marble.virtualRender(m) for m in diagramData))
     ])
 
 module.exports = {
   # options.data is a diagram data array
-  # options.draggable is a boolean
   render: (diagramDataStream) ->
     tree = virtualRender(null)
     rootNode = VDOM.createElement(tree)

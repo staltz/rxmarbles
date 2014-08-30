@@ -1,97 +1,32 @@
+
 @import "colors";
 @import "dimens";
+@import "fonts";
 @import "mixins";
-@import "sandbox";
-@import "diagram";
-@import "gh-fork-ribbon";
-
-@import url(http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500);
-@import url(http://fonts.googleapis.com/css?family=Arvo);
-@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro);
+@import "components/pageRow";
+@import "components/operatorsMenu";
+@import "components/sandbox";
+@import "components/diagram/diagram";
+@import "components/gh-fork-ribbon";
 
 body {
   position: relative;
   background: @color-almost-white;
-
-  // Default typography
+  font-family: @font-base;
   color: @color-black;
-  font-family: 'Source Sans Pro', sans-serif;
 }
 
 a {
   color: @color-blue;
 }
 
-.page-row {
-  position: relative;
-	width: @page-row-width;
-	margin: 0 auto;
-  >* {
-    display: inline-block;
-    margin-left: -@space-medium;
-  }
-  >*:first-child {
-    width: (@page-row-width - @sandbox-width - @space-medium);
-    margin-right: @space-medium;
-  }
-  >*:last-child {
-    width: @sandbox-width;
-  }
-}
-.page-row + .page-row {
-  margin-top: @space-small;
-}
-
-.page-title {
-  font-family: 'Arvo', serif;
-  color: @color-grey-dark;
-}
-.value-proposition {
+.pageTitle {
+  font-family: @font-special;
   color: @color-grey-dark;
 }
 
-.operators-menu-container {
-  padding-right: 36px;
-  box-sizing: border-box;
-}
-
-#sandbox-container {
-  position: absolute;
-}
-
-ul.operators-menu {
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-  overflow-y: scroll;
-  height: 2px;
-  li.category {
-    text-transform: uppercase;
-    font-size: 0.7em;
-    color: @color-grey;
-  }
-  li + li.category {
-    margin-top: @space-medium;
-  }
-  li {
-    color: @color-grey-dark;
-    font-size: 1rem;
-    line-height: 1.6rem;
-  }
-  li > a {
-    color: @color-grey-dark;
-    position: relative;
-    display: block;
-    &:hover {
-      color: @color-black;
-    }
-    &:hover:after {
-      content: "\276F";
-      display: inline-block;
-      position: absolute;
-      right: @space-tiny;
-    }
-  }
+.valueProposition {
+  color: @color-grey-dark;
 }
 
 .footer {

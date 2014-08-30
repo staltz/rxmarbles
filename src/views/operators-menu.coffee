@@ -8,7 +8,7 @@ Examples = require 'rxmarbles/models/examples'
 selected$ = new Rx.Subject()
 
 renderExampleCategory = (categoryName) ->
-  return h("li.category", "#{categoryName}")
+  return h("li.operatorsMenu-category", "#{categoryName}")
 
 renderExampleItem = (example) ->
   link = h("a", {href: "##{example.key}"}, example.key)
@@ -16,7 +16,7 @@ renderExampleItem = (example) ->
     selected$.onNext(example.key)
     return true
   )
-  return h("li", [link])
+  return h("li.operatorsMenu-item", [link])
 
 renderExampleItems = (examples) ->
   return (renderExampleItem(example) for example in examples)
@@ -40,8 +40,8 @@ renderMenuContent = (examples) ->
   for own categoryName,categoryExamples of categoryMap
     listItems.push(renderExampleCategory(categoryName))
     listItems = listItems.concat(renderExampleItems(categoryExamples))
-  listItems.push(h("li.category", "More"))
-  listItems.push(h("li", "Coming soon..."))
+  listItems.push(h("li.operatorsMenu-category", "More"))
+  listItems.push(h("li.operatorsMenu-item", "Coming soon..."))
   return listItems
 
 getDocumentHeight = ->
@@ -67,7 +67,7 @@ module.exports = {
     return selected$
 
   render: ->
-    listElement = h("ul.operators-menu", renderMenuContent(Examples))
+    listElement = h("ul.operatorsMenu", renderMenuContent(Examples))
     fixListHeight(listElement)
     return listElement
 }

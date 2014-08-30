@@ -5,15 +5,18 @@ Sandbox = require 'rxmarbles/views/sandbox'
 OperatorsMenu = require 'rxmarbles/views/operators-menu'
 Package = require 'package.json'
 
-sandboxContainer = document.querySelector("#sandbox-container")
+sandboxContainer = document.querySelector(".js-sandboxContainer")
 sandboxContainer.innerHTML = ""
 sandboxContainer.appendChild(Sandbox.render())
 
-operatorsMenuContainer = document.querySelector(".operators-menu-container")
+operatorsMenuContainer = document.querySelector(".js-operatorsMenuContainer")
 operatorsMenuContainer.appendChild(OperatorsMenu.render())
 
-document.querySelector("#app-version").textContent = "v#{Package.version}"
+versionElement = document.querySelector("a.js-appVersion")
+versionElement.textContent = "v#{Package.version}"
+versionElement.href = "https://github.com/staltz/rxmarbles/releases/tag/v#{Package.version}"
+
 rxVersion = Package.dependencies.rx.replace(/(~|\^|\.\+)*/g, "")
-rxElement = document.querySelector("#rxjs-version")
+rxElement = document.querySelector("a.js-rxjsVersion")
 rxElement.textContent = "RxJS v#{rxVersion}"
 rxElement.href = "https://github.com/Reactive-Extensions/RxJS/tree/v#{rxVersion}"
