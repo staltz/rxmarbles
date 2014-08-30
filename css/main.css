@@ -1,6 +1,66 @@
-@import url(http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500);
-@import url(http://fonts.googleapis.com/css?family=Arvo);
 @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro);
+@import url(http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500);
+@import url(http://fonts.googleapis.com/css?family=Signika);
+.pageRow {
+  position: relative;
+  width: 1060px;
+  margin: 0 auto;
+}
+.pageRow > * {
+  display: inline-block;
+  margin-left: -22px;
+}
+.pageRow > *:first-child {
+  width: 218px;
+  margin-right: 22px;
+}
+.pageRow > *:last-child {
+  width: 820px;
+}
+.pageRow + .pageRow {
+  margin-top: 10px;
+}
+.operatorsMenu-container {
+  padding-right: 36px;
+  box-sizing: border-box;
+}
+.operatorsMenu {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  overflow-y: scroll;
+  height: 2px;
+}
+.operatorsMenu-category {
+  text-transform: uppercase;
+  font-size: 0.7em;
+  color: #a7a7a7;
+}
+.operatorsMenu-item + .operatorsMenu-category {
+  margin-top: 22px;
+}
+.operatorsMenu-item {
+  color: #7c7c7c;
+  font-size: 1rem;
+  line-height: 1.6rem;
+}
+.operatorsMenu-item > a {
+  color: #7c7c7c;
+  position: relative;
+  display: block;
+}
+.operatorsMenu-item > a:hover {
+  color: #323232;
+}
+.operatorsMenu-item > a:hover:after {
+  content: "\276F";
+  display: inline-block;
+  position: absolute;
+  right: 5px;
+}
+.sandbox-container {
+  position: absolute;
+}
 .sandbox {
   background: #ffffff;
   width: 820px;
@@ -40,65 +100,48 @@
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
 }
 .sandbox .operator-box .operator-box-label {
-  font-family: Source Code Pro, monospace;
+  font-family: 'Source Code Pro', monospace;
   font-weight: 400;
   font-size: 2rem;
 }
-.diagram {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 96px;
-  overflow: visible;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: -moz-none;
-  -o-user-select: none;
-  user-select: none;
-}
-.diagram .arrow {
-  background-color: #323232;
-  height: 2px;
-  position: absolute;
-  top: 48px;
-  left: 22px;
-  right: 22px;
-}
-.diagram .arrow-head {
-  width: 0;
-  height: 0;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-  border-left: 16px solid #323232;
+.diagramCompletion {
   display: inline-block;
-  right: 21px;
-  position: absolute;
-  top: 41px;
-}
-.diagram .marbles {
-  position: absolute;
-  left: 70px;
-  right: 70px;
-  top: 48px;
+  position: relative;
+  width: 16px;
   height: 44px;
-  margin-top: -22px;
+  margin: 0 -8px;
 }
-.diagram .marbles .marble-container {
+.diagramCompletion-inner {
+  width: 2px;
+  height: 100%;
+  margin-left: 7px;
+  background-color: #323232;
+}
+.diagramCompletion.is-draggable {
+  cursor: ew-resize;
+}
+.diagramCompletion.is-draggable:hover .diagramCompletion-inner {
+  -webkit-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
+  -moz-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
+  box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
+}
+.marble {
   width: 32px;
   height: 32px;
   position: relative;
   display: inline-block;
   margin: -16px;
   top: -6px;
+  cursor: default;
 }
-.diagram .marbles .marble-container.draggable {
+.marble.is-draggable {
   cursor: ew-resize;
 }
-.diagram .marbles .marble-container.draggable:hover svg.marble {
+.marble.is-draggable:hover svg.marble-inner {
   -webkit-filter: drop-shadow(0px 3px 2px rgba(0, 0, 0, 0.26));
   filter: drop-shadow(0px 3px 2px rgba(0, 0, 0, 0.26));
 }
-.diagram .marbles .marble-container .marble-content {
+.marble-content {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -112,47 +155,66 @@
   -o-user-select: none;
   user-select: none;
 }
-.diagram .marbles .marble-container svg.marble {
+svg.marble-inner {
   overflow: visible;
   width: 32px;
   height: 32px;
 }
-.diagram .marbles .marble-container circle.marble {
+.marble-shape {
   stroke: #323232;
   fill: #3ea1cb;
 }
-.diagram .marbles .marble-container circle.marble.marble-color-1 {
+.marble-shape--color1 {
   fill: #3ea1cb;
 }
-.diagram .marbles .marble-container circle.marble.marble-color-2 {
+.marble-shape--color2 {
   fill: #82d736;
 }
-.diagram .marbles .marble-container circle.marble.marble-color-3 {
+.marble-shape--color3 {
   fill: #ffcb46;
 }
-.diagram .marbles .marble-container circle.marble.marble-color-4 {
+.marble-shape--color4 {
   fill: #ff6946;
 }
-.diagram .marbles .completion {
-  display: inline-block;
+.diagram {
   position: relative;
-  width: 16px;
-  height: 44px;
-  margin: 0 -8px;
+  display: block;
+  width: 100%;
+  height: 96px;
+  overflow: visible;
+  cursor: default;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
 }
-.diagram .marbles .completion .completion-marker {
-  width: 2px;
-  height: 100%;
-  margin-left: 7px;
+.diagram-arrow {
   background-color: #323232;
+  height: 2px;
+  position: absolute;
+  top: 48px;
+  left: 22px;
+  right: 22px;
 }
-.diagram .marbles .completion.draggable {
-  cursor: ew-resize;
+.diagram-arrowHead {
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 16px solid #323232;
+  display: inline-block;
+  right: 21px;
+  position: absolute;
+  top: 41px;
 }
-.diagram .marbles .completion.draggable:hover .completion-marker {
-  -webkit-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
-  -moz-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
-  box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
+.diagram-body {
+  position: absolute;
+  left: 70px;
+  right: 70px;
+  top: 48px;
+  height: 44px;
+  margin-top: -22px;
 }
 .github-fork-ribbon {
   position: absolute;
@@ -255,78 +317,18 @@
 body {
   position: relative;
   background: #ececec;
-  color: #323232;
   font-family: 'Source Sans Pro', sans-serif;
+  color: #323232;
 }
 a {
   color: #3ea1cb;
 }
-.page-row {
-  position: relative;
-  width: 1060px;
-  margin: 0 auto;
-}
-.page-row > * {
-  display: inline-block;
-  margin-left: -22px;
-}
-.page-row > *:first-child {
-  width: 218px;
-  margin-right: 22px;
-}
-.page-row > *:last-child {
-  width: 820px;
-}
-.page-row + .page-row {
-  margin-top: 10px;
-}
-.page-title {
-  font-family: 'Arvo', serif;
+.pageTitle {
+  font-family: 'Signika', Helvetica, serif;
   color: #7c7c7c;
 }
-.value-proposition {
+.valueProposition {
   color: #7c7c7c;
-}
-.operators-menu-container {
-  padding-right: 36px;
-  box-sizing: border-box;
-}
-#sandbox-container {
-  position: absolute;
-}
-ul.operators-menu {
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-  overflow-y: scroll;
-  height: 2px;
-}
-ul.operators-menu li.category {
-  text-transform: uppercase;
-  font-size: 0.7em;
-  color: #a7a7a7;
-}
-ul.operators-menu li + li.category {
-  margin-top: 22px;
-}
-ul.operators-menu li {
-  color: #7c7c7c;
-  font-size: 1rem;
-  line-height: 1.6rem;
-}
-ul.operators-menu li > a {
-  color: #7c7c7c;
-  position: relative;
-  display: block;
-}
-ul.operators-menu li > a:hover {
-  color: #323232;
-}
-ul.operators-menu li > a:hover:after {
-  content: "\276F";
-  display: inline-block;
-  position: absolute;
-  right: 5px;
 }
 .footer {
   position: absolute;
