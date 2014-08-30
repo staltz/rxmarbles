@@ -70,15 +70,17 @@ justIncomplete = (item, scheduler) ->
 # Creates an (virtual time) Rx.Observable from diagram
 # data (array of data items).
 #
-toVTStream = (diagramData, scheduler, maxTime) ->
+toVTStream = (diagramData, scheduler) ->
   singleMarbleStreams = []
   for item in diagramData
     singleMarbleStreams.push(
       justIncomplete(item, scheduler).delay(item.t or item.time, scheduler)
     )
+  # Necessary correction to include marbles at time exactly diagramData.end:
+  correctedEndTime = diagramData.end + 0.01
   return Rx.Observable
     .merge(singleMarbleStreams)
-    .takeUntilWithTime(Math.min(diagramData.end, maxTime)+0.01, scheduler)
+    .takeUntilWithTime(correctedEndTime, scheduler)
     .publish().refCount()
 
 getDiagramPromise = (stream, scheduler, maxTime) ->

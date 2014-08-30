@@ -16,9 +16,11 @@ outputDiagramStream = InputDiagrams.continuous$
   )
   .combineLatest(SelectedExample.stream, (diagrams, example) ->
     vtscheduler = Utils.makeScheduler()
-    inputVTStreams = (Utils.toVTStream(d, vtscheduler, MAXTIME) for d in diagrams)
+    inputVTStreams = (Utils.toVTStream(d, vtscheduler) for d in diagrams)
     outputVTStream = example["apply"](inputVTStreams, vtscheduler)
-    outputVTStream = outputVTStream.takeUntilWithTime(MAXTIME+0.01, vtscheduler)
+    # Necessary correction to include marbles at exactly 100.01
+    correctedMaxTime = MAXTIME + 0.02
+    outputVTStream = outputVTStream.takeUntilWithTime(correctedMaxTime, vtscheduler)
     outputDiagram = Utils.getDiagramPromise(outputVTStream, vtscheduler, MAXTIME)
     vtscheduler.start()
     return outputDiagram
