@@ -4,7 +4,7 @@
 @diagram-vertical-margin: @space-large;
 @arrow-side-padding: @space-large;
 @arrow-head-size: 8px;
-@completion-height: 40px;
+@completion-height: 44px;
 @arrow-color: @color-black;
 
 .diagram {
@@ -40,7 +40,8 @@
     left: (@arrow-side-padding + @sandbox-side-padding + (@marble-size / 2));
     right: (@arrow-side-padding + @sandbox-side-padding + (@marble-size / 2));
     top: (@diagram-vertical-margin + (@marble-size / 2));
-    height: 1px;
+    height: @completion-height;
+    margin-top: -(@completion-height / 2);
 
     .marble-container {
       width: @marble-size;
@@ -48,6 +49,7 @@
       position: relative;
       display: inline-block;
       margin: -(@marble-size / 2);
+      top: (@marble-size - @completion-height) / 2;
       &.draggable {
         cursor: ew-resize;
         &:hover {
@@ -85,14 +87,21 @@
     .completion {
       display: inline-block;
       position: relative;
-      width: @arrow-thickness;
+      width: (8*@arrow-thickness);
       height: @completion-height;
-      background-color: @arrow-color;
-      margin-top: -@completion-height;
+      margin: 0 (-4*@arrow-thickness);
+      .completion-marker {
+        width: @arrow-thickness;
+        height: 100%;
+        margin-left: (3.5*@arrow-thickness);
+        background-color: @arrow-color;
+      }
       &.draggable {
         cursor: ew-resize;
         &:hover {
-          .z-depth-1();
+          .completion-marker {
+            .z-depth-1();
+          }
         }
       }
     }

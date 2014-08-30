@@ -80,7 +80,8 @@
   left: 70px;
   right: 70px;
   top: 48px;
-  height: 1px;
+  height: 44px;
+  margin-top: -22px;
 }
 .diagram .marbles .marble-container {
   width: 32px;
@@ -88,6 +89,7 @@
   position: relative;
   display: inline-block;
   margin: -16px;
+  top: -6px;
 }
 .diagram .marbles .marble-container.draggable {
   cursor: ew-resize;
@@ -134,15 +136,20 @@
 .diagram .marbles .completion {
   display: inline-block;
   position: relative;
+  width: 16px;
+  height: 44px;
+  margin: 0 -8px;
+}
+.diagram .marbles .completion .completion-marker {
   width: 2px;
-  height: 40px;
+  height: 100%;
+  margin-left: 7px;
   background-color: #323232;
-  margin-top: -40px;
 }
 .diagram .marbles .completion.draggable {
   cursor: ew-resize;
 }
-.diagram .marbles .completion.draggable:hover {
+.diagram .marbles .completion.draggable:hover .completion-marker {
   -webkit-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
   -moz-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
   box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);

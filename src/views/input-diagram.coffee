@@ -1,41 +1,29 @@
 #
 # Renders a stream diagram meant as an input to the sandbox.
 #
+h = require 'hyperscript'
 Rx = require 'rx'
 Marble = require 'rxmarbles/views/marble'
 Completion = require 'rxmarbles/views/completion'
 
-createArrowBodyElement = ->
-  arrowBody = document.createElement("div")
-  arrowBody.className = "arrow"
-  return arrowBody
+createMarblesContainerElement = (diagramData) ->
+  marbleViews = (Marble.render(i, true) for i in diagramData)
+  children = [Completion.render(diagramData.end)].concat(marbleViews)
+  return children
 
-createArrowHeadElement = ->
-  arrowHead = document.createElement("div")
-  arrowHead.className = "arrow-head"
-  return arrowHead
-
-createMarblesContainerElement = (marbleViews, completionTime) ->
-  marblesContainer = document.createElement("div")
-  marblesContainer.className = "marbles"
-  marblesContainer.appendChild(Completion.render(completionTime))
-  for m in marbleViews
-    marblesContainer.appendChild(m)
-  return marblesContainer
-
-makeDataStream = (marbleViews) ->
+makeDataStream = (diagramElement) ->
+  marbleViews = diagramElement.querySelectorAll(".marble-container")
   return Rx.Observable.combineLatest(
     (m.dataStream for m in marbleViews), (args...) -> args
   )
 
 module.exports = {
   render: (diagramData) ->
-    diagram = document.createElement("div")
-    diagram.className = "diagram"
-    diagram.appendChild(createArrowBodyElement())
-    diagram.appendChild(createArrowHeadElement())
-    marbleViews = (Marble.render(i, true) for i in diagramData)
-    diagram.appendChild(createMarblesContainerElement(marbleViews, diagramData.end))
-    diagram.dataStream = makeDataStream(marbleViews)
+    diagram = h("div.diagram", {}, [
+      h("div.arrow")
+      h("div.arrow-head")
+      h("div.marbles", {}, createMarblesContainerElement(diagramData))
+    ])
+    diagram.dataStream = makeDataStream(diagram)
     return diagram
 }

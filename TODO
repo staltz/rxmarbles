@@ -44,10 +44,11 @@ DONE Remove the no-longer-needed loading indicator
 DONE Added examples: sum, any, delayWithSelector
 DONE Fixed output marbles timing mismatch with input marbles
 DONE Render the stream completion time marker on input diagrams
-TODO Style the completion marker: more click region, larger height
+DONE Style the completion marker: more click region, larger height
+TODO Refactor diagram styles and classnames
+TODO Render nondraggable Completion for output diagram
 TODO Attach completion time on input diagram dataStream
 TODO Controller logic to include completion time
-TODO Render nondraggable Completion for output diagram
 >>> v1.0.3
 
 TODO Render each stream with a different regular polygon
@@ -69,6 +70,7 @@ TODO Short text description of each operator, and link to official docs
 >>> v1.2.0
 
 TODO Animation for sandbox appearing when example selected
+  Also animation for clicking on operator box http://publicis-indonesia.github.io/Waves/
 TODO Render metastreams in 'window' example
 TODO Add examples groupBy, flatMap, concatMap, switch
 >>> v1.3.0

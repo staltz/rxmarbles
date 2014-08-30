@@ -1,11 +1,11 @@
 #
 # Renders a marker for the completion notification of a stream diagram.
 #
+h = require 'hyperscript'
 Utils = require 'rxmarbles/views/utils'
 
 render = (completionTime) ->
-  element = document.createElement("div")
-  element.className = "completion draggable"
+  element = h("div.completion.draggable", {}, [ h("div.completion-marker") ])
   element.dataStream = Utils.getInteractiveLeftPosStream(element, completionTime)
   element.dataStream
     .subscribe((leftPos) ->

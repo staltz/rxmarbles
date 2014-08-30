@@ -17,11 +17,11 @@ virtualRender = (diagramData) ->
   if diagramData is null
     return h("div.diagram")
   else
-    children = []
-    children.push(h("div.arrow"))
-    children.push(h("div.arrow-head"))
-    children.push(virtualRenderMarbles(diagramData))
-    return h("div.diagram", {}, children)
+    return h("div.diagram", {}, [
+      h("div.arrow")
+      h("div.arrow-head")
+      virtualRenderMarbles(diagramData)
+    ])
 
 module.exports = {
   # options.data is a diagram data array
