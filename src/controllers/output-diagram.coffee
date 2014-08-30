@@ -7,7 +7,7 @@ InputDiagrams = require 'rxmarbles/controllers/input-diagrams'
 SelectedExample = require 'rxmarbles/controllers/selected-example'
 Examples = require 'rxmarbles/models/examples'
 
-END = 100 # Time of completion
+MAXTIME = 100 # Time of completion
 
 outputDiagramStream = InputDiagrams.continuous$
   .filter((x) -> x isnt null)
@@ -15,12 +15,11 @@ outputDiagramStream = InputDiagrams.continuous$
     return Rx.Observable.combineLatest(arrayOfDiagramStreams, (args...) -> args)
   )
   .combineLatest(SelectedExample.stream, (diagrams, example) ->
-    endTime = END
     vtscheduler = Utils.makeScheduler()
-    inputVTStreams = (Utils.toVTStream(d, vtscheduler, endTime) for d in diagrams)
+    inputVTStreams = (Utils.toVTStream(d, vtscheduler, MAXTIME) for d in diagrams)
     outputVTStream = example["apply"](inputVTStreams, vtscheduler)
-    outputVTStream = outputVTStream.takeUntilWithTime(endTime+1, vtscheduler)
-    outputDiagram = Utils.getDiagramPromise(outputVTStream, vtscheduler, endTime)
+    outputVTStream = outputVTStream.takeUntilWithTime(MAXTIME+0.01, vtscheduler)
+    outputDiagram = Utils.getDiagramPromise(outputVTStream, vtscheduler, MAXTIME)
     vtscheduler.start()
     return outputDiagram
   )

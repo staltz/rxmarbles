@@ -70,19 +70,18 @@ justIncomplete = (item, scheduler) ->
 # Creates an (virtual time) Rx.Observable from diagram
 # data (array of data items).
 #
-toVTStream = (diagramData, scheduler, endTime) ->
+toVTStream = (diagramData, scheduler, maxTime) ->
   singleMarbleStreams = []
   for item in diagramData
     singleMarbleStreams.push(
-      Rx.Observable.just(item, scheduler).delay(item.t or item.time, scheduler)
-      # justIncomplete(item, scheduler).delay(item.t or item.time, scheduler)
+      justIncomplete(item, scheduler).delay(item.t or item.time, scheduler)
     )
   return Rx.Observable
     .merge(singleMarbleStreams)
-    .takeUntilWithTime(endTime+1, scheduler)
+    .takeUntilWithTime(Math.min(diagramData.end, maxTime)+0.01, scheduler)
     .publish().refCount()
 
-getDiagramPromise = (stream, scheduler, endTime) ->
+getDiagramPromise = (stream, scheduler, maxTime) ->
   diagram = []
   subject = new Rx.BehaviorSubject([])
   stream
@@ -92,7 +91,7 @@ getDiagramPromise = (stream, scheduler, endTime) ->
       if typeof x.value isnt "object"
         x.value = {content: x.value, id: calculateMarbleContentHash(x.value)}
       return {
-        time: (x.timestamp / endTime)*100 # converts timestamp to % of endTime
+        time: (x.timestamp / maxTime)*100 # converts timestamp to % of maxTime
         content: x.value.content
         id: x.value.id
       }

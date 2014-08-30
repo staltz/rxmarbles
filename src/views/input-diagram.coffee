@@ -13,9 +13,16 @@ makeDiagramBodyChildren = (diagramData) ->
 
 makeDataStream = (diagramElement) ->
   marbleViews = diagramElement.querySelectorAll(".js-marble")
-  return Rx.Observable.combineLatest(
-    (m.dataStream for m in marbleViews), (args...) -> args
-  )
+  completionElement = diagramElement.querySelector(".js-completion")
+  dataStream = Rx.Observable
+    .combineLatest(
+      (m.dataStream for m in marbleViews), (args...) -> args
+    )
+    .combineLatest(completionElement.dataStream, (marblesData, endTime) ->
+      marblesData.end = endTime
+      return marblesData
+    )
+  return dataStream
 
 module.exports = {
   render: (diagramData) ->
