@@ -49,19 +49,19 @@ getLeftPosStream = (item, draggable, element) ->
 
 render = (item, draggable = false) ->
   # Create DOM elements
-  container = createRootElement(draggable)
-  container.appendChild(createMarbleSvg(item))
-  container.appendChild(createContentElement(item))
+  marble = createRootElement(draggable)
+  marble.appendChild(createMarbleSvg(item))
+  marble.appendChild(createContentElement(item))
   # Define public and private streams
-  leftPosStream = getLeftPosStream(item, draggable, container)
-  container.dataStream = leftPosStream
+  leftPosStream = getLeftPosStream(item, draggable, marble)
+  marble.dataStream = leftPosStream
     .map((leftPos) -> {time: leftPos, content: item.content, id: item.id})
   leftPosStream
     .subscribe((leftPos) ->
-      container.style.left = leftPos + "%"
+      marble.style.left = leftPos + "%"
       return true
     )
-  return container
+  return marble
 
 virtualRender = (marbleData) ->
   colornum = (marbleData.id % 4) + 1

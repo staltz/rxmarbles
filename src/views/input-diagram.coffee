@@ -26,11 +26,11 @@ makeDataStream = (diagramElement) ->
 
 module.exports = {
   render: (diagramData) ->
-    diagram = h("div.diagram", {}, [
+    diagramElement = h("div.diagram", {}, [
       h("div.diagram-arrow")
       h("div.diagram-arrowHead")
       h("div.diagram-body", {}, makeDiagramBodyChildren(diagramData))
     ])
-    diagram.dataStream = makeDataStream(diagram)
-    return diagram
+    diagramElement.dataStream = makeDataStream(diagramElement)
+    return diagramElement
 }
