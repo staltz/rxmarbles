@@ -44,7 +44,7 @@ module.exports = {
   "first": {
     "label": "first"
     "inputs": [
-      [{t:30, d:1}, {t:40, d:2}, {t:65, d:3}, {t:75, d:4}]
+      [{t:30, d:1}, {t:40, d:2}, {t:65, d:3}, {t:75, d:4}, 85]
     ]
     "apply": (inputs) -> inputs[0].first()
   }
@@ -52,7 +52,7 @@ module.exports = {
   "last": {
     "label": "last"
     "inputs": [
-      [{t:30, d:1}, {t:40, d:2}, {t:65, d:3}, {t:75, d:4}]
+      [{t:30, d:1}, {t:40, d:2}, {t:65, d:3}, {t:75, d:4}, 85]
     ]
     "apply": (inputs) -> inputs[0].last()
   }
@@ -111,7 +111,7 @@ module.exports = {
   "take": {
     "label": "take(2)"
     "inputs": [
-      [{t:30, d:1}, {t:40, d:2}, {t:65, d:3}, {t:75, d:4}]
+      [{t:30, d:1}, {t:40, d:2}, {t:65, d:3}, {t:75, d:4}, 85]
     ]
     "apply": (inputs, scheduler) -> inputs[0].take(2, scheduler)
   }
@@ -119,7 +119,7 @@ module.exports = {
   "takeLast": {
     "label": "takeLast(1)"
     "inputs": [
-      [{t:30, d:1}, {t:40, d:2}, {t:65, d:3}, {t:75, d:4}]
+      [{t:30, d:1}, {t:40, d:2}, {t:65, d:3}, {t:75, d:4}, 85]
     ]
     "apply": (inputs) -> inputs[0].takeLast(1)
   }

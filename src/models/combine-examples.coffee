@@ -14,8 +14,8 @@ module.exports = {
   "concat": {
     "label": "concat"
     "inputs": [
-      [{t:0, d:1}, {t:15, d:1}, {t:50, d:1}]
-      [{t:13, d:2}, {t:30, d:2}]
+      [{t:0, d:1}, {t:15, d:1}, {t:50, d:1}, 57]
+      [{t:0, d:2}, {t:8, d:2}, 12]
     ]
     "apply": (inputs) -> Rx.Observable.concat(inputs)
   }
@@ -33,7 +33,7 @@ module.exports = {
     "label": "sample"
     "inputs": [
       [{t:0, d:1}, {t:20, d:2}, {t:40, d:3}, {t:60, d:4}, {t:80, d:5}]
-      [{t:10, d:"A"}, {t:25, d:"B"}, {t:33, d:"C"}, {t:70, d:"D"}]
+      [{t:10, d:"A"}, {t:25, d:"B"}, {t:33, d:"C"}, {t:70, d:"D"}, 90]
     ]
     "apply": (inputs) -> inputs[0].sample(inputs[1])
   }

@@ -48,10 +48,11 @@ DONE Style the completion marker: more click region, larger height
 DONE Refactor diagram styles and classnames
 DONE Render nondraggable Completion for output diagram
 DONE Controller logic to include completion time
-TODO Update examples with regard to completion time
+DONE Update examples with regard to completion time
 TODO Lower bound on completion time, no earlier than any marble time
 TODO Style and logic for tall/short completion element
->>> v1.1.0
+TODO Build scripts to replace gulp (?)
+## v1.1.0
 
 TODO Fix referential transparency inconsistency
   Replace controllers/output combineLatest with combinePrevious
