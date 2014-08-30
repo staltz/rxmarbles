@@ -6,7 +6,7 @@ Rx = require 'rx'
 Marble = require 'rxmarbles/views/marble'
 Completion = require 'rxmarbles/views/completion'
 
-createMarblesContainerElement = (diagramData) ->
+makeDiagramBodyChildren = (diagramData) ->
   marbleViews = (Marble.render(i, true) for i in diagramData)
   children = [Completion.render(diagramData.end)].concat(marbleViews)
   return children
@@ -22,7 +22,7 @@ module.exports = {
     diagram = h("div.diagram", {}, [
       h("div.diagram-arrow")
       h("div.diagram-arrowHead")
-      h("div.diagram-body", {}, createMarblesContainerElement(diagramData))
+      h("div.diagram-body", {}, makeDiagramBodyChildren(diagramData))
     ])
     diagram.dataStream = makeDataStream(diagram)
     return diagram
