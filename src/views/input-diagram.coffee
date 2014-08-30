@@ -8,8 +8,8 @@ Completion = require 'rxmarbles/views/completion'
 
 makeDiagramBodyChildren = (diagramData) ->
   marbleViews = (Marble.render(i, true) for i in diagramData)
-  children = [Completion.render(diagramData.end)].concat(marbleViews)
-  return children
+  completionView = Completion.render(diagramData.end)
+  return [completionView].concat(marbleViews)
 
 makeDataStream = (diagramElement) ->
   marbleViews = diagramElement.querySelectorAll(".js-marble")
