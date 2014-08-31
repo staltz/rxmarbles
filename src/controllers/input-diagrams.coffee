@@ -8,10 +8,36 @@ Utils = require 'rxmarbles/controllers/utils'
 Sandbox = require 'rxmarbles/views/sandbox'
 
 arrayOfInitialInputDiagrams$ = new Rx.BehaviorSubject(null)
+
+prepareNotification = (input) ->
+  if typeof input.time isnt "undefined"
+    return input
+  output = {
+    time: input.t
+    content: input.d
+  }
+  output.id = Utils.calculateNotificationHash(output)
+  return output
+
+getNotifications = (diagram) ->
+  [..., last] = diagram
+  if typeof last is 'number'
+    return diagram.slice(0,-1)
+  else
+    return diagram
+
+prepareInputDiagram = (diagram, indexInArray = 0) ->
+  notifications = getNotifications(diagram)
+  [..., last] = diagram
+  preparedDiagram = (prepareNotification(n) for n in notifications)
+  preparedDiagram.end = if typeof last is 'number' then last else 100
+  preparedDiagram.id = indexInArray
+  return preparedDiagram
+
 SelectedExample.stream
-  .map((example) -> example["inputs"].map(Utils.prepareInputDiagram))
-  .subscribe((x) ->
-    arrayOfInitialInputDiagrams$.onNext(x)
+  .map((example) -> example["inputs"].map(prepareInputDiagram))
+  .subscribe((arrayOfDiagrams) ->
+    arrayOfInitialInputDiagrams$.onNext(arrayOfDiagrams)
     return true
   )
 

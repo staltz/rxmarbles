@@ -15,7 +15,7 @@ makeScheduler = ->
   scheduler.toRelative = (timeSpan) -> timeSpan
   return scheduler
 
-calculateMarbleContentHash = (content) ->
+calculateNotificationContentHash = (content) ->
   if (typeof content == "string")
     return content.split("")
       .map((x) -> x.charCodeAt(0))
@@ -24,39 +24,12 @@ calculateMarbleContentHash = (content) ->
     SOME_PRIME_NUMBER = 877
     return content * SOME_PRIME_NUMBER
 
-calculateMarbleDataHash = (marbleData) ->
+calculateNotificationHash = (marbleData) ->
   SMALL_PRIME = 7
   LARGE_PRIME = 1046527
   MAX = 100000
-  contentHash = calculateMarbleContentHash(marbleData.content)
+  contentHash = calculateNotificationContentHash(marbleData.content)
   return ((marbleData.time + contentHash + SMALL_PRIME)*LARGE_PRIME) % MAX
-
-prepareInputDiagramNotification = (notification) ->
-  if typeof notification.time isnt "undefined"
-    return notification
-  result = {
-    time: notification.t
-    content: notification.d
-  }
-  result.id = calculateMarbleDataHash(result)
-  return result
-
-extractNotifications = (diagram) ->
-  [..., last] = diagram
-  if typeof last is 'number'
-    return diagram.slice(0,-1)
-  else
-    return diagram
-
-prepareInputDiagram = (diagram) ->
-  notifications = extractNotifications(diagram)
-  [..., last] = diagram
-  preparedDiagram = (prepareInputDiagramNotification(n) for n in notifications)
-  preparedDiagram.end = if typeof last is 'number' then last else 100
-  return preparedDiagram
-
-prepareInputDiagramStream = (diagramStream) ->
-  return diagramStream.map(prepareInputDiagram)
 
 justIncomplete = (item, scheduler) ->
   return new Rx.AnonymousObservable((observer) ->
@@ -88,7 +61,7 @@ getDiagramPromise = (stream, scheduler, maxTime) ->
     .timestamp(scheduler)
     .map((x) ->
       if typeof x.value isnt "object"
-        x.value = {content: x.value, id: calculateMarbleContentHash(x.value)}
+        x.value = {content: x.value, id: calculateNotificationContentHash(x.value)}
       return {
         time: (x.timestamp / maxTime)*100 # converts timestamp to % of maxTime
         content: x.value.content
@@ -114,7 +87,6 @@ getDiagramPromise = (stream, scheduler, maxTime) ->
 module.exports = {
   makeScheduler: makeScheduler
   toVTStream: toVTStream
-  prepareInputDiagramStream: prepareInputDiagramStream
-  prepareInputDiagram: prepareInputDiagram
+  calculateNotificationHash: calculateNotificationHash
   getDiagramPromise: getDiagramPromise
 }
