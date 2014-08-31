@@ -49,7 +49,6 @@ DONE Refactor diagram styles and classnames
 DONE Render nondraggable Completion for output diagram
 DONE Controller logic to include completion time
 DONE Update examples with regard to completion time
-DONE Input diagramData includes a diagram id
 TODO Lower bound on completion time, no earlier than any marble time
   - Reorganize controllers as the new models, which define a contract for their
   interpreters.
