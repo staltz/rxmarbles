@@ -33,8 +33,7 @@ module.exports = {
     rootNode = VDOM.createElement(tree)
     diagramDataStream.subscribe((diagram) ->
       newTree = virtualRender(diagram)
-      patches = VDOM.diff(tree, newTree)
-      rootNode = VDOM.patch(rootNode, patches)
+      rootNode = VDOM.patch(rootNode, VDOM.diff(tree, newTree))
       tree = newTree
       return true
     )

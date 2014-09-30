@@ -2,9 +2,9 @@
 # Exports an array of diagram streams representing the input diagrams.
 #
 Rx = require 'rx'
-Examples = require 'rxmarbles/models/examples'
-SelectedExample = require 'rxmarbles/controllers/selected-example'
-Utils = require 'rxmarbles/controllers/utils'
+# TODO change below with SandboxModel.example
+OperatorsMenuModel = require 'rxmarbles/models/operators-menu'
+Utils = require 'rxmarbles/models/utils'
 Sandbox = require 'rxmarbles/views/sandbox'
 
 arrayOfInitialInputDiagrams$ = new Rx.BehaviorSubject(null)
@@ -34,7 +34,7 @@ prepareInputDiagram = (diagram, indexInArray = 0) ->
   preparedDiagram.id = indexInArray
   return preparedDiagram
 
-SelectedExample.stream
+OperatorsMenuModel.selectedExample$
   .map((example) -> example["inputs"].map(prepareInputDiagram))
   .subscribe((arrayOfDiagrams) ->
     arrayOfInitialInputDiagrams$.onNext(arrayOfDiagrams)

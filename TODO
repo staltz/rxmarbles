@@ -49,14 +49,13 @@ DONE Refactor diagram styles and classnames
 DONE Render nondraggable Completion for output diagram
 DONE Controller logic to include completion time
 DONE Update examples with regard to completion time
+DONE New Model View Interpreter architecture, for OperatorsMenu
 TODO Lower bound on completion time, no earlier than any marble time
-  - Reorganize controllers as the new models, which define a contract for their
-  interpreters.
-  - Sandbox model observes the interpreter's output stream which should emit
-  pairs (diagramId, marbleId, dt) indicating the change to the model.
   - Marble has a static subject for mousedown event, which covers all instances
   of marble. Each subject notification points to the marble instance's id. ALSO
   each subject notification points to the parent diagram's id.
+  - Sandbox model observes the interpreter's output stream which should emit
+  pairs (diagramId, marbleId, dt) indicating the change to the model.
   - Sandbox interpreter calculates dxDragStream from Sandbox view.
   - Potential problem: marble ids changing when they are dragged
   - Potential problem: marble id in one diagram might be the same in another

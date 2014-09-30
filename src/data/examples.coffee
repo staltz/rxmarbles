@@ -2,12 +2,12 @@
 # The database of all predefined examples in the app.
 #
 Rx = require 'rx'
-transformExamples = require 'rxmarbles/models/transform-examples'
-combineExamples = require 'rxmarbles/models/combine-examples'
-filterExamples = require 'rxmarbles/models/filter-examples'
-mathExamples = require 'rxmarbles/models/math-examples'
-booleanExamples = require 'rxmarbles/models/boolean-examples'
-conditionalExamples = require 'rxmarbles/models/conditional-examples'
+transformExamples = require 'rxmarbles/data/transform-examples'
+combineExamples = require 'rxmarbles/data/combine-examples'
+filterExamples = require 'rxmarbles/data/filter-examples'
+mathExamples = require 'rxmarbles/data/math-examples'
+booleanExamples = require 'rxmarbles/data/boolean-examples'
+conditionalExamples = require 'rxmarbles/data/conditional-examples'
 
 merge = (args...) ->
   result = {}

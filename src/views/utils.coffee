@@ -2,6 +2,12 @@
 # Util functions for rendering to the DOM.
 #
 Rx = require 'rx'
+h = require 'virtual-hyperscript'
+VDOM = {
+  createElement: require 'virtual-dom/create-element'
+  diff: require 'virtual-dom/diff'
+  patch: require 'virtual-dom/patch'
+}
 
 getDxDragStream = (element) ->
   return Rx.Observable.fromEvent(element, "mousedown")
@@ -40,6 +46,24 @@ getInteractiveLeftPosStream = (element, initialPos) ->
     .startWith(initialPos)
     .distinctUntilChanged()
 
+renderVTreeStream = (vtree$, containerSelector) ->
+  # Find and prepare the container
+  container = document.querySelector(containerSelector)
+  if container == null
+    console.error("Couldn't render into unknown '#{containerSelector}'")
+    return false
+  container.innerHTML = ""
+  # Make the DOM node bound to the VDOM node
+  rootNode = document.createElement("div")
+  container.appendChild(rootNode)
+  vtree$.startWith(h())
+    .bufferWithCount(2,1)
+    .subscribe((buffer) ->
+      [oldVTree, newVTree] = buffer
+      rootNode = VDOM.patch(rootNode, VDOM.diff(oldVTree, newVTree))
+    )
+  return true
+
 renderObservableDOMElement = (elementStream) ->
   wrapper = document.createElement("div")
   elementStream.subscribe((thing) ->
@@ -54,6 +78,7 @@ renderObservableDOMElement = (elementStream) ->
   return wrapper
 
 module.exports = {
+  renderVTreeStream: renderVTreeStream
   renderObservableDOMElement: renderObservableDOMElement
   getInteractiveLeftPosStream: getInteractiveLeftPosStream
 }

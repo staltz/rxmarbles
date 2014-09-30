@@ -12,7 +12,7 @@ Utils = require 'rxmarbles/views/utils'
 streamOfArrayOfLiveInputDiagramStreams = new Rx.BehaviorSubject(null)
 
 createInputDiagramElements = ->
-  InputDiagrams = require 'rxmarbles/controllers/input-diagrams'
+  InputDiagrams = require 'rxmarbles/models/input-diagrams'
   inputDiagramElements = Utils.renderObservableDOMElement(
     InputDiagrams.initial$
       .map((diagrams) ->
@@ -27,14 +27,15 @@ createInputDiagramElements = ->
   return inputDiagramElements
 
 createOperatorBoxElement = ->
-  SelectedExample = require 'rxmarbles/controllers/selected-example'
+  # TODO change this with SandboxModel.operator$
+  OperatorsMenuModel = require 'rxmarbles/models/operators-menu'
   return Utils.renderObservableDOMElement(
-    SelectedExample.stream
+    OperatorsMenuModel.selectedExample$
       .map((example) -> OperatorBox.render(example))
   )
 
 createOutputDiagramElement = ->
-  OutputDiagram = require 'rxmarbles/controllers/output-diagram'
+  OutputDiagram = require 'rxmarbles/models/output-diagram'
   return OutputDiagramView.render(OutputDiagram)
 
 

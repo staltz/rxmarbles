@@ -1,16 +1,25 @@
 #
 # App entry-point.
 #
-Sandbox = require 'rxmarbles/views/sandbox'
-OperatorsMenu = require 'rxmarbles/views/operators-menu'
 Package = require 'package.json'
+binder = require 'rxmarbles/binder'
+Sandbox = require 'rxmarbles/views/sandbox'
+OperatorsMenuModel = require 'rxmarbles/models/operators-menu'
+OperatorsMenuView = require 'rxmarbles/views/operators-menu'
+OperatorsMenuInterpreter = require 'rxmarbles/interpreters/operators-menu'
+DOMDelegator = require 'dom-delegator'
+Utils = require 'rxmarbles/views/utils'
+
+domDelegator = DOMDelegator()
 
 sandboxContainer = document.querySelector(".js-sandboxContainer")
 sandboxContainer.innerHTML = ""
 sandboxContainer.appendChild(Sandbox.render())
 
-operatorsMenuContainer = document.querySelector(".js-operatorsMenuContainer")
-operatorsMenuContainer.appendChild(OperatorsMenu.render())
+binder(OperatorsMenuModel, OperatorsMenuView, OperatorsMenuInterpreter)
+# binder(SandboxModel, SandboxView, SandboxInterpreter)
+
+Utils.renderVTreeStream(OperatorsMenuView.vtree$, ".js-operatorsMenuContainer")
 
 versionElement = document.querySelector("a.js-appVersion")
 versionElement.textContent = "v#{Package.version}"

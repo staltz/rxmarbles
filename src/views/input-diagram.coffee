@@ -24,6 +24,12 @@ makeDataStream = (diagramElement) ->
     )
   return dataStream
 
+# makeMouseDownStream = (diagramElement) ->
+#   marbleViews = diagramElement.querySelectorAll(".js-marble")
+#   marbleIds = (marble.marbleId for marble in marbleViews)
+#   return Marble.mouseDownStream
+#     .filter((ev) -> ev.marbleId in marbleIds)
+
 module.exports = {
   render: (diagramData) ->
     diagramElement = h("div.diagram", {}, [

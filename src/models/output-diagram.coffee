@@ -2,10 +2,10 @@
 # Exports the diagram stream representing the output diagram.
 #
 Rx = require 'rx'
-Utils = require 'rxmarbles/controllers/utils'
-InputDiagrams = require 'rxmarbles/controllers/input-diagrams'
-SelectedExample = require 'rxmarbles/controllers/selected-example'
-Examples = require 'rxmarbles/models/examples'
+Utils = require 'rxmarbles/models/utils'
+InputDiagrams = require 'rxmarbles/models/input-diagrams'
+# TODO Change below with SandboxModel.example
+OperatorsMenuModel = require 'rxmarbles/models/operators-menu'
 
 MAXTIME = 100 # Time of completion
 
@@ -14,7 +14,7 @@ outputDiagramStream = InputDiagrams.continuous$
   .flatMapLatest((arrayOfDiagramStreams) ->
     return Rx.Observable.combineLatest(arrayOfDiagramStreams, (args...) -> args)
   )
-  .combineLatest(SelectedExample.stream, (diagrams, example) ->
+  .combineLatest(OperatorsMenuModel.selectedExample$, (diagrams, example) ->
     vtscheduler = Utils.makeScheduler()
     inputVTStreams = (Utils.toVTStream(d, vtscheduler) for d in diagrams)
     outputVTStream = example["apply"](inputVTStreams, vtscheduler)
