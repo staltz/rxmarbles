@@ -23,13 +23,14 @@
 .operatorsMenu-container {
   padding-right: 36px;
   box-sizing: border-box;
+  height: calc(100vh - 100px);
 }
 .operatorsMenu {
   margin: 0;
   padding: 0;
   list-style-type: none;
   overflow-y: scroll;
-  height: 2px;
+  height: 100%;
 }
 .operatorsMenu-category {
   text-transform: uppercase;
