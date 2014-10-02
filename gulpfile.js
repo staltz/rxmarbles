@@ -1,5 +1,4 @@
 var gulp = require('gulp');
-var coffee = require('gulp-coffee');
 var less = require('gulp-less');
 var browserify = require('gulp-browserify');
 var uglify = require('gulp-uglify');
@@ -8,13 +7,6 @@ var gutil = require('gulp-util');
 var path = require('path');
 
 // Based on https://github.com/deepak1556/gulp-browserify/issues/7
-
-gulp.task('coffee', function() {
-  gutil.log(gutil.colors.yellow("Compiling CoffeeScript..."));
-  return gulp.src(['./src/**/*.coffee'])
-    .pipe(coffee({bare: true}).on('error', gutil.log))
-    .pipe(gulp.dest('./build/src'));
-});
 
 gulp.task('less', function() {
   gutil.log(gutil.colors.yellow("Compiling LESS styles..."));
@@ -25,9 +17,9 @@ gulp.task('less', function() {
     .pipe(gulp.dest('./dist/css'));
 });
 
-gulp.task('dev-browserify', ['coffee'], function() {
+gulp.task('dev-browserify', [], function() {
   gutil.log(gutil.colors.yellow("Packing with browserify..."));
-  return gulp.src(['./build/src/**/*.js'])
+  return gulp.src(['./src/**/*.js'])
     .pipe(browserify({
       insertGlobals: true,
       debug: true
@@ -35,9 +27,9 @@ gulp.task('dev-browserify', ['coffee'], function() {
     .pipe(gulp.dest('./build/browserified-js'));
 });
 
-gulp.task('browserify', ['coffee'], function() {
+gulp.task('browserify', [], function() {
   gutil.log(gutil.colors.yellow("Packing with browserify..."));
-  return gulp.src(['./build/src/**/*.js'])
+  return gulp.src(['./src/**/*.js'])
     .pipe(browserify({
       insertGlobals: false,
       debug: false,
@@ -57,7 +49,7 @@ gulp.task('uglify', ['browserify'], function() {
 gulp.task('post-clean-up', ['uglify'], function() {
   gutil.log(gutil.colors.yellow("Cleaning up temporary files..."));
   return gulp.src(
-      [__dirname+'/build/src/**/*', __dirname+'/build/browserified-js/**/*'],
+      [__dirname+'/build/browserified-js/**/*'],
       {read: false}
     )
     .pipe(rimraf());
@@ -74,7 +66,7 @@ gulp.task('default', function() {
   gulp.run('dev-build');
 
   gutil.log("Watching for changes...");
-  gulp.watch(['./src/**/*.coffee', './styles/**/*.less'], function(event) {
+  gulp.watch(['./src/**/*.js', './styles/**/*.less'], function(event) {
     if (event.path) {
       gutil.log("Change detected in ", gutil.colors.magenta(event.path));
     } else {

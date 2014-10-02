@@ -50,6 +50,7 @@ DONE Render nondraggable Completion for output diagram
 DONE Controller logic to include completion time
 DONE Update examples with regard to completion time
 DONE New Model View Interpreter architecture, for OperatorsMenu
+TODO Replace CoffeeScript with JavaScript
 TODO Lower bound on completion time, no earlier than any marble time
   - Marble has a static subject for mousedown event, which covers all instances
   of marble. Each subject notification points to the marble instance's id. ALSO
