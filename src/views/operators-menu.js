@@ -3,17 +3,13 @@
  */
 var Rx = require('rx');
 var h = require('virtual-hyperscript');
+var replicate = require('rxmarbles/utils').replicate;
 
-var vtree$ = new Rx.BehaviorSubject();
+var inputExamples$ = new Rx.BehaviorSubject();
 var click$ = new Rx.Subject();
 
 function observe(model) {
-  model.examples$
-    .map(function(examples) {
-      var listElement = h("ul.operatorsMenu", renderMenuContent(examples));
-      return listElement;
-    })
-    .subscribe(function(element) { vtree$.onNext(element); });
+  replicate(model.examples$, inputExamples$);
 };
 
 function renderMenuContent(examples) {
@@ -71,6 +67,12 @@ function renderExampleItem(example) {
     )
   ]);
 };
+
+var vtree$ = inputExamples$
+    .map(function(examples) {
+      var listElement = h("ul.operatorsMenu", renderMenuContent(examples));
+      return listElement;
+    });
 
 module.exports = {
   observe: observe,

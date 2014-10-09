@@ -2,15 +2,15 @@
  * OperatorsMenuInterpreter
  */
 var Rx = require('rx');
+var replicate = require('rxmarbles/utils').replicate;
 
-var clickEvent$ = new Rx.Subject();
+var inputClickEvent$ = new Rx.Subject();
 
 function observe(view) {
-  view.click$
-    .subscribe(function(x) { return clickEvent$.onNext(x); });
+  replicate(view.click$, inputClickEvent$);
 };
 
-var select$ = clickEvent$
+var select$ = inputClickEvent$
   .filter(function(event) {
     return event !== null && event.target !== null;
   })

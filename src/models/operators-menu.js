@@ -3,19 +3,19 @@
  */
 var Rx = require('rx');
 var Examples = require('rxmarbles/data/examples');
+var replicate = require('rxmarbles/utils').replicate;
 
-var interpretedSelect$ = new Rx.BehaviorSubject();
+var inputSelection$ = new Rx.BehaviorSubject();
 
 function observe(interpreter) {
-  interpreter.select$
-    .subscribe(function(x) { interpretedSelect$.onNext(x); });
+  replicate(interpreter.select$, inputSelection$);
 };
 
 var examples$ = Rx.Observable.just(Examples);
 
 var defaultExampleKey = window.location.hash.replace("#", "") || "merge";
 
-var selectedExample$ = interpretedSelect$
+var selectedExample$ = inputSelection$
   .startWith(defaultExampleKey)
   .filter(function(key) { return (typeof key !== "undefined"); })
   .map(function(key) {
