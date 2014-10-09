@@ -13,7 +13,7 @@ A webapp for experimenting with diagrams of [Rx](http://reactive-extensions.gith
 
 ## Implementation
 
-The source code is written in [CoffeeScript](http://coffeescript.org/). The architecture is a simple MVC heavily dependent on RxJS. Some parts of the views render to the DOM using pure JavaScript APIs for DOM manipulation, some other parts use [virtual-dom](https://github.com/Matt-Esch/virtual-dom/) for optimizing performance.
+A JavaScript single page app, where the architecture is a simple MVC heavily dependent on RxJS. Some parts of the views render to the DOM using pure JavaScript APIs for DOM manipulation, some other parts use [virtual-dom](https://github.com/Matt-Esch/virtual-dom/) for optimizing performance.
 
 ## Contributing
 
