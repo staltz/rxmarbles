@@ -52,7 +52,7 @@ DONE Update examples with regard to completion time
 DONE New Model View Interpreter architecture, for OperatorsMenu
 DONE New MVI architecture for Sandbox
 DONE Rename interpreters to intents
-TODO Style and logic for tall/short completion element
+DONE Style and logic for tall/short completion element
 TODO Delete old sandbox models, views and sub views
   - models/input-diagrams
   - models/output-diagram
@@ -63,6 +63,7 @@ TODO Delete old sandbox models, views and sub views
   - rename views/new-sandbox
   - Remove hyperscript everywhere
   - Remove raw DOM manipulation
+TODO Bug: slowly dragging should change marble time
 TODO Bug: some marbles can't be dragged, error 'invalid parent' is shown
 TODO Build scripts to replace gulp (?)
 ## v1.1.0

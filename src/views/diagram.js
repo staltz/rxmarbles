@@ -16,7 +16,7 @@ function vrender(diagramData, isInteractive, marbleMouseDown$, completionMouseDo
     });
   var completionData = {time: diagramData.end, diagramId: diagramData.id};
   var completionVTree = Completion.vrender(
-    completionData, isInteractive, completionMouseDown$
+    completionData, isInteractive, diagramData, completionMouseDown$
   );
   return h('div.diagram', {}, [
     h('div.diagram-arrow'),
