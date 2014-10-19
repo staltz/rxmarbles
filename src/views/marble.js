@@ -6,44 +6,44 @@ var Utils = require('rxmarbles/views/utils');
 var vh = require('virtual-hyperscript');
 var svg = require('virtual-hyperscript/svg');
 
-var XMLNS = "http://www.w3.org/2000/svg";
+var XMLNS = 'http://www.w3.org/2000/svg';
 var NUM_COLORS = 4;
-var SVG_VIEWBOX = "0 0 1 1";
+var SVG_VIEWBOX = '0 0 1 1';
 var SVG_CX = 0.5;
 var SVG_CY = 0.5;
 var SVG_R = 0.47;
-var SVG_BORDER_WIDTH = "0.06px";
+var SVG_BORDER_WIDTH = '0.06px';
 
 function createRootElement(draggable) {
-  var container = document.createElement("div");
-  container.className = "marble js-marble";
+  var container = document.createElement('div');
+  container.className = 'marble js-marble';
   if (draggable) {
-    container.className += " is-draggable";
+    container.className += ' is-draggable';
   }
   return container;
-};
+}
 
 function createMarbleSvg(item) {
   var colornum = (item.id % NUM_COLORS) + 1;
-  var marble = document.createElementNS(XMLNS, "svg");
-  marble.setAttribute("class", "marble-inner");
-  marble.setAttribute("viewBox", SVG_VIEWBOX);
-  var circle = document.createElementNS(XMLNS, "circle");
-  circle.setAttribute("cx", SVG_CX);
-  circle.setAttribute("cy", SVG_CY);
-  circle.setAttribute("r", SVG_R);
-  circle.setAttribute("class", "marble-shape marble-shape--color" + colornum);
-  circle.setAttribute("stroke-width", SVG_BORDER_WIDTH);
+  var marble = document.createElementNS(XMLNS, 'svg');
+  marble.setAttribute('class', 'marble-inner');
+  marble.setAttribute('viewBox', SVG_VIEWBOX);
+  var circle = document.createElementNS(XMLNS, 'circle');
+  circle.setAttribute('cx', SVG_CX);
+  circle.setAttribute('cy', SVG_CY);
+  circle.setAttribute('r', SVG_R);
+  circle.setAttribute('class', 'marble-shape marble-shape--color' + colornum);
+  circle.setAttribute('stroke-width', SVG_BORDER_WIDTH);
   marble.appendChild(circle);
   return marble;
-};
+}
 
 function createContentElement(item) {
-  var content = document.createElement("p");
-  content.className = "marble-content";
-  content.textContent = (item != null) ? item.content : "";
+  var content = document.createElement('p');
+  content.className = 'marble-content';
+  content.textContent = (item != null) ? item.content : '';
   return content;
-};
+}
 
 function getLeftPosStream(item, draggable, element) {
   if (draggable) {
@@ -51,7 +51,7 @@ function getLeftPosStream(item, draggable, element) {
   } else {
     return Rx.Observable.just(item.time);
   }
-};
+}
 
 function render(item, draggable) {
   if (draggable == null) {
@@ -69,30 +69,44 @@ function render(item, draggable) {
     });
   leftPosStream
     .subscribe(function(leftPos) {
-      marble.style.left = leftPos + "%";
+      marble.style.left = leftPos + '%';
     });
   return marble;
-};
+}
 
-function virtualRender(marbleData) {
+function vrender(marbleData, isDraggable, mouseDown$) {
+  if (typeof isDraggable === 'undefined') {
+    isDraggable = false;
+  }
   var colornum = (marbleData.id % 4) + 1;
-  var leftPos = "" + marbleData.time + "%";
-  var content = "" + marbleData.content;
-  return vh("div.marble.js-marble", {style: {"left": leftPos}}, [
-    svg("svg", {attributes: {"class": "marble-inner", viewBox: SVG_VIEWBOX}}, [
-      svg("circle", {
+  var leftPos = '' + marbleData.time + '%';
+  var content = '' + marbleData.content;
+  return vh('div.marble.js-marble'+(isDraggable ? '.is-draggable' :''), {
+    style: {'left': leftPos},
+    attributes: {
+      'data-marble-id': marbleData.id,
+      'data-diagram-id': marbleData.diagramId
+    },
+    'ev-mousedown': function(ev) {
+      if (mouseDown$) {
+        mouseDown$.onNext(ev);
+      }
+    }
+  },[
+    svg('svg', {attributes: {'class': 'marble-inner', viewBox: SVG_VIEWBOX}}, [
+      svg('circle', {
         attributes: {
-          "class": "marble-shape marble-shape--color" + colornum,
+          'class': 'marble-shape marble-shape--color' + colornum,
           cx: SVG_CX, cy: SVG_CY, r: SVG_R,
-          "stroke-width": SVG_BORDER_WIDTH
+          'stroke-width': SVG_BORDER_WIDTH
         }
       })
     ]),
-    vh("p.marble-content", {}, content)
+    vh('p.marble-content', {}, content)
   ]);
-};
+}
 
 module.exports = {
   render: render,
-  virtualRender: virtualRender
+  vrender: vrender
 };

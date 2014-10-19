@@ -26,7 +26,7 @@ function getDxDragStream(element) {
       return dxStream.takeUntil(upStream);
     })
     .concatAll();
-};
+}
 
 function getInteractiveLeftPosStream(element, initialPos) {
   return getDxDragStream(element)
@@ -47,7 +47,7 @@ function getInteractiveLeftPosStream(element, initialPos) {
     .map(Math.round)
     .startWith(initialPos)
     .distinctUntilChanged();
-};
+}
 
 function renderVTreeStream(vtree$, containerSelector) {
   // Find and prepare the container

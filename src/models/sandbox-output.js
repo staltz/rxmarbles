@@ -1,10 +1,12 @@
 /*
- * Conversion from virtual time streams out to diagram data, and
- * vice-versa, and related functions.
+ * Functions to handle data of the output diagram in the example shown in the
+ * sandbox.
  */
 var Rx = require('rx');
+var Utils = require('rxmarbles/models/utils');
 
-// DEPRECATED. Used only in old output-diagram.js
+var MAX_VT_TIME = 100; // Time of completion
+
 function makeScheduler() {
   var scheduler = new Rx.VirtualTimeScheduler(0, function(x, y) {
     if (x > y) { return 1; }
@@ -15,39 +17,16 @@ function makeScheduler() {
   scheduler.toDateTimeOffset = function(absolute) { return Math.floor(absolute); };
   scheduler.toRelative = function(timeSpan) { return timeSpan; };
   return scheduler;
-};
+}
 
-function calculateNotificationContentHash(content) {
-  var SOME_PRIME_NUMBER = 877;
-  if (typeof content === "string") {
-    return content.split("")
-      .map(function(x) { return x.charCodeAt(0); })
-      .reduce(function(x, y) { return x + y; });
-  } else if (typeof content === "number") {
-    return content * SOME_PRIME_NUMBER;
-  } else if (typeof content === 'boolean') {
-    return content ? SOME_PRIME_NUMBER : SOME_PRIME_NUMBER*3;
-  }
-};
-
-function calculateNotificationHash(marbleData) {
-  var SMALL_PRIME = 7;
-  var LARGE_PRIME = 1046527;
-  var MAX = 100000;
-  var contentHash = calculateNotificationContentHash(marbleData.content);
-  return ((marbleData.time + contentHash + SMALL_PRIME) * LARGE_PRIME) % MAX;
-};
-
-// DEPRECATED. Used only in old output-diagram.js
 function justIncomplete(item, scheduler) {
   return new Rx.AnonymousObservable(function(observer) {
     return scheduler.schedule(function() {
       observer.onNext(item);
     });
   });
-};
+}
 
-// DEPRECATED. Used only in old output-diagram.js
 /**
  * Creates an (virtual time) Rx.Observable from diagram
  * data (array of data items).
@@ -65,10 +44,9 @@ function toVTStream(diagramData, scheduler) {
   return Rx.Observable.merge(singleMarbleStreams)
     .takeUntilWithTime(correctedEndTime, scheduler)
     .publish().refCount();
-};
+}
 
-// DEPRECATED. Used only in old output-diagram.js
-function getDiagramPromise(stream, scheduler, maxTime) {
+function getDiagramPromise(stream, scheduler) {
   var diagram = [];
   var subject = new Rx.BehaviorSubject([]);
   stream
@@ -76,10 +54,11 @@ function getDiagramPromise(stream, scheduler, maxTime) {
     .timestamp(scheduler)
     .map(function(x) {
       if (typeof x.value !== "object") {
-        x.value = {content: x.value, id: calculateNotificationContentHash(x.value)};
+        x.value = {content: x.value, id: Utils.calculateNotificationContentHash(x.value)};
       }
       return {
-        time: (x.timestamp / maxTime) * 100, // converts timestamp to % of maxTime
+        // converts timestamp to % of MAX_VT_TIME
+        time: (x.timestamp / MAX_VT_TIME) * 100,
         content: x.value.content,
         id: x.value.id
       };
@@ -91,18 +70,33 @@ function getDiagramPromise(stream, scheduler, maxTime) {
     .subscribe(function onNext(x) {
       diagram = x;
       subject.onNext(diagram);
-    }, function onError() {
-      console.warn("Error in the diagram promise stream");
+    }, function onError(e) {
+      console.warn("Error in the diagram promise stream: "+e);
     }, function onComplete() {
       diagram.end = scheduler.now();
     });
   return subject.asObservable();
-};
+}
+
+function getOutputDiagram$(example$, inputDiagrams$) {
+  return Rx.Observable
+    .combineLatest(inputDiagrams$, example$, function(diagrams, example) {
+      var vtscheduler = makeScheduler();
+      var inputVTStreams = [];
+      for (var i = 0; i < diagrams.length; i++) {
+        inputVTStreams.push(toVTStream(diagrams[i], vtscheduler));
+      }
+      var outputVTStream = example["apply"](inputVTStreams, vtscheduler);
+      // Necessary hack to include marbles at exactly 100.01
+      var correctedMaxTime = MAX_VT_TIME + 0.02;
+      outputVTStream = outputVTStream.takeUntilWithTime(correctedMaxTime, vtscheduler);
+      var outputDiagram = getDiagramPromise(outputVTStream, vtscheduler, MAX_VT_TIME);
+      vtscheduler.start();
+      return outputDiagram;
+    })
+    .mergeAll();
+}
 
 module.exports = {
-  makeScheduler: makeScheduler,
-  toVTStream: toVTStream,
-  calculateNotificationHash: calculateNotificationHash,
-  calculateNotificationContentHash: calculateNotificationContentHash,
-  getDiagramPromise: getDiagramPromise
+  getOutputDiagram$: getOutputDiagram$
 };

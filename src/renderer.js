@@ -4,15 +4,16 @@
  * and renders them as real DOM elements to the browser.
  */
 var Package = require('package.json');
-var Sandbox = require('rxmarbles/views/sandbox');
+//var Sandbox = require('rxmarbles/views/sandbox');
 var OperatorsMenuView = require('rxmarbles/views/operators-menu');
+var SandboxView = require('rxmarbles/views/new-sandbox');
 var renderVTreeStream = require('rxmarbles/views/utils').renderVTreeStream;
 
-function renderSandbox() {
-  var sandboxContainer = document.querySelector(".js-sandboxContainer");
-  sandboxContainer.innerHTML = "";
-  sandboxContainer.appendChild(Sandbox.render());
-}
+//function renderSandbox() {
+//  var sandboxContainer = document.querySelector(".js-sandboxContainer");
+//  sandboxContainer.innerHTML = "";
+//  sandboxContainer.appendChild(Sandbox.render());
+//}
 
 function renderAppVersionOnce() {
   var versionElement = document.querySelector("a.js-appVersion");
@@ -28,12 +29,13 @@ function renderRxVersionOnce() {
 }
 
 function init() {
-  renderSandbox();
+//  renderSandbox();
   renderVTreeStream(OperatorsMenuView.vtree$, ".js-operatorsMenuContainer");
-  renderAppVersionElementOnce();
+  renderVTreeStream(SandboxView.vtree$, ".js-sandboxContainer");
+  renderAppVersionOnce();
   renderRxVersionOnce();
 }
 
 module.exports = {
   init: init
-}
+};

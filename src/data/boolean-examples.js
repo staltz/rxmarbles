@@ -27,9 +27,9 @@ module.exports = {
       [{t:5, d:2}, {t:15, d:30}, {t:25, d:22}, {t:35, d:5}, {t:45, d:60}, {t:55, d:1}]
     ],
     "apply": function(inputs) {
-      return inputs[0].contains({ content: 22 }, function(x, y) {
-        return x.content === y.content;
-      });
+      return inputs[0]
+        .map(function (x) { return x.content; })
+        .contains(22);
     }
   },
 

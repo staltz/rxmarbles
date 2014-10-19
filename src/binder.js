@@ -3,6 +3,8 @@
  */
 module.exports = function(model, view, interpreter) {
   view.observe(model);
-  interpreter.observe(view);
+  if (interpreter) {
+    interpreter.observe(view);
+  }
   model.observe(interpreter);
 };

@@ -14,9 +14,9 @@ var VDOM = {
 function makeDiagramBodyChildren(diagramData) {
   var marbleViews = [];
   for (i = 0; i < diagramData.length; i++) {
-    marbleViews.push(Marble.virtualRender(diagramData[i]));
+    marbleViews.push(Marble.vrender(diagramData[i]));
   }
-  var children = [Completion.virtualRender(diagramData.end)].concat(marbleViews);
+  var children = [Completion.vrender(diagramData.end)].concat(marbleViews);
   return children;
 };
 

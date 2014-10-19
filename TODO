@@ -50,28 +50,50 @@ DONE Render nondraggable Completion for output diagram
 DONE Controller logic to include completion time
 DONE Update examples with regard to completion time
 DONE New Model View Interpreter architecture, for OperatorsMenu
-TODO Lower bound on completion time, no earlier than any marble time
-  - Marble has a static subject for mousedown event, which covers all instances
-  of marble. Each subject notification points to the marble instance's id. ALSO
-  each subject notification points to the parent diagram's id.
-  - Sandbox model observes the interpreter's output stream which should emit
-  pairs (diagramId, marbleId, dt) indicating the change to the model.
-  - Sandbox interpreter calculates dxDragStream from Sandbox view.
-  - Potential problem: marble ids changing when they are dragged
-  - Potential problem: marble id in one diagram might be the same in another
+DONE New MVI architecture for Sandbox
+TODO Rename interpreters to intents
 TODO Style and logic for tall/short completion element
+TODO Delete old sandbox models, views and sub views
+  - models/input-diagrams
+  - models/output-diagram
+  - refactor models/utils
+  - views/input-diagram
+  - views/output-diagram
+  - views/sandbox
+  - rename views/new-sandbox
+  - Remove hyperscript everywhere
+  - Remove raw DOM manipulation
+TODO Bug: some marbles can't be dragged, error 'invalid parent' is shown
 TODO Build scripts to replace gulp (?)
 ## v1.1.0
 
+TODO Use virtual-dom for all views
+  - See modules under Raynos/mercury
+  TODO Refactor to conform to MVC philosophy
+    - Model is the representation of data and state
+      - Input: interpreted interaction streams
+      - Output: data streams
+    - View renders to DOM and interfaces with the user
+      - Input: data streams
+      - Output: raw interaction streams
+    - Controller: interprets user interaction and notifies model of changes
+      - Input: raw interaction streams
+      - Output: interpreted interaction streams
+    - Marble should export only mouseDownStream, mouseMoveStream, mouseUpStream
+    - All the intelligent streams in Marble should go to some controller class
+      which observes Marble.mouse____Stream
+
+
+
 TODO Fix referential transparency inconsistency
-  Replace controllers/output combineLatest with combinePrevious
+  Replace models/sandbox-ouput combineLatest with combinePrevious
 TODO Disambiguate simultaneous marbles
   Vertically spread them
   Change example takeLast(1) to takeLast(2)
 >>> v1.1.1
 
 TODO Embeddable rxmarbles
-  app.coffee 'exports' a function which can be called in <script> in index.html
+  app.js 'exports' a function which can be called in <script> in index.html
 >>>
 
 TODO Render each stream with a different regular polygon
@@ -109,18 +131,3 @@ TODO Interactively add errors to an InputStream
 TODO Hovering over a diagram shows mapping arrows
 >>>
 
-TODO Use virtual-dom for all views, only when virtual-dom events work
-  - See modules under Raynos/mercury
-  TODO Refactor to conform to MVC philosophy
-    - Model is the representation of data and state
-      - Input: interpreted interaction streams
-      - Output: data streams
-    - View renders to DOM and interfaces with the user
-      - Input: data streams
-      - Output: raw interaction streams
-    - Controller: interprets user interaction and notifies model of changes
-      - Input: raw interaction streams
-      - Output: interpreted interaction streams
-    - Marble should export only mouseDownStream, mouseMoveStream, mouseUpStream
-    - All the intelligent streams in Marble should go to some controller class
-      which observes Marble.mouse____Stream
