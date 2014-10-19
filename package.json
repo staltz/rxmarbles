@@ -12,7 +12,6 @@
     "rx": "2.3.12",
     "virtual-dom": "0.0.19",
     "virtual-hyperscript": "4.4.0",
-    "hyperscript": "1.4.0",
     "dom-delegator": "^9.0.1"
   },
   "devDependencies": {

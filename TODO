@@ -53,38 +53,11 @@ DONE New Model View Interpreter architecture, for OperatorsMenu
 DONE New MVI architecture for Sandbox
 DONE Rename interpreters to intents
 DONE Style and logic for tall/short completion element
-TODO Delete old sandbox models, views and sub views
-  - models/input-diagrams
-  - models/output-diagram
-  - refactor models/utils
-  - views/input-diagram
-  - views/output-diagram
-  - views/sandbox
-  - rename views/new-sandbox
-  - Remove hyperscript everywhere
-  - Remove raw DOM manipulation
+DONE Delete old sandbox models, views and sub views
 TODO Bug: slowly dragging should change marble time
 TODO Bug: some marbles can't be dragged, error 'invalid parent' is shown
 TODO Build scripts to replace gulp (?)
 ## v1.1.0
-
-TODO Use virtual-dom for all views
-  - See modules under Raynos/mercury
-  TODO Refactor to conform to MVC philosophy
-    - Model is the representation of data and state
-      - Input: interpreted interaction streams
-      - Output: data streams
-    - View renders to DOM and interfaces with the user
-      - Input: data streams
-      - Output: raw interaction streams
-    - Controller: interprets user interaction and notifies model of changes
-      - Input: raw interaction streams
-      - Output: interpreted interaction streams
-    - Marble should export only mouseDownStream, mouseMoveStream, mouseUpStream
-    - All the intelligent streams in Marble should go to some controller class
-      which observes Marble.mouse____Stream
-
-
 
 TODO Fix referential transparency inconsistency
   Replace models/sandbox-ouput combineLatest with combinePrevious

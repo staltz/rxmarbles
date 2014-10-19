@@ -1,62 +1,39 @@
 /*
- * Responsible for rendering the sandbox element and connecting controller
- * streams to the views.
+ * SandboxView
  */
 var Rx = require('rx');
-var h = require('hyperscript');
-var InputDiagramView = require('rxmarbles/views/input-diagram');
-var OperatorBox = require('rxmarbles/views/operator-box');
-var OutputDiagramView = require('rxmarbles/views/output-diagram');
-var Utils = require('rxmarbles/views/utils');
+var h = require('virtual-hyperscript');
+var SandboxInput = require('rxmarbles/views/sandbox-input');
+var SandboxOperator = require('rxmarbles/views/sandbox-operator');
+var SandboxOutput = require('rxmarbles/views/sandbox-output');
+var replicate = require('rxmarbles/utils').replicate;
 
-var streamOfArrayOfLiveInputDiagramStreams = new Rx.BehaviorSubject(null);
+var modelExample$ = new Rx.BehaviorSubject();
+var modelInputDiagrams$ = new Rx.BehaviorSubject();
+var modelOutputDiagram$ = new Rx.BehaviorSubject();
+var marbleMouseDown$ = new Rx.Subject();
+var completionMouseDown$ = new Rx.Subject();
 
-function createInputDiagramElements() {
-  var InputDiagrams = require('rxmarbles/models/input-diagrams');
-  var inputDiagramElements = Utils.renderObservableDOMElement(
-    InputDiagrams.initial$
-      .map(function(diagrams) {
-        var diagramViews = [];
-        for (i = 0; i < diagrams.length; i++) {
-          diagramViews.push(InputDiagramView.render(diagrams[i]));
-        }
-        return diagramViews;
-      })
-      .doAction(function(diagramViews) {
-        var dataStreams = [];
-        for (i = 0; i < diagramViews.length; i++) {
-          dataStreams.push(diagramViews[i].dataStream);
-        }
-        return streamOfArrayOfLiveInputDiagramStreams.onNext(dataStreams);
-      })
+function observe(model) {
+  replicate(model.example$, modelExample$);
+  replicate(model.inputDiagrams$, modelInputDiagrams$);
+  replicate(model.outputDiagram$, modelOutputDiagram$);
+}
+
+var vtree$ = Rx.Observable
+  .combineLatest(modelExample$, modelInputDiagrams$, modelOutputDiagram$,
+    function(example, inputDiagrams, outputDiagram) {
+      return h("div.sandbox", [
+        SandboxInput.vrender(inputDiagrams, marbleMouseDown$, completionMouseDown$),
+        SandboxOperator.vrender(example),
+        SandboxOutput.vrender(outputDiagram)
+      ]);
+    }
   );
-  return inputDiagramElements;
-};
-
-function createOperatorBoxElement() {
-  // TODO change this with SandboxModel.operator$
-  var OperatorsMenuModel = require('rxmarbles/models/operators-menu');
-  return Utils.renderObservableDOMElement(
-    OperatorsMenuModel.selectedExample$
-      .map(function(example) { return OperatorBox.render(example); })
-  );
-};
-
-function createOutputDiagramElement() {
-  var OutputDiagram = require('rxmarbles/models/output-diagram');
-  return OutputDiagramView.render(OutputDiagram);
-};
 
 module.exports = {
-  getStreamOfArrayOfLiveInputDiagramStreams: function() {
-    return streamOfArrayOfLiveInputDiagramStreams;
-  },
-
-  render: function() {
-    return h("div.sandbox", [
-      createInputDiagramElements(),
-      createOperatorBoxElement(),
-      createOutputDiagramElement()
-    ]);
-  }
+  observe: observe,
+  vtree$: vtree$,
+  marbleMouseDown$: marbleMouseDown$,
+  completionMouseDown$: completionMouseDown$
 };
