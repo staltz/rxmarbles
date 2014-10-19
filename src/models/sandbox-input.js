@@ -27,6 +27,22 @@ function getNotifications(diagram) {
   }
 }
 
+function cloneMarble(marble) {
+  return {
+    id: marble.id,
+    time: marble.time,
+    content: marble.content,
+    diagramId: marble.diagramId
+  }
+}
+
+function cloneDiagram(diagram) {
+  var newDiagram = diagram.map(cloneMarble); // copy all marble data
+  newDiagram.id = diagram.id;
+  newDiagram.end = diagram.end;
+  return newDiagram;
+}
+
 function prepareInputDiagram(diagram, indexInDiagramArray) {
   if (indexInDiagramArray == null) {
     indexInDiagramArray = 0;
@@ -51,10 +67,11 @@ function updateEachDiagram(delta) {
     // Make new diagram
     var newDiagram;
     if (delta.type === 'marble') {
-      newDiagram = diagram.map(updateEachMarble(delta));
+      newDiagram = cloneDiagram(diagram).map(updateEachMarble(delta));
       newDiagram.end = diagram.end;
+      newDiagram.id = diagram.id;
     } else if (delta.type === 'completion') {
-      newDiagram = diagram.map(Rx.helpers.identity); // just copy the old diagram
+      newDiagram = cloneDiagram(diagram)
       var newTime = diagram.end + delta.deltaTime;
       if (newTime < 0) { newTime = 0; }
       if (newTime > 100) { newTime = 100; }
@@ -71,8 +88,6 @@ function updateEachDiagram(delta) {
     if (newDiagram.end < maxMarbleTime) {
       newDiagram.end = maxMarbleTime;
     }
-    // Set diagram id, and return
-    newDiagram.id = diagram.id;
     return newDiagram;
   };
 }
@@ -114,6 +129,10 @@ function getInputDiagrams$(example$, inputMarbleDelta$, inputCompletionDelta$) {
         )
         .scan(initialDiagrams, function(acc, delta) {
           return acc.map(updateEachDiagram(delta))
+        })
+        // Guarantee immutability
+        .map(function (diagrams) {
+          return diagrams.map(cloneDiagram);
         })
         // Round up all marble times and completion time
         .map(function(diagrams) {
