@@ -10,9 +10,9 @@ var replicate = require('rxmarbles/utils').replicate;
 var inputMarbleDelta$ = new Rx.Subject();
 var inputCompletionDelta$ = new Rx.Subject();
 
-function observe(interpreter) {
-  replicate(interpreter.marbleDelta$, inputMarbleDelta$);
-  replicate(interpreter.completionDelta$, inputCompletionDelta$);
+function observe(intent) {
+  replicate(intent.marbleDelta$, inputMarbleDelta$);
+  replicate(intent.completionDelta$, inputCompletionDelta$);
 }
 
 var example$ = OperatorsMenuModel.selectedExample$;

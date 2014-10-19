@@ -1,5 +1,5 @@
 /*
- * Sandbox Interpreter
+ * SandboxIntent
  */
 var Rx = require('rx');
 var replicate = require('rxmarbles/utils').replicate;

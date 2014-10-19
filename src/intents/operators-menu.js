@@ -1,5 +1,5 @@
 /*
- * OperatorsMenuInterpreter
+ * OperatorsMenuIntent
  */
 var Rx = require('rx');
 var replicate = require('rxmarbles/utils').replicate;

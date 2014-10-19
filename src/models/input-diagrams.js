@@ -1,6 +1,7 @@
 /*
  * Exports an array of diagram streams representing the input diagrams.
  */
+// DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED
 var Rx = require('rx');
 // TODO change below with SandboxModel.example
 var OperatorsMenuModel = require('rxmarbles/models/operators-menu');

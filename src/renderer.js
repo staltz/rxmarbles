@@ -8,12 +8,9 @@ var Package = require('package.json');
 var OperatorsMenuView = require('rxmarbles/views/operators-menu');
 var SandboxView = require('rxmarbles/views/new-sandbox');
 var renderVTreeStream = require('rxmarbles/views/utils').renderVTreeStream;
+var DOMDelegator = require('dom-delegator');
 
-//function renderSandbox() {
-//  var sandboxContainer = document.querySelector(".js-sandboxContainer");
-//  sandboxContainer.innerHTML = "";
-//  sandboxContainer.appendChild(Sandbox.render());
-//}
+var domDelegator;
 
 function renderAppVersionOnce() {
   var versionElement = document.querySelector("a.js-appVersion");
@@ -29,7 +26,7 @@ function renderRxVersionOnce() {
 }
 
 function init() {
-//  renderSandbox();
+  domDelegator = DOMDelegator();
   renderVTreeStream(OperatorsMenuView.vtree$, ".js-operatorsMenuContainer");
   renderVTreeStream(SandboxView.vtree$, ".js-sandboxContainer");
   renderAppVersionOnce();

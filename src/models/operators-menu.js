@@ -7,8 +7,8 @@ var replicate = require('rxmarbles/utils').replicate;
 
 var inputSelection$ = new Rx.BehaviorSubject();
 
-function observe(interpreter) {
-  replicate(interpreter.select$, inputSelection$);
+function observe(intent) {
+  replicate(intent.select$, inputSelection$);
 };
 
 var examples$ = Rx.Observable.just(Examples);

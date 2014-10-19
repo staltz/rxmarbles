@@ -1,6 +1,7 @@
 /*
  * Exports the diagram stream representing the output diagram.
  */
+// DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED
 var Rx = require('rx');
 var Utils = require('rxmarbles/models/utils');
 var InputDiagrams = require('rxmarbles/models/input-diagrams');
