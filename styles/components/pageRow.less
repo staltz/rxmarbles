@@ -1,0 +1,23 @@
+
+@pageRow-width: 1060px;
+
+.pageRow {
+  position: relative;
+  width: @pageRow-width;
+  margin: 0 auto;
+  >* {
+    display: inline-block;
+    margin-left: -@space-medium;
+  }
+  >*:first-child {
+    width: (@pageRow-width - @sandbox-width - @space-medium);
+    margin-right: @space-medium;
+  }
+  >*:last-child {
+    width: @sandbox-width;
+  }
+}
+
+.pageRow + .pageRow {
+  margin-top: @space-small;
+}

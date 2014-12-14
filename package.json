@@ -1,6 +1,6 @@
 {
   "name": "rxmarbles",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "author": "Andre Staltz",
   "repository": {
     "type": "git",
@@ -9,17 +9,15 @@
   "license": "BSD 3-Clause",
   "main": "js/app.js",
   "dependencies": {
-    "rx": "~2.2.28",
+    "rx": "2.3.12",
     "virtual-dom": "0.0.19",
     "virtual-hyperscript": "4.4.0",
-    "hyperscript": "1.4.0"
+    "dom-delegator": "^9.0.1"
   },
   "devDependencies": {
     "browserify": "~2.36.0",
-    "coffeeify": "~0.6.0",
     "gulp": "~3.8.6",
     "gulp-browserify": "^0.5.0",
-    "gulp-coffee": "^2.1.1",
     "gulp-less": "^1.3.2",
     "gulp-rimraf": "^0.1.0",
     "gulp-uglify": "^0.3.1",
@@ -29,6 +27,7 @@
   },
   "scripts": {
     "preinstall": "rm -rf build && rm -rf node_modules",
-    "postinstall": "mkdir build && mkdir build/src && ln -s ../build/src node_modules/rxmarbles"
+    "postinstall": "ln -s ../src node_modules/rxmarbles && ln -s ../package.json node_modules/package.json",
+    "update-gh-pages": "git checkout gh-pages && git merge master && rm dist/js/app.js && gulp build && git add dist/js/app.js && git commit --amend --no-edit && git push origin gh-pages && git checkout master"
   }
 }

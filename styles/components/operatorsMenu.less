@@ -1,0 +1,45 @@
+
+.operatorsMenu-container {
+  padding-right: 36px;
+  box-sizing: border-box;
+  height: ~"calc(100vh - 100px)"; // 100px is the estimated header page row height
+}
+
+.operatorsMenu {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  overflow-y: scroll;
+  height: 100%;
+}
+
+.operatorsMenu-category {
+  text-transform: uppercase;
+  font-size: 0.7em;
+  color: @color-grey;
+}
+
+.operatorsMenu-item + .operatorsMenu-category {
+  margin-top: @space-medium;
+}
+
+.operatorsMenu-item {
+  color: @color-grey-dark;
+  font-size: 1rem;
+  line-height: 1.6rem;
+}
+
+.operatorsMenu-item > a {
+  color: @color-grey-dark;
+  position: relative;
+  display: block;
+  &:hover {
+    color: @color-black;
+  }
+  &:hover:after {
+    content: "\276F";
+    display: inline-block;
+    position: absolute;
+    right: @space-tiny;
+  }
+}

@@ -1,5 +1,7 @@
 node_modules
 build
+ignore
 
 *.sublime-project
 *.sublime-workspace
+.idea

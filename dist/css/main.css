@@ -1,22 +1,82 @@
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro);
 @import url(http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500);
+@import url(http://fonts.googleapis.com/css?family=Signika);
+.pageRow {
+  position: relative;
+  width: 1060px;
+  margin: 0 auto;
+}
+.pageRow > * {
+  display: inline-block;
+  margin-left: -22px;
+}
+.pageRow > *:first-child {
+  width: 218px;
+  margin-right: 22px;
+}
+.pageRow > *:last-child {
+  width: 820px;
+}
+.pageRow + .pageRow {
+  margin-top: 10px;
+}
+.operatorsMenu-container {
+  padding-right: 36px;
+  box-sizing: border-box;
+  height: calc(100vh - 100px);
+}
+.operatorsMenu {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  overflow-y: scroll;
+  height: 100%;
+}
+.operatorsMenu-category {
+  text-transform: uppercase;
+  font-size: 0.7em;
+  color: #a7a7a7;
+}
+.operatorsMenu-item + .operatorsMenu-category {
+  margin-top: 22px;
+}
+.operatorsMenu-item {
+  color: #7c7c7c;
+  font-size: 1rem;
+  line-height: 1.6rem;
+}
+.operatorsMenu-item > a {
+  color: #7c7c7c;
+  position: relative;
+  display: block;
+}
+.operatorsMenu-item > a:hover {
+  color: #323232;
+}
+.operatorsMenu-item > a:hover:after {
+  content: "\276F";
+  display: inline-block;
+  position: absolute;
+  right: 5px;
+}
+.sandbox-container {
+  position: absolute;
+}
 .sandbox {
   background: #ffffff;
   width: 820px;
-  margin: 0 auto;
-  margin-top: 20px;
   border-radius: 2px;
   -webkit-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
   -moz-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
   box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
 }
-.sandbox .function-box {
+.sandbox .operator-box {
   border: 1px solid rgba(0, 0, 0, 0.06);
-  padding: 24px;
+  padding: 22px;
   text-align: center;
-  cursor: pointer;
   position: relative;
 }
-.sandbox .function-box::before {
+.sandbox .operator-box::before {
   content: '';
   display: block;
   position: absolute;
@@ -28,7 +88,7 @@
   -moz-box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.17);
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.17);
 }
-.sandbox .function-box::after {
+.sandbox .operator-box::after {
   content: '';
   display: block;
   position: absolute;
@@ -40,50 +100,87 @@
   -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
 }
-.sandbox .function-box .function-box-label {
-  font-family: Source Code Pro, monospace;
+.sandbox .operator-box .operator-box-label {
+  font-family: 'Source Code Pro', monospace;
   font-weight: 400;
   font-size: 2rem;
 }
-.sandbox .function-box select {
-  z-index: 2000;
-  position: absolute;
-  opacity: 0.01;
-  width: 0px;
-  height: 0px;
-  left: 54px;
-  margin-top: 10px;
-}
-.sandbox .function-box .function-box-dropdown {
-  width: 32px;
-  height: 32px;
-  background-color: transparent;
+.diagramCompletion {
   display: inline-block;
-  position: absolute;
-  left: 22px;
-  margin-top: 4px;
-  transition-property: box-shadow;
-  transition-duration: 100ms;
+  position: relative;
+  width: 16px;
+  height: 44px;
+  margin: 0 -8px;
 }
-.sandbox .function-box .function-box-dropdown .function-box-dropdown-arrow {
-  width: 0;
-  height: 0;
-  border-right: 8px solid transparent;
-  border-top: 14px solid #bbbbbb;
-  border-left: 8px solid transparent;
-  display: inline-block;
-  margin-top: 9px;
-  transition-property: border-top;
-  transition-duration: 100ms;
+.diagramCompletion-inner {
+  width: 2px;
+  height: 50%;
+  margin-left: 7px;
+  margin-top: 11px;
+  background-color: #323232;
 }
-.sandbox .function-box:hover .function-box-dropdown {
-  background-color: white;
+.diagramCompletion.is-draggable {
+  cursor: ew-resize;
+}
+.diagramCompletion.is-draggable:hover .diagramCompletion-inner {
   -webkit-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
   -moz-box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
   box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.17);
 }
-.sandbox .function-box:hover .function-box-dropdown .function-box-dropdown-arrow {
-  border-top: 14px solid #888888;
+.diagramCompletion.is-tall .diagramCompletion-inner {
+  height: 100%;
+  margin-top: 0;
+}
+.marble {
+  width: 32px;
+  height: 32px;
+  position: relative;
+  display: inline-block;
+  margin: -16px;
+  top: -6px;
+  cursor: default;
+}
+.marble.is-draggable {
+  cursor: ew-resize;
+}
+.marble.is-draggable:hover svg.marble-inner {
+  -webkit-filter: drop-shadow(0px 3px 2px rgba(0, 0, 0, 0.26));
+  filter: drop-shadow(0px 3px 2px rgba(0, 0, 0, 0.26));
+}
+.marble-content {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  margin: 0;
+  text-align: center;
+  line-height: 32px;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
+}
+svg.marble-inner {
+  overflow: visible;
+  width: 32px;
+  height: 32px;
+}
+.marble-shape {
+  stroke: #323232;
+  fill: #3ea1cb;
+}
+.marble-shape--color1 {
+  fill: #3ea1cb;
+}
+.marble-shape--color2 {
+  fill: #82d736;
+}
+.marble-shape--color3 {
+  fill: #ffcb46;
+}
+.marble-shape--color4 {
+  fill: #ff6946;
 }
 .diagram {
   position: relative;
@@ -91,8 +188,14 @@
   width: 100%;
   height: 96px;
   overflow: visible;
+  cursor: default;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
 }
-.diagram .arrow {
+.diagram-arrow {
   background-color: #323232;
   height: 2px;
   position: absolute;
@@ -100,7 +203,7 @@
   left: 22px;
   right: 22px;
 }
-.diagram .arrow-head {
+.diagram-arrowHead {
   width: 0;
   height: 0;
   border-top: 8px solid transparent;
@@ -111,53 +214,131 @@
   position: absolute;
   top: 41px;
 }
-.diagram .marbles {
+.diagram-body {
   position: absolute;
   left: 70px;
   right: 70px;
   top: 48px;
-  height: 1px;
+  height: 44px;
+  margin-top: -22px;
 }
-.diagram .marbles .marble-container {
-  width: 32px;
-  height: 32px;
-  position: relative;
-  display: inline-block;
-  margin: -16px;
-}
-.diagram .marbles .marble-container.draggable {
-  cursor: ew-resize;
-}
-.diagram .marbles .marble-container .marble-content {
+.github-fork-ribbon {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  margin: 0;
+  padding: 2px 0;
+  background-color: #a7a7a7;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(rgba(0, 0, 0, 0.15)));
+  background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+  background-image: -moz-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+  background-image: -ms-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+  background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15));
+  -webkit-box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.5);
+  font: 700 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  z-index: 9999;
+  pointer-events: auto;
+}
+.github-fork-ribbon a,
+.github-fork-ribbon a:hover {
+  color: #fff;
+  text-decoration: none;
+  text-shadow: 0 -1px rgba(0, 0, 0, 0.5);
   text-align: center;
-  line-height: 32px;
+  width: 200px;
+  line-height: 20px;
+  display: inline-block;
+  padding: 2px 0;
+  border-width: 1px 0;
+  border-style: dotted;
+  border-color: #fff;
+  border-color: rgba(255, 255, 255, 0.7);
 }
-.diagram .marbles .marble-container svg.marble {
-  overflow: visible;
-  width: 32px;
-  height: 32px;
+.github-fork-ribbon-wrapper {
+  width: 150px;
+  height: 150px;
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  z-index: 9999;
+  pointer-events: none;
 }
-.diagram .marbles .marble-container circle.marble {
-  stroke: #323232;
-  fill: #3ea1cb;
+.github-fork-ribbon-wrapper.fixed {
+  position: fixed;
 }
-.diagram .marbles .marble-container circle.marble.marble-color-1 {
-  fill: #3ea1cb;
+.github-fork-ribbon-wrapper.left {
+  left: 0;
 }
-.diagram .marbles .marble-container circle.marble.marble-color-2 {
-  fill: #82d736;
+.github-fork-ribbon-wrapper.right {
+  right: 0;
 }
-.diagram .marbles .marble-container circle.marble.marble-color-3 {
-  fill: #ffcb46;
+.github-fork-ribbon-wrapper.left-bottom {
+  position: fixed;
+  top: inherit;
+  bottom: 0;
+  left: 0;
 }
-.diagram .marbles .marble-container circle.marble.marble-color-4 {
-  fill: #ff6946;
+.github-fork-ribbon-wrapper.right-bottom {
+  position: fixed;
+  top: inherit;
+  bottom: 0;
+  right: 0;
+}
+.github-fork-ribbon-wrapper.right .github-fork-ribbon {
+  top: 42px;
+  right: -43px;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+.github-fork-ribbon-wrapper.left .github-fork-ribbon {
+  top: 42px;
+  left: -43px;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+.github-fork-ribbon-wrapper.left-bottom .github-fork-ribbon {
+  top: 80px;
+  left: -43px;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+.github-fork-ribbon-wrapper.right-bottom .github-fork-ribbon {
+  top: 80px;
+  right: -43px;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
 }
 body {
+  position: relative;
   background: #ececec;
+  font-family: 'Source Sans Pro', sans-serif;
+  color: #323232;
+}
+a {
+  color: #3ea1cb;
+}
+.pageTitle {
+  font-family: 'Signika', Helvetica, serif;
+  color: #7c7c7c;
+}
+.valueProposition {
+  color: #7c7c7c;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  right: 22px;
+  color: #7c7c7c;
 }

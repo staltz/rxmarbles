@@ -1,58 +1,109 @@
-+ DONE React framework with hello world
-+ DONE Upgrade to React 0.11
-+ DONE Render streams with React and HTML
-+ DONE Add HTML5 boilerplate, normalize.css
-+ DONE Make styles as lesscss, gulp task to compile it to main.css
-+ DONE Style the streams as a horizontal diagram
-+ DONE Style the arrow head on the streams
-+ DONE Refactor methods out of streams.coffee
-+ DONE Sandbox view itself accesses controllers/streams
-+ DONE Style the marble function box
-+ DONE Defined required props for some React views
-+ DONE Marbles can be dragged
-+ DONE Controllers deserialize InputStream exported serializedStream
-+ DONE Merged stream updates in real time when child streams are dragged
-+ DONE Refactor views: components OutputStream, InputStream, Stream
-+ DONE Introduce virtual-dom for output stream view
-+ DONE More generalized handling of examples
-+ DONE FunctionBox dropdown to choose other examples
+DONE React framework with hello world
+DONE Upgrade to React 0.11
+DONE Render streams with React and HTML
+DONE Add HTML5 boilerplate, normalize.css
+DONE Make styles as lesscss, gulp task to compile it to main.css
+DONE Style the streams as a horizontal diagram
+DONE Style the arrow head on the streams
+DONE Refactor methods out of streams.coffee
+DONE Sandbox view itself accesses controllers/streams
+DONE Style the marble function box
+DONE Defined required props for some React views
+DONE Marbles can be dragged
+DONE Controllers deserialize InputStream exported serializedStream
+DONE Merged stream updates in real time when child streams are dragged
+DONE Refactor views: components OutputStream, InputStream, Stream
+DONE Introduce virtual-dom for output stream view
+DONE More generalized handling of examples
+DONE FunctionBox dropdown to choose other examples
 >>> v0.1.0
 
-+ DONE Fix Firefox SVG marble styling
-- TODO Examples for Observable Instance Methods, such as debounce
-  - Should each example have an 'apply' field? (which is a function)
-- TODO Fix Firefox <select> clicks
-  - Also, UX-wise, make the world's best function box <select> alternative
+DONE Fix Firefox SVG marble styling
+DONE Side menu with list of operators
+DONE RxMarbles title and proposition value
+DONE Examples for Observable Instance Methods
+DONE OperatorsMenu should stretch its height
+DONE Version number and author at the bottom of the page
 >>> v0.2.0
 
-- TODO RxMarbles title and proposition value
-- TODO Webpage footer
-- TODO Fix Safari SVG marble styling
-- TODO README.md
->>> v0.2.1
+DONE Add reference to RxJS and its version in the footer
+DONE README.md
+DONE Styling for dragging a marble
+DONE Categories subheaders in the operators menu
+DONE "Coming soon" sign, rendered in OperatorsMenu
+DONE Polish for first release
+  DONE Make marble content not selectable
+  DONE Loading state before the sandbox shows with content
+  DONE Optimizing app.js size, and using uglify for production
+  DONE Customized favicon
+  DONE Added Google Analytics tracking
+DONE Remove the no-longer-needed loading indicator
+>>> v0.3.0 ## RC
+>>> v1.0.0
 
-- TODO Styling for dragging a marble
-  - z-depth and side arrows
-- TODO Render each stream with a different regular polygon?
-- TODO Render also the stream completion time marker?
->>> v0.2.2
+DONE Added examples: sum, any, delayWithSelector
+DONE Fixed output marbles timing mismatch with input marbles
+DONE Render the stream completion time marker on input diagrams
+DONE Style the completion marker: more click region, larger height
+DONE Refactor diagram styles and classnames
+DONE Render nondraggable Completion for output diagram
+DONE Controller logic to include completion time
+DONE Update examples with regard to completion time
+DONE New Model View Interpreter architecture, for OperatorsMenu
+DONE New MVI architecture for Sandbox
+DONE Rename interpreters to intents
+DONE Style and logic for tall/short completion element
+DONE Delete old sandbox models, views and sub views
+DONE Bug: slowly dragging should change marble time
+>>> v1.1.0
 
-- TODO Interactively add marbles to an InputStream
-- TODO Interactively remove marbles from an InputStream
-- TODO Add many examples to the dropdown
-- TODO Render metastreams, make flatMap example
-- TODO Use virtual-dom for all views, only when virtual-dom events work
-  - See modules under Raynos/mercury
-  - TODO Refactor to conform to MVC philosophy
-    - Model is the representation of data and state
-      - Input: interpreted interaction streams
-      - Output: data streams
-    - View renders to DOM and interfaces with the user
-      - Input: data streams
-      - Output: raw interaction streams
-    - Controller: interprets user interaction and notifies model of changes
-      - Input: raw interaction streams
-      - Output: interpreted interaction streams
-    - Marble should export only mouseDownStream, mouseMoveStream, mouseUpStream
-    - All the intelligent streams in Marble should go to some controller class
-      which observes Marble.mouse____Stream
+TODO Bug: some marbles can't be dragged, error 'invalid parent' is shown
+>>> v1.1.1
+
+TODO Build scripts to replace gulp (?)
+TODO Fix referential transparency inconsistency
+  Replace models/sandbox-ouput combineLatest with combinePrevious
+TODO Disambiguate simultaneous marbles
+  Vertically spread them
+  Change example takeLast(1) to takeLast(2)
+>>>
+
+TODO Embeddable rxmarbles
+  app.js 'exports' a function which can be called in <script> in index.html
+>>>
+
+TODO Render each stream with a different regular polygon
+TODO Use shape metaphor in operator box
+  For instance, combineLatest, map, zip, etc
+>>>
+
+TODO Browser back button selects past operators
+TODO Render stream errors
+TODO Add examples related to errors
+TODO Short text description of each operator, and link to official docs
+>>>
+
+TODO Animation for sandbox appearing when example selected
+  Also animation for clicking on operator box http://publicis-indonesia.github.io/Waves/
+TODO Render metastreams in 'window' example
+TODO Add examples groupBy, flatMap, concatMap, switch
+>>>
+
+TODO Interactively add marbles to an InputStream
+TODO Interactively remove marbles from an InputStream
+>>>
+
+TODO Allows customizing the expression in some operators
+  - Use `new Function("...")`
+TODO Render lists of marbles for the buffer example
+>>>
+
+TODO Interactively add errors to an InputStream
+>>>
+
+TODO Hovering over a diagram shows mapping arrows
+>>>
+
+TODO Save a png snapshot of the sandbox
+>>>
+
