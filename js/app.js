@@ -24642,7 +24642,7 @@ module.exports = {
     inputs: [[{ t: 0, d: 1 }, { t: 26, d: 2 }, { t: 34, d: 1 }, { t: 40, d: 1 }, { t: 45, d: 2 }, { t: 79, d: 1 }]],
     apply: function (inputs, scheduler) {
       return inputs[0].throttleWithSelector(function (x) {
-        return Rx.Observable.timer(Number(x.content) * 10, 1000, scheduler);
+        return Rx.Observable.timer(Number(x.get("content")) * 10, 1000, scheduler);
       });
     }
   }
