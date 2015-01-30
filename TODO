@@ -63,6 +63,9 @@ DONE Add withLatestFrom example
 DONE Review all RxJS operators to remove deprecated
 >>> v1.2.0
 
+DONE Fix build-production script
+>>> v1.2.1
+
 TODO Build scripts to replace gulp (?)
 TODO Fix referential transparency inconsistency
   Replace models/sandbox-ouput combineLatest with combinePrevious
