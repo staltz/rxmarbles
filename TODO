@@ -66,16 +66,14 @@ DONE Review all RxJS operators to remove deprecated
 DONE Fix build-production script
 >>> v1.2.1
 
-TODO Build scripts to replace gulp (?)
-TODO Fix referential transparency inconsistency
-  Replace models/sandbox-ouput combineLatest with combinePrevious
+TODO Embeddable rxmarbles
+  app.js 'exports' a function which can be called in <script> in index.html
+>>>
+
 TODO Disambiguate simultaneous marbles
   Vertically spread them
   Change example takeLast(1) to takeLast(2)
->>>
-
-TODO Embeddable rxmarbles
-  app.js 'exports' a function which can be called in <script> in index.html
+TODO Initial affordance animation in diagram using internal state
 >>>
 
 TODO Render each stream with a different regular polygon
