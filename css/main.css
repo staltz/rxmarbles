@@ -59,10 +59,9 @@
   position: absolute;
   right: 5px;
 }
-.sandbox-container {
-  position: absolute;
-}
 .sandbox {
+  position: absolute;
+  top: 0;
   background: #ffffff;
   width: 820px;
   border-radius: 2px;
@@ -337,8 +336,8 @@ a {
   color: #7c7c7c;
 }
 .footer {
-  position: absolute;
-  bottom: 0;
+  position: fixed;
+  bottom: 2px;
   right: 22px;
   color: #7c7c7c;
 }
