@@ -73,7 +73,7 @@ module.exports = {
     ],
     "apply": function(inputs, scheduler) {
       return inputs[0].throttleWithSelector(x =>
-        Rx.Observable.timer(Number(x.content) * 10, 1000, scheduler)
+        Rx.Observable.timer(Number(x.get('content')) * 10, 1000, scheduler)
       );
     }
   }

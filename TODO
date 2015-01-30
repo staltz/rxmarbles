@@ -58,7 +58,7 @@ DONE Bug: slowly dragging should change marble time
 >>> v1.1.0
 
 DONE Cycle.js rewrite
-TODO Fix throttleWithSelector
+DONE Fix throttleWithSelector
 TODO Add withLatestFrom example
 >>> v1.2.0
 
