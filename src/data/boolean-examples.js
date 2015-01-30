@@ -1,23 +1,23 @@
 var Rx = require('cyclejs').Rx;
 
 module.exports = {
-  "all": {
-    "label": "all(x => x < 10)",
+  "every": {
+    "label": "every(x => x < 10)",
     "inputs": [
       [{t:5, d:1}, {t:15, d:2}, {t:25, d:3}, {t:35, d:4}, {t:65, d:5}, 80]
     ],
     "apply": function(inputs) {
-      return inputs[0].all(x => (x.get('content') < 10));
+      return inputs[0].every(x => (x.get('content') < 10));
     }
   },
 
-  "any": {
-    "label": "any(x => x > 10)",
+  "some": {
+    "label": "some(x => x > 10)",
     "inputs": [
       [{t:5, d:2}, {t:15, d:30}, {t:25, d:22}, {t:35, d:5}, {t:45, d:60}, {t:55, d:1}]
     ],
     "apply": function(inputs) {
-      return inputs[0].any(x => (x.get('content') > 10));
+      return inputs[0].some(x => (x.get('content') > 10));
     }
   },
 

@@ -56,23 +56,23 @@ module.exports = {
     }
   },
 
-  "throttle": {
-    "label": "throttle",
+  "debounce": {
+    "label": "debounce",
     "inputs": [
       [{t:0, d:1}, {t:26, d:2}, {t:34, d:3}, {t:40, d:4}, {t:45, d:5}, {t:79, d:6}]
     ],
     "apply": function(inputs, scheduler) {
-      return inputs[0].throttle(10, scheduler);
+      return inputs[0].debounce(10, scheduler);
     }
   },
 
-  "throttleWithSelector": {
-    "label": "throttleWithSelector(x => Rx.Observable.timer(10 * x))",
+  "debounceWithSelector": {
+    "label": "debounceWithSelector(x => Rx.Observable.timer(10 * x))",
     "inputs": [
       [{t:0, d:1}, {t:26, d:2}, {t:34, d:1}, {t:40, d:1}, {t:45, d:2}, {t:79, d:1}]
     ],
     "apply": function(inputs, scheduler) {
-      return inputs[0].throttleWithSelector(x =>
+      return inputs[0].debounceWithSelector(x =>
         Rx.Observable.timer(Number(x.get('content')) * 10, 1000, scheduler)
       );
     }

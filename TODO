@@ -60,7 +60,7 @@ DONE Bug: slowly dragging should change marble time
 DONE Cycle.js rewrite
 DONE Fix throttleWithSelector
 DONE Add withLatestFrom example
-TODO Review all RxJS operators to remove deprecated
+DONE Review all RxJS operators to remove deprecated
 >>> v1.2.0
 
 TODO Build scripts to replace gulp (?)

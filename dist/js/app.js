@@ -24191,21 +24191,21 @@ module.exports = {
 var Rx = require("cyclejs").Rx;
 
 module.exports = {
-  all: {
-    label: "all(x => x < 10)",
+  every: {
+    label: "every(x => x < 10)",
     inputs: [[{ t: 5, d: 1 }, { t: 15, d: 2 }, { t: 25, d: 3 }, { t: 35, d: 4 }, { t: 65, d: 5 }, 80]],
     apply: function (inputs) {
-      return inputs[0].all(function (x) {
+      return inputs[0].every(function (x) {
         return x.get("content") < 10;
       });
     }
   },
 
-  any: {
-    label: "any(x => x > 10)",
+  some: {
+    label: "some(x => x > 10)",
     inputs: [[{ t: 5, d: 2 }, { t: 15, d: 30 }, { t: 25, d: 22 }, { t: 35, d: 5 }, { t: 45, d: 60 }, { t: 55, d: 1 }]],
     apply: function (inputs) {
-      return inputs[0].any(function (x) {
+      return inputs[0].some(function (x) {
         return x.get("content") > 10;
       });
     }
@@ -24639,19 +24639,19 @@ module.exports = {
     }
   },
 
-  throttle: {
-    label: "throttle",
+  debounce: {
+    label: "debounce",
     inputs: [[{ t: 0, d: 1 }, { t: 26, d: 2 }, { t: 34, d: 3 }, { t: 40, d: 4 }, { t: 45, d: 5 }, { t: 79, d: 6 }]],
     apply: function (inputs, scheduler) {
-      return inputs[0].throttle(10, scheduler);
+      return inputs[0].debounce(10, scheduler);
     }
   },
 
-  throttleWithSelector: {
-    label: "throttleWithSelector(x => Rx.Observable.timer(10 * x))",
+  debounceWithSelector: {
+    label: "debounceWithSelector(x => Rx.Observable.timer(10 * x))",
     inputs: [[{ t: 0, d: 1 }, { t: 26, d: 2 }, { t: 34, d: 1 }, { t: 40, d: 1 }, { t: 45, d: 2 }, { t: 79, d: 1 }]],
     apply: function (inputs, scheduler) {
-      return inputs[0].throttleWithSelector(function (x) {
+      return inputs[0].debounceWithSelector(function (x) {
         return Rx.Observable.timer(Number(x.get("content")) * 10, 1000, scheduler);
       });
     }
