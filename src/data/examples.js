@@ -1,7 +1,6 @@
 /*
  * The database of all predefined examples in the app.
  */
-var Rx = require('rx');
 var transformExamples = require('rxmarbles/data/transform-examples');
 var combineExamples = require('rxmarbles/data/combine-examples');
 var filterExamples = require('rxmarbles/data/filter-examples');

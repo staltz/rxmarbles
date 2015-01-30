@@ -1,15 +1,14 @@
-/*
- * App entry-point.
- */
-var binder = require('rxmarbles/binder');
-var OperatorsMenuModel = require('rxmarbles/models/operators-menu');
-var OperatorsMenuView = require('rxmarbles/views/operators-menu');
-var OperatorsMenuIntent = require('rxmarbles/intents/operators-menu');
-var SandboxModel = require('rxmarbles/models/sandbox');
-var SandboxView = require('rxmarbles/views/sandbox');
-var SandboxIntent = require('rxmarbles/intents/sandbox');
-var renderer = require('rxmarbles/renderer');
+var Cycle = require('cyclejs');
+var AppModel = require('rxmarbles/app-model');
+var AppView = require('rxmarbles/app-view');
+var Renderer = Cycle.createRenderer('.js-appContainer');
+var OperatorsMenuComponent = require('rxmarbles/components/operators-menu');
+var SandboxComponent = require('rxmarbles/components/sandbox/sandbox');
+var DiagramComponent = require('rxmarbles/components/diagram');
 
-binder(OperatorsMenuModel, OperatorsMenuView, OperatorsMenuIntent);
-binder(SandboxModel, SandboxView, SandboxIntent);
-renderer.init();
+Cycle.registerCustomElement('x-operators-menu', OperatorsMenuComponent);
+Cycle.registerCustomElement('x-sandbox', SandboxComponent);
+Cycle.registerCustomElement('x-diagram', DiagramComponent);
+
+Renderer.inject(AppView);
+AppView.inject(AppModel);

@@ -1,4 +1,4 @@
-var Rx = require('rx');
+var Rx = require('cyclejs').Rx;
 
 module.exports = {
   "combineLatest": {
@@ -8,9 +8,9 @@ module.exports = {
       [{t:10, d:"A"}, {t:25, d:"B"}, {t:50, d:"C"}, {t:57, d:"D"}]
     ],
     "apply": function(inputs) {
-      return Rx.Observable.combineLatest(inputs[0], inputs[1], function(x, y) {
-        return "" + x.content + y.content;
-      });
+      return Rx.Observable.combineLatest(inputs[0], inputs[1],
+        (x, y) => ("" + x.get('content') + y.get('content'))
+      );
     }
   },
 
@@ -64,9 +64,9 @@ module.exports = {
       [{t:10, d:"A"}, {t:25, d:"B"}, {t:50, d:"C"}, {t:57, d:"D"}]
     ],
     "apply": function(inputs) {
-      return Rx.Observable.zip(inputs[0], inputs[1], function(x, y) {
-        return "" + x.content + y.content;
-      });
+      return Rx.Observable.zip(inputs[0], inputs[1],
+        (x, y) => ("" + x.get('content') + y.get('content'))
+      );
     }
   }
 };

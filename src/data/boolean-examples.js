@@ -1,4 +1,4 @@
-var Rx = require('rx');
+var Rx = require('cyclejs').Rx;
 
 module.exports = {
   "all": {
@@ -7,7 +7,7 @@ module.exports = {
       [{t:5, d:1}, {t:15, d:2}, {t:25, d:3}, {t:35, d:4}, {t:65, d:5}, 80]
     ],
     "apply": function(inputs) {
-      return inputs[0].all(function(x) { return x.content < 10; });
+      return inputs[0].all(x => (x.get('content') < 10));
     }
   },
 
@@ -17,7 +17,7 @@ module.exports = {
       [{t:5, d:2}, {t:15, d:30}, {t:25, d:22}, {t:35, d:5}, {t:45, d:60}, {t:55, d:1}]
     ],
     "apply": function(inputs) {
-      return inputs[0].any(function(x) { return x.content > 10; });
+      return inputs[0].any(x => (x.get('content') > 10));
     }
   },
 
@@ -28,7 +28,7 @@ module.exports = {
     ],
     "apply": function(inputs) {
       return inputs[0]
-        .map(function (x) { return x.content; })
+        .map(x => (x.get('content')))
         .contains(22);
     }
   },
@@ -40,9 +40,9 @@ module.exports = {
       [{t:2, d:1}, {t:20, d:2}, {t:40, d:3}, {t:70, d:4}, {t:77, d:5}, 85]
     ],
     "apply": function(inputs) {
-      return inputs[0].sequenceEqual(inputs[1], function(x, y) {
-        return x.content === y.content;
-      });
+      return inputs[0].sequenceEqual(inputs[1],
+        (x, y) => (x.get('content') === y.get('content'))
+      );
     }
   }
 };

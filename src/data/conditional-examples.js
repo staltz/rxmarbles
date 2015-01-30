@@ -1,4 +1,4 @@
-var Rx = require('rx');
+var Rx = require('cyclejs').Rx;
 
 module.exports = {
   "amb": {

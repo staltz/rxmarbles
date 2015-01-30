@@ -9,25 +9,30 @@
   "license": "BSD 3-Clause",
   "main": "js/app.js",
   "dependencies": {
-    "rx": "2.3.12",
-    "virtual-dom": "0.0.19",
-    "virtual-hyperscript": "4.4.0",
-    "dom-delegator": "^9.0.1"
+    "cyclejs": "0.10.1",
+    "immutable": "^3.6.2"
   },
   "devDependencies": {
-    "browserify": "~2.36.0",
-    "gulp": "~3.8.6",
-    "gulp-browserify": "^0.5.0",
-    "gulp-less": "^1.3.2",
-    "gulp-rimraf": "^0.1.0",
-    "gulp-uglify": "^0.3.1",
-    "gulp-util": "^2.2.20",
+    "6to5": "^2.12.6",
+    "browserify": "8.0.2",
+    "less": "^2.2.0",
     "uglify-js": "~2.4.13",
     "watchify": "~0.4.1"
   },
   "scripts": {
-    "preinstall": "rm -rf build && rm -rf node_modules",
-    "postinstall": "ln -s ../src node_modules/rxmarbles && ln -s ../package.json node_modules/package.json",
-    "update-gh-pages": "git checkout gh-pages && git merge master && rm dist/js/app.js && gulp build && git add dist/js/app.js && git commit --amend --no-edit && git push origin gh-pages && git checkout master"
+    "preinstall": "rm -rf build && rm -rf node_modules && mkdir -p ignore/es5src",
+    "postinstall": "ln -s ../ignore/es5src node_modules/rxmarbles && ln -s ../package.json node_modules/package.json",
+    "update-gh-pages": "git checkout gh-pages && git merge master && rm dist/js/app.js && gulp build && git add dist/js/app.js && git commit --amend --no-edit && git push origin gh-pages && git checkout master",
+    "less": "lessc styles/main.less dist/css/main.css",
+    "6to5": "mkdir -p ignore/es5src && 6to5 src --out-dir ignore/es5src",
+    "browserify": "browserify -e ignore/es5src/app.js --outfile dist/js/app.js",
+    "build": "npm run less && npm run 6to5 && npm run browserify",
+    "build-production": "npm run less && npm run browserify-production && npm run uglify",
+    "uglify": "uglifyjs dist/cycle.js -o dist/cycle.min.js",
+    "docs": "node ./scripts/make-api-docs.js",
+    "release": "npm run release-patch",
+    "release-patch": "git checkout master && npm run build && git commit -a -m 'Compiled' && npm version patch && git push origin master --tags && npm publish",
+    "release-minor": "git checkout master && npm run build && git commit -a -m 'Compiled' && npm version minor && git push origin master --tags && npm publish",
+    "release-major": "git checkout master && npm run build && git commit -a -m 'Compiled' && npm version major && git push origin master --tags && npm publish"
   }
 }

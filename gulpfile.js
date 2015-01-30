@@ -21,6 +21,7 @@ gulp.task('dev-browserify', [], function() {
   gutil.log(gutil.colors.yellow("Packing with browserify..."));
   return gulp.src(['./src/**/*.js'])
     .pipe(browserify({
+      transform: ['6to5ify'],
       insertGlobals: true,
       debug: true
     }))
@@ -31,6 +32,7 @@ gulp.task('browserify', [], function() {
   gutil.log(gutil.colors.yellow("Packing with browserify..."));
   return gulp.src(['./src/**/*.js'])
     .pipe(browserify({
+      transform: ['6to5ify'],
       insertGlobals: false,
       debug: false,
       detectGlobals: false

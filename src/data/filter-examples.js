@@ -1,4 +1,4 @@
-var Rx = require('rx');
+var Rx = require('cyclejs').Rx;
 
 module.exports = {
   "distinct": {
@@ -7,7 +7,7 @@ module.exports = {
       [{t:5, d:1}, {t:20, d:2}, {t:35, d:2}, {t:60, d:1}, {t:70, d:3}]
     ],
     "apply": function(inputs) {
-      return inputs[0].distinct(function(x) { return x.content; });
+      return inputs[0].distinct(x => x.get('content'));
     }
   },
 
@@ -17,7 +17,7 @@ module.exports = {
       [{t:5, d:1}, {t:20, d:2}, {t:35, d:2}, {t:60, d:1}, {t:70, d:3}]
     ],
     "apply": function(inputs) {
-      return inputs[0].distinctUntilChanged(function(x) { return x.content; });
+      return inputs[0].distinctUntilChanged(x => x.get('content'));
     }
   },
 
@@ -37,7 +37,7 @@ module.exports = {
       [{t:5, d:2}, {t:15, d:30}, {t:25, d:22}, {t:35, d:5}, {t:45, d:60}, {t:55, d:1}]
     ],
     "apply": function(inputs) {
-      return inputs[0].filter(function(x) { return x.content > 10; });
+      return inputs[0].filter(x => (x.get('content') > 10));
     }
   },
 
@@ -47,7 +47,7 @@ module.exports = {
       [{t:5, d:2}, {t:15, d:30}, {t:25, d:22}, {t:35, d:5}, {t:45, d:60}, {t:55, d:1}]
     ],
     "apply": function(inputs, scheduler) {
-      return inputs[0].find(function(x) { return x.content > 10; });
+      return inputs[0].find(x => (x.get('content') > 10));
     }
   },
 
@@ -78,9 +78,9 @@ module.exports = {
       [{t:15, d:true}, {t:35, d:false}, {t:55, d:true}]
     ],
     "apply": function(inputs) {
-      inputs[0].subscribe(function(x) { return 0; });
+      inputs[0].subscribe(() => 0);
       var subject = new Rx.Subject();
-      inputs[1].subscribe(function(x) { subject.onNext(x.content); });
+      inputs[1].subscribe(x => subject.onNext(x.get('content')));
       return inputs[0].pausable(subject);
     }
   },
@@ -92,9 +92,9 @@ module.exports = {
       [{t:15, d:true}, {t:35, d:false}, {t:55, d:true}]
     ],
     "apply": function(inputs) {
-      inputs[0].subscribe(function(x) { return 0; });
+      inputs[0].subscribe(() => 0);
       var subject = new Rx.Subject();
-      inputs[1].subscribe(function(x) { subject.onNext(x.content); });
+      inputs[1].subscribe(x => subject.onNext(x.get('content')));
       return inputs[0].pausableBuffered(subject);
     }
   },

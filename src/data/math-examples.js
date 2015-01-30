@@ -1,4 +1,4 @@
-var Rx = require('rx');
+var Rx = require('cyclejs').Rx;
 
 module.exports = {
   // A clone of scan?
@@ -18,7 +18,7 @@ module.exports = {
       [{t:5, d:1}, {t:15, d:2}, {t:30, d:2}, {t:50, d:2}, {t:65, d:5}, 80]
     ],
     "apply": function(inputs) {
-      return inputs[0].average(function(x) { return x.content; });
+      return inputs[0].average(x => x.get('content'));
     }
   },
 
@@ -28,7 +28,7 @@ module.exports = {
       [{t:5, d:2}, {t:15, d:30}, {t:25, d:22}, {t:35, d:5}, {t:45, d:60}, {t:55, d:1}, 80]
     ],
     "apply": function(inputs) {
-      return inputs[0].count(function(x) { return x.content > 10; });
+      return inputs[0].count(x => (x.get('content') > 10));
     }
   },
 
@@ -38,13 +38,9 @@ module.exports = {
       [{t:5, d:2}, {t:15, d:30}, {t:25, d:22}, {t:35, d:5}, {t:45, d:60}, {t:55, d:1}, 80]
     ],
     "apply": function(inputs) {
-      return inputs[0].max(function(x, y) {
-        if (x.content > y.content) {
-          return 1;
-        }
-        if (x.content < y.content) {
-          return -1;
-        }
+      return inputs[0].max((x, y) => {
+        if (x.get('content') > y.get('content')) { return 1; }
+        if (x.get('content') < y.get('content')) { return -1; }
         return 0;
       });
     }
@@ -56,13 +52,9 @@ module.exports = {
       [{t:5, d:2}, {t:15, d:30}, {t:25, d:22}, {t:35, d:5}, {t:45, d:60}, {t:55, d:1}, 80]
     ],
     "apply": function(inputs) {
-      return inputs[0].min(function(x, y) {
-        if (x.content > y.content) {
-          return 1;
-        }
-        if (x.content < y.content) {
-          return -1;
-        }
+      return inputs[0].min((x, y) => {
+        if (x.get('content') > y.get('content')) { return 1; }
+        if (x.get('content') < y.get('content')) { return -1; }
         return 0;
       });
     }
@@ -74,9 +66,10 @@ module.exports = {
       [{t:5, d:1}, {t:15, d:2}, {t:25, d:3}, {t:35, d:4}, {t:65, d:5}, 80]
     ],
     "apply": function(inputs) {
-      return inputs[0].reduce(function(x, y) {
-        return {content: x.content + y.content, time: x.time, id: x.id+y.id};
-      });
+      return inputs[0].reduce((x, y) =>
+        y.set('content', x.get('content') + y.get('content'))
+         .set('id', x.get('id') + y.get('id'))
+      );
     }
   },
 
@@ -86,7 +79,7 @@ module.exports = {
       [{t:5, d:1}, {t:15, d:2}, {t:25, d:3}, {t:35, d:4}, {t:65, d:5}, 80]
     ],
     "apply": function(inputs) {
-      return inputs[0].sum(function(x) { return x.content; });
+      return inputs[0].sum(x => x.get('content'));
     }
   }
 };
