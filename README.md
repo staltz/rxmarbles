@@ -13,7 +13,7 @@ A webapp for experimenting with diagrams of [Rx](http://reactive-extensions.gith
 
 ## Implementation
 
-A JavaScript single page app, where the architecture is a simple MVC heavily dependent on RxJS. Some parts of the views render to the DOM using pure JavaScript APIs for DOM manipulation, some other parts use [virtual-dom](https://github.com/Matt-Esch/virtual-dom/) for optimizing performance.
+This is [Cycle.js](https://github.com/staltz/cycle) app. Use this as an example implementation of advanced custom elements in Cycle.
 
 ## Contributing
 
@@ -25,14 +25,8 @@ npm install
 
 The roadmap is entirely specified in the [TODO](https://github.com/staltz/rxmarbles/blob/master/TODO) file, which follows the [git-done](https://github.com/staltz/git-done) syntax. You can also use `git done` instead of `git commit` if you wish. For minor bug fixes, you won't need to deal with the TODO file. But if you're building a feature, remember to write a `DONE` entry before you commit and send the pull request.
 
-The build system is [gulp](http://gulpjs.com/). To develop, run in watch mode using the default task:
-
-```
-gulp
-```
+The build system is using npm scripts. To develop, build the project with `npm run build`.
 
 And access the site on your local machine as `file:///path/to/rxmarblesrepo/index.html`.
-
-To build the project with no watch mode, run the task `gulp dev-build` (development) or `gulp build` (production).
 
 Make a [pull request](https://github.com/staltz/rxmarbles/pulls) when you're ready.
