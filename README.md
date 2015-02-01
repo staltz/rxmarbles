@@ -13,7 +13,7 @@ A webapp for experimenting with diagrams of [Rx](http://reactive-extensions.gith
 
 ## Implementation
 
-This is [Cycle.js](https://github.com/staltz/cycle) app. Use this as an example implementation of advanced custom elements in Cycle.
+This is a [Cycle.js](https://github.com/staltz/cycle) app. Use this as an example implementation of advanced custom elements in Cycle.
 
 ## Contributing
 
