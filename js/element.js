@@ -7,9 +7,13 @@ var _interopRequire = function (obj) {
 
 var Cycle = _interopRequire(require("cyclejs"));
 
-var DiagramComponent = _interopRequire(require("rxmarbles/components/diagram"));
+var DiagramComponent = _interopRequire(require("rxmarbles/components/diagram/diagram"));
 
 var SandboxComponent = _interopRequire(require("rxmarbles/components/sandbox/sandbox"));
+
+var MarbleComponent = _interopRequire(require("rxmarbles/components/marble"));
+
+var DiagramCompletionComponent = _interopRequire(require("rxmarbles/components/diagram-completion"));
 
 var h = Cycle.h;
 
@@ -17,11 +21,13 @@ var SandboxPrototype = Object.create(HTMLElement.prototype);
 
 SandboxPrototype.createdCallback = function createdCallback() {
   var key = this.attributes.key.value;
+  Cycle.registerCustomElement("x-marble", MarbleComponent);
+  Cycle.registerCustomElement("x-diagram-completion", DiagramCompletionComponent);
   Cycle.registerCustomElement("x-diagram", DiagramComponent);
   Cycle.registerCustomElement("x-sandbox", SandboxComponent);
   var Renderer = Cycle.createRenderer(this);
   var View = Cycle.createView(function () {
-    return { vtree$: Cycle.Rx.Observable.just(h("x-sandbox", { attributes: { route: key } })) };
+    return { vtree$: Cycle.Rx.Observable.just(h("x-sandbox", { route: key })) };
   });
   Renderer.inject(View);
 };
@@ -29,7 +35,7 @@ SandboxPrototype.createdCallback = function createdCallback() {
 var XRxMarbles = document.registerElement("x-rxmarbles", {
   prototype: SandboxPrototype
 });
-},{"cyclejs":51,"rxmarbles/components/diagram":61,"rxmarbles/components/sandbox/sandbox":64}],2:[function(require,module,exports){
+},{"cyclejs":51,"rxmarbles/components/diagram-completion":61,"rxmarbles/components/diagram/diagram":65,"rxmarbles/components/marble":66,"rxmarbles/components/sandbox/sandbox":69}],2:[function(require,module,exports){
 
 },{}],3:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
@@ -17933,8 +17939,8 @@ function getEventsOrigDestMap(vtree) {
 
 function createContainerElement(tagName) {
   var elem = document.createElement('div');
-  elem.className = 'cycleCustomElementContainer-' + tagName.toUpperCase();
-  elem.cycleCustomElementAttributes = new InputProxy();
+  elem.className = 'cycleCustomElement-' + tagName.toUpperCase();
+  elem.cycleCustomElementProperties = new InputProxy();
   return elem;
 }
 
@@ -17975,7 +17981,7 @@ function forwardOriginEventsToDestinations(events, origDestMap) {
 function makeConstructor() {
   return function customElementConstructor(vtree) {
     this.type = 'Widget';
-    this.attributes = vtree.properties.attributes;
+    this.properties = vtree.properties;
     this.eventsOrigDestMap = getEventsOrigDestMap(vtree);
   };
 }
@@ -17990,7 +17996,7 @@ function makeInit(tagName, dataFlowNode) {
     forwardOriginEventsToDestinations(events, this.eventsOrigDestMap);
     renderer.inject(dfn);
     dfn._inCustomElement = true;
-    dfn.inject(elem.cycleCustomElementAttributes);
+    dfn.inject(elem.cycleCustomElementProperties);
     this.update(null, elem);
     return elem;
   };
@@ -17999,20 +18005,20 @@ function makeInit(tagName, dataFlowNode) {
 function makeUpdate() {
   return function updateCustomElement(prev, elem) {
     if (!elem ||
-      !elem.cycleCustomElementAttributes ||
-      !(elem.cycleCustomElementAttributes instanceof InputProxy) ||
-      !elem.cycleCustomElementAttributes.proxiedProps)
+      !elem.cycleCustomElementProperties ||
+      !(elem.cycleCustomElementProperties instanceof InputProxy) ||
+      !elem.cycleCustomElementProperties.proxiedProps)
     {
       return;
     }
-    var proxiedProps = elem.cycleCustomElementAttributes.proxiedProps;
+    var proxiedProps = elem.cycleCustomElementProperties.proxiedProps;
     for (var prop in proxiedProps) {
-      var attrStreamName = prop;
-      var attrName = prop.slice(0, -1);
-      if (proxiedProps.hasOwnProperty(attrStreamName) &&
-        this.attributes.hasOwnProperty(attrName))
+      var propStreamName = prop;
+      var propName = prop.slice(0, -1);
+      if (proxiedProps.hasOwnProperty(propStreamName) &&
+        this.properties.hasOwnProperty(propName))
       {
-        proxiedProps[attrStreamName].onNext(this.attributes[attrName]);
+        proxiedProps[propStreamName].onNext(this.properties[propName]);
       }
     }
   };
@@ -23441,6 +23447,106 @@ module.exports = {
 },{}],61:[function(require,module,exports){
 "use strict";
 
+var _interopRequire = function (obj) {
+  return obj && (obj["default"] || obj);
+};
+
+var Cycle = _interopRequire(require("cyclejs"));
+
+var mergeStyles = require("rxmarbles/styles/utils").mergeStyles;
+var textUnselectable = require("rxmarbles/styles/utils").textUnselectable;
+var elevation1Style = require("rxmarbles/styles/utils").elevation1Style;
+var Rx = Cycle.Rx;
+var h = Cycle.h;
+
+var DiagramCompletionComponentModel = Cycle.createModel(function (Properties, Intent) {
+  return {
+    time$: Properties.get("time$"),
+    isDraggable$: Properties.get("isDraggable$").startWith(false),
+    isTall$: Properties.get("isTall$").startWith(false),
+    style$: Properties.get("style$").startWith({}),
+    isHighlighted$: Rx.Observable.merge(Intent.get("startHighlight$").map(function () {
+      return true;
+    }), Intent.get("stopHighlight$").map(function () {
+      return false;
+    })).startWith(false)
+  };
+});
+
+var DiagramCompletionComponentView = Cycle.createView(function (Model) {
+  var createContainerStyle = function (inputStyle) {
+    return {
+      display: "inline-block",
+      position: "relative",
+      width: "calc(8 * " + inputStyle.thickness + ")",
+      height: inputStyle.height,
+      margin: "0 calc(-4 * " + inputStyle.thickness + ")"
+    };
+  };
+
+  var createInnerStyle = function (inputStyle) {
+    return {
+      width: inputStyle.thickness,
+      height: "50%",
+      marginLeft: "calc(3.5 * " + inputStyle.thickness + ")",
+      marginTop: "calc(" + inputStyle.height + " / 4.0)",
+      backgroundColor: inputStyle.color };
+  };
+
+  var vrender = function (time, isDraggable, isTall, inputStyle, isHighlighted) {
+    var containerStyle = createContainerStyle(inputStyle);
+    var innerStyle = createInnerStyle(inputStyle);
+    return h("div", {
+      style: mergeStyles({
+        left: "" + time + "%" }, containerStyle, isDraggable ? draggableContainerStyle : {}),
+      onmousedown: "completionMouseDown$",
+      onmouseenter: "mouseenter$",
+      onmouseleave: "mouseleave$"
+    }, [h("div", {
+      style: mergeStyles(innerStyle, isDraggable && isHighlighted ? elevation1Style : null, isTall ? innerTallStyle : null)
+    })]);
+  };
+
+  var draggableContainerStyle = {
+    cursor: "ew-resize"
+  };
+
+  var innerTallStyle = {
+    height: "100%",
+    marginTop: 0
+  };
+
+  return {
+    vtree$: Rx.Observable.combineLatest(Model.get("time$"), Model.get("isDraggable$"), Model.get("isTall$"), Model.get("style$"), Model.get("isHighlighted$"), vrender)
+  };
+});
+
+var DiagramCompletionComponentIntent = Cycle.createIntent(function (View) {
+  return {
+    startHighlight$: View.get("mouseenter$").map(function () {
+      return 1;
+    }),
+    stopHighlight$: View.get("mouseleave$").map(function () {
+      return 1;
+    })
+  };
+});
+
+module.exports = Cycle.createView(function (Properties) {
+  var Model = DiagramCompletionComponentModel.clone();
+  var View = DiagramCompletionComponentView.clone();
+  var Intent = DiagramCompletionComponentIntent.clone();
+
+  Intent.inject(View).inject(Model).inject(Properties, Intent);
+
+  return {
+    vtree$: View.get("vtree$"),
+    mousedown$: View.get("completionMouseDown$")
+  };
+});
+},{"cyclejs":51,"rxmarbles/styles/utils":81}],62:[function(require,module,exports){
+"use strict";
+
 var _slicedToArray = function (arr, i) {
   if (Array.isArray(arr)) {
     return arr;
@@ -23463,211 +23569,422 @@ var _interopRequire = function (obj) {
 
 var Cycle = _interopRequire(require("cyclejs"));
 
-var svg = _interopRequire(require("cyclejs/node_modules/virtual-dom/virtual-hyperscript/svg"));
-
 var Immutable = _interopRequire(require("immutable"));
 
 var Rx = Cycle.Rx;
+
+module.exports = Cycle.createIntent(function (View) {
+  var getPxToPercentageRatio = function (element) {
+    var pxToPercentage = undefined;
+    try {
+      if (element && element.parentElement && element.parentElement.clientWidth) {
+        pxToPercentage = 100 / element.parentElement.clientWidth;
+      } else {
+        throw new Error("Invalid marble parent or parent width.");
+      }
+    } catch (err) {
+      console.warn(err);
+      pxToPercentage = 0.15; // a 'safe enough' magic number
+    }
+    return pxToPercentage;
+  };
+
+  var makeDeltaTime$ = function (mouseDown$, resultFn) {
+    return mouseDown$.map(function (downevent) {
+      var target = downevent.currentTarget;
+      var pxToPercentage = getPxToPercentageRatio(target);
+      return mouseMove$.takeUntil(mouseUp$).pairwise().map(function (_ref) {
+        var _ref2 = _slicedToArray(_ref, 2);
+
+        var ev1 = _ref2[0];
+        var ev2 = _ref2[1];
+        var dx = ev2.pageX - ev1.pageX; // the drag dx in pixels
+        var deltaTime = dx * pxToPercentage;
+        if (!!resultFn) {
+          return resultFn(deltaTime, target);
+        } else {
+          return deltaTime;
+        }
+      }).filter(function (x) {
+        return x !== 0;
+      });
+    }).concatAll();
+  };
+
+  var mouseMove$ = Rx.Observable.fromEvent(document, "mousemove");
+  var mouseUp$ = Rx.Observable.fromEvent(document, "mouseup");
+
+  return {
+    changeMarbleTime$: makeDeltaTime$(View.get("marbleMouseDown$"), function (deltaTime, target) {
+      return Immutable.Map({
+        deltaTime: deltaTime,
+        id: target.attributes["data-marble-id"].value
+      });
+    }),
+    changeEndTime$: makeDeltaTime$(View.get("completionMouseDown$"))
+  };
+});
+},{"cyclejs":51,"immutable":60}],63:[function(require,module,exports){
+"use strict";
+
+var _interopRequire = function (obj) {
+  return obj && (obj["default"] || obj);
+};
+
+var Cycle = _interopRequire(require("cyclejs"));
+
+var Rx = Cycle.Rx;
+
+module.exports = Cycle.createModel(function (Properties, Intent) {
+  var findLargestMarbleTime = function (diagramData) {
+    return diagramData.get("notifications").max(function (notifA, notifB) {
+      if (notifA.get("time") < notifB.get("time")) {
+        return -1;
+      }
+      if (notifA.get("time") > notifB.get("time")) {
+        return 1;
+      }
+      return 0;
+    }).get("time");
+  };
+
+  var applyChangeMarbleTime = function (diagramData, marbleDelta) {
+    return diagramData.set("notifications", diagramData.get("notifications").map(function (notif) {
+      if (String(notif.get("id")) === String(marbleDelta.get("id"))) {
+        var newTime = notif.get("time") + marbleDelta.get("deltaTime");
+        return notif.set("time", newTime);
+      } else {
+        return notif;
+      }
+    }));
+  };
+
+  var applyChangeEndTime = function (diagramData, endDelta) {
+    return diagramData.set("end", diagramData.get("end") + endDelta);
+  };
+
+  var applyMarbleDataConstraints = function (marbleData) {
+    var newTime = marbleData.get("time");
+    newTime = Math.round(newTime);
+    newTime = Math.min(newTime, 100);
+    newTime = Math.max(0, newTime);
+    return marbleData.set("time", newTime);
+  };
+
+  var applyEndTimeConstraint = function (diagramData) {
+    var largestMarbleTime = findLargestMarbleTime(diagramData);
+    var newEndTime = diagramData.get("end");
+    newEndTime = Math.max(newEndTime, largestMarbleTime);
+    newEndTime = Math.round(newEndTime);
+    newEndTime = Math.min(newEndTime, 100);
+    newEndTime = Math.max(0, newEndTime);
+    return diagramData.set("end", newEndTime);
+  };
+
+  var applyDiagramDataConstraints = function (diagramData) {
+    var newDiagramData = diagramData.set("notifications", diagramData.get("notifications").map(applyMarbleDataConstraints));
+    newDiagramData = applyEndTimeConstraint(newDiagramData);
+    return newDiagramData;
+  };
+
+  var newDiagramDataScanner = function (prev, curr) {
+    var currentIsDiagramData = !!curr && !!curr.get && !!curr.get("notifications");
+    if (!currentIsDiagramData) {
+      var previousIsDiagramData = !!prev && !!prev.get("notifications");
+      if (!previousIsDiagramData) {
+        console.warn("Inconsistency in DiagramComponent.makeNewDiagramData$()");
+      }
+      var diagramData = prev;
+      var changeInstructions = curr;
+      var newDiagramData = undefined;
+      if (typeof changeInstructions === "number") {
+        newDiagramData = applyChangeEndTime(diagramData, changeInstructions);
+      } else {
+        newDiagramData = applyChangeMarbleTime(diagramData, changeInstructions);
+      }
+      return newDiagramData.set("isInitialData", false);
+    } else {
+      return curr.set("isInitialData", true);
+    }
+  };
+
+  var makeNewDiagramData$ = function (data$, changeMarbleTime$, changeEndTime$, interactive$) {
+    return data$.merge(changeMarbleTime$).merge(changeEndTime$).scan(newDiagramDataScanner).filter(function (diagramData) {
+      return !diagramData.get("isInitialData");
+    }).map(applyDiagramDataConstraints).pausable(interactive$);
+  };
+
+  return {
+    data$: Properties.get("data$").distinctUntilChanged(),
+    newData$: makeNewDiagramData$(Properties.get("data$").distinctUntilChanged(), Intent.get("changeMarbleTime$"), Intent.get("changeEndTime$"), Properties.get("interactive$")),
+    isInteractive$: Properties.get("interactive$").startWith(false)
+  };
+});
+},{"cyclejs":51}],64:[function(require,module,exports){
+"use strict";
+
+var _interopRequire = function (obj) {
+  return obj && (obj["default"] || obj);
+};
+
+var Cycle = _interopRequire(require("cyclejs"));
+
+var Colors = _interopRequire(require("rxmarbles/styles/colors"));
+
+var Dimens = _interopRequire(require("rxmarbles/styles/dimens"));
+
+var Fonts = _interopRequire(require("rxmarbles/styles/fonts"));
+
+var mergeStyles = require("rxmarbles/styles/utils").mergeStyles;
+var textUnselectable = require("rxmarbles/styles/utils").textUnselectable;
+var Rx = Cycle.Rx;
 var h = Cycle.h;
 
-var MARBLE_WIDTH = 5; // estimate of a marble width, in percentages
-var NUM_COLORS = 4;
-var mouseMove$ = Rx.Observable.fromEvent(document, "mousemove");
-var mouseUp$ = Rx.Observable.fromEvent(document, "mouseup");
-
-function getPxToPercentageRatio(element) {
-  var pxToPercentage = undefined;
-  try {
-    if (element && element.parentElement && element.parentElement.clientWidth) {
-      pxToPercentage = 100 / element.parentElement.clientWidth;
-    } else {
-      throw new Error("Invalid marble parent or parent width.");
-    }
-  } catch (err) {
-    console.warn(err);
-    pxToPercentage = 0.15; // a 'safe enough' magic number
-  }
-  return pxToPercentage;
-}
-
-function makeDeltaTime$(mouseDown$, resultFn) {
-  return mouseDown$.map(function (downevent) {
-    var target = downevent.currentTarget;
-    var pxToPercentage = getPxToPercentageRatio(target);
-    return mouseMove$.takeUntil(mouseUp$).pairwise().map(function (_ref) {
-      var _ref2 = _slicedToArray(_ref, 2);
-
-      var ev1 = _ref2[0];
-      var ev2 = _ref2[1];
-      var dx = ev2.pageX - ev1.pageX; // the drag dx in pixels
-      var deltaTime = dx * pxToPercentage;
-      if (!!resultFn) {
-        return resultFn(deltaTime, target);
-      } else {
-        return deltaTime;
-      }
-    }).filter(function (x) {
-      return x !== 0;
+module.exports = Cycle.createView(function (Model) {
+  var vrenderMarble = function (marbleData) {
+    var isDraggable = arguments[1] === undefined ? false : arguments[1];
+    return h("x-marble", {
+      data: marbleData,
+      isDraggable: isDraggable,
+      style: { size: diagramMarbleSize },
+      onmousedown: "marbleMouseDown$"
     });
-  }).concatAll();
-}
+  };
 
-function vrenderMarble(marbleData) {
-  var isDraggable = arguments[1] === undefined ? false : arguments[1];
-  var colornum = marbleData.get("id") % NUM_COLORS + 1;
-  var leftPos = "" + marbleData.get("time") + "%";
-  var content = "" + marbleData.get("content");
-  return h("div.marble.js-marble" + (isDraggable ? ".is-draggable" : ""), {
-    style: { left: leftPos, "z-index": marbleData.get("time") },
-    attributes: { "data-marble-id": marbleData.get("id") },
-    onmousedown: "marbleMouseDown$"
-  }, [svg("svg", { attributes: { "class": "marble-inner", viewBox: "0 0 1 1" } }, [svg("circle", {
-    attributes: {
-      "class": "marble-shape marble-shape--color" + colornum,
-      cx: 0.5, cy: 0.5, r: 0.47,
-      "stroke-width": "0.06px"
-    }
-  })]), h("p.marble-content", String(content))]);
-}
+  var vrenderCompletion = function (diagramData) {
+    var isDraggable = arguments[1] === undefined ? false : arguments[1];
+    var endTime = diagramData.get("end");
+    var isTall = diagramData.get("notifications").some(function (marbleData) {
+      return Math.abs(marbleData.get("time") - diagramData.get("end")) <= MARBLE_WIDTH * 0.5;
+    });
+    return h("x-diagram-completion", {
+      time: endTime,
+      isDraggable: isDraggable,
+      isTall: isTall,
+      style: {
+        thickness: diagramArrowThickness,
+        color: diagramArrowColor,
+        height: diagramCompletionHeight
+      },
+      onmousedown: "completionMouseDown$"
+    });
+  };
 
-function vrenderCompletion(diagramData) {
-  var isDraggable = arguments[1] === undefined ? false : arguments[1];
-  var isDraggableClass = isDraggable ? ".is-draggable" : "";
-  var isTall = diagramData.get("notifications").some(function (marbleData) {
-    return Math.abs(marbleData.get("time") - diagramData.get("end")) <= MARBLE_WIDTH * 0.5;
-  });
-  var isTallClass = isTall ? ".is-tall" : "";
-  return h("div.diagramCompletion" + isDraggableClass + isTallClass, {
-    style: { left: diagramData.get("end") + "%" },
-    attributes: { "data-diagram-id": diagramData.get("id") },
-    onmousedown: "completionMouseDown$"
-  }, [h("div.diagramCompletion-inner")]);
-}
+  var vrenderDiagramArrow = function () {
+    return h("div", { style: {
+        backgroundColor: diagramArrowColor,
+        height: diagramArrowThickness,
+        position: "absolute",
+        top: "calc(" + diagramVerticalMargin + " + (" + diagramMarbleSize + " / 2))",
+        left: diagramSidePadding,
+        right: diagramSidePadding
+      } });
+  };
 
-function vrenderDiagram(data, isInteractive) {
-  var marblesVTree = data.get("notifications").map(function (notification) {
-    return vrenderMarble(notification, isInteractive);
-  }).toArray(); // from Immutable.List
-  var completionVTree = vrenderCompletion(data, isInteractive);
+  var vrenderDiagramArrowHead = function () {
+    return h("div", { style: {
+        width: 0,
+        height: 0,
+        borderTop: "" + diagramArrowHeadSize + " solid transparent",
+        borderBottom: "" + diagramArrowHeadSize + " solid transparent",
+        borderLeft: "calc(2 * " + diagramArrowHeadSize + ") solid " + diagramArrowColor,
+        display: "inline-block",
+        right: "calc(" + diagramSidePadding + " - 1px)",
+        position: "absolute",
+        top: "calc(" + diagramVerticalMargin + " + (" + diagramMarbleSize + " / 2) \n        - " + diagramArrowHeadSize + " + (" + diagramArrowThickness + " / 2))"
+      } });
+  };
 
-  return h("div.diagram", [h("div.diagram-arrow"), h("div.diagram-arrowHead"), h("div.diagram-body", [completionVTree].concat(marblesVTree))]);
-}
+  var vrenderDiagram = function (data, isInteractive) {
+    var marblesVTree = data.get("notifications").map(function (notification) {
+      return vrenderMarble(notification, isInteractive);
+    }).toArray(); // from Immutable.List
+    var completionVTree = vrenderCompletion(data, isInteractive);
+    return h("div", { style: diagramStyle }, [vrenderDiagramArrow(), vrenderDiagramArrowHead(), h("div", { style: diagramBodyStyle }, [completionVTree].concat(marblesVTree))]);
+  };
 
-function findLargestMarbleTime(diagramData) {
-  return diagramData.get("notifications").max(function (notifA, notifB) {
-    if (notifA.get("time") < notifB.get("time")) {
-      return -1;
-    }
-    if (notifA.get("time") > notifB.get("time")) {
-      return 1;
-    }
-    return 0;
-  }).get("time");
-}
+  var MARBLE_WIDTH = 5; // estimate of a marble width, in percentages
+  var diagramSidePadding = Dimens.spaceMedium;
+  var diagramVerticalMargin = Dimens.spaceLarge;
+  var diagramArrowThickness = "2px";
+  var diagramArrowSidePadding = Dimens.spaceLarge;
+  var diagramArrowHeadSize = "8px";
+  var diagramArrowColor = Colors.black;
+  var diagramMarbleSize = Dimens.spaceLarge;
+  var diagramCompletionHeight = "44px";
 
-function applyChangeMarbleTime(diagramData, marbleDelta) {
-  return diagramData.set("notifications", diagramData.get("notifications").map(function (notif) {
-    if (String(notif.get("id")) === String(marbleDelta.get("id"))) {
-      var newTime = notif.get("time") + marbleDelta.get("deltaTime");
-      return notif.set("time", newTime);
-    } else {
-      return notif;
-    }
-  }));
-}
+  var diagramStyle = mergeStyles({
+    position: "relative",
+    display: "block",
+    width: "100%",
+    height: "calc(" + diagramMarbleSize + " + 2 * " + diagramVerticalMargin + ")",
+    overflow: "visible",
+    cursor: "default" }, textUnselectable);
 
-function applyChangeEndTime(diagramData, endDelta) {
-  return diagramData.set("end", diagramData.get("end") + endDelta);
-}
+  var diagramBodyStyle = {
+    position: "absolute",
+    left: "calc(" + diagramArrowSidePadding + " + " + diagramSidePadding + " \n        + (" + diagramMarbleSize + " / 2))",
+    right: "calc(" + diagramArrowSidePadding + " + " + diagramSidePadding + " \n        + (" + diagramMarbleSize + " / 2))",
+    top: "calc(" + diagramVerticalMargin + " + (" + diagramMarbleSize + " / 2))",
+    height: diagramCompletionHeight,
+    marginTop: "calc(0px - (" + diagramCompletionHeight + " / 2))"
+  };
 
-function applyMarbleDataConstraints(marbleData) {
-  var newTime = marbleData.get("time");
-  newTime = Math.round(newTime);
-  newTime = Math.min(newTime, 100);
-  newTime = Math.max(0, newTime);
-  return marbleData.set("time", newTime);
-}
+  return {
+    vtree$: Rx.Observable.combineLatest(Model.get("data$").merge(Model.get("newData$")), Model.get("isInteractive$"), vrenderDiagram)
+  };
+});
+},{"cyclejs":51,"rxmarbles/styles/colors":78,"rxmarbles/styles/dimens":79,"rxmarbles/styles/fonts":80,"rxmarbles/styles/utils":81}],65:[function(require,module,exports){
+"use strict";
 
-function applyEndTimeConstraint(diagramData) {
-  var largestMarbleTime = findLargestMarbleTime(diagramData);
-  var newEndTime = diagramData.get("end");
-  newEndTime = Math.max(newEndTime, largestMarbleTime);
-  newEndTime = Math.round(newEndTime);
-  newEndTime = Math.min(newEndTime, 100);
-  newEndTime = Math.max(0, newEndTime);
-  return diagramData.set("end", newEndTime);
-}
+var _interopRequire = function (obj) {
+  return obj && (obj["default"] || obj);
+};
 
-function applyDiagramDataConstraints(diagramData) {
-  var newDiagramData = diagramData.set("notifications", diagramData.get("notifications").map(applyMarbleDataConstraints));
-  newDiagramData = applyEndTimeConstraint(newDiagramData);
-  return newDiagramData;
-}
+var Cycle = _interopRequire(require("cyclejs"));
 
-function newDiagramDataScanner(prev, curr) {
-  var currentIsDiagramData = !!curr && !!curr.get && !!curr.get("notifications");
-  if (!currentIsDiagramData) {
-    var previousIsDiagramData = !!prev && !!prev.get("notifications");
-    if (!previousIsDiagramData) {
-      console.warn("Inconsistency in DiagramComponent.makeNewDiagramData$()");
-    }
-    var diagramData = prev;
-    var changeInstructions = curr;
-    var newDiagramData = undefined;
-    if (typeof changeInstructions === "number") {
-      newDiagramData = applyChangeEndTime(diagramData, changeInstructions);
-    } else {
-      newDiagramData = applyChangeMarbleTime(diagramData, changeInstructions);
-    }
-    return newDiagramData.set("isInitialData", false);
-  } else {
-    return curr.set("isInitialData", true);
-  }
-}
+var DiagramComponentModel = _interopRequire(require("rxmarbles/components/diagram/diagram-model"));
 
-function makeNewDiagramData$(data$, changeMarbleTime$, changeEndTime$, interactive$) {
-  return data$.merge(changeMarbleTime$).merge(changeEndTime$).scan(newDiagramDataScanner).filter(function (diagramData) {
-    return !diagramData.get("isInitialData");
-  }).map(applyDiagramDataConstraints).pausable(interactive$);
-}
+var DiagramComponentView = _interopRequire(require("rxmarbles/components/diagram/diagram-view"));
 
-var DiagramComponent = Cycle.createView(function (Attributes) {
-  var Model = Cycle.createModel(function (Attributes, Intent) {
-    return {
-      data$: Attributes.get("data$").distinctUntilChanged(),
-      newData$: makeNewDiagramData$(Attributes.get("data$").distinctUntilChanged(), Intent.get("changeMarbleTime$"), Intent.get("changeEndTime$"), Attributes.get("interactive$")),
-      isInteractive$: Attributes.get("interactive$").startWith(false)
-    };
-  });
+var DiagramComponentIntent = _interopRequire(require("rxmarbles/components/diagram/diagram-intent"));
 
-  var View = Cycle.createView(function (Model) {
-    return {
-      vtree$: Rx.Observable.combineLatest(Model.get("data$").merge(Model.get("newData$")), Model.get("isInteractive$"), vrenderDiagram)
-    };
-  });
+module.exports = Cycle.createView(function (Properties) {
+  var Model = DiagramComponentModel.clone();
+  var View = DiagramComponentView.clone();
+  var Intent = DiagramComponentIntent.clone();
 
-  var Intent = Cycle.createIntent(function (View) {
-    return {
-      changeMarbleTime$: makeDeltaTime$(View.get("marbleMouseDown$"), function (deltaTime, target) {
-        return Immutable.Map({
-          deltaTime: deltaTime,
-          id: target.attributes["data-marble-id"].value
-        });
-      }),
-      changeEndTime$: makeDeltaTime$(View.get("completionMouseDown$"))
-    };
-  });
-
-  Intent.inject(View).inject(Model).inject(Attributes, Intent);
+  Intent.inject(View).inject(Model).inject(Properties, Intent);
 
   return {
     vtree$: View.get("vtree$"),
     newdata$: Model.get("newData$")
   };
 });
+},{"cyclejs":51,"rxmarbles/components/diagram/diagram-intent":62,"rxmarbles/components/diagram/diagram-model":63,"rxmarbles/components/diagram/diagram-view":64}],66:[function(require,module,exports){
+"use strict";
 
-module.exports = DiagramComponent;
-},{"cyclejs":51,"cyclejs/node_modules/virtual-dom/virtual-hyperscript/svg":34,"immutable":60}],62:[function(require,module,exports){
+var _interopRequire = function (obj) {
+  return obj && (obj["default"] || obj);
+};
+
+var Cycle = _interopRequire(require("cyclejs"));
+
+var svg = _interopRequire(require("cyclejs/node_modules/virtual-dom/virtual-hyperscript/svg"));
+
+var Colors = _interopRequire(require("rxmarbles/styles/colors"));
+
+var mergeStyles = require("rxmarbles/styles/utils").mergeStyles;
+var svgElevation1Style = require("rxmarbles/styles/utils").svgElevation1Style;
+var textUnselectable = require("rxmarbles/styles/utils").textUnselectable;
+var Rx = Cycle.Rx;
+var h = Cycle.h;
+
+var MarbleModel = Cycle.createModel(function (Properties, Intent) {
+  return {
+    data$: Properties.get("data$"),
+    isDraggable$: Properties.get("isDraggable$").startWith(false),
+    style$: Properties.get("style$").startWith({}),
+    isHighlighted$: Rx.Observable.merge(Intent.get("startHighlight$").map(function () {
+      return true;
+    }), Intent.get("stopHighlight$").map(function () {
+      return false;
+    })).startWith(false)
+  };
+});
+
+var MarbleView = Cycle.createView(function (Model) {
+  var createContainerStyle = function (inputStyle) {
+    return {
+      width: inputStyle.size,
+      height: inputStyle.size,
+      position: "relative",
+      display: "inline-block",
+      margin: "calc(0px - (" + inputStyle.size + " / 2))",
+      bottom: "calc((100% - " + inputStyle.size + ") / 2)",
+      cursor: "default"
+    };
+  };
+
+  var vrenderSvg = function (data, isDraggable, inputStyle, isHighlighted) {
+    var color = POSSIBLE_COLORS[data.get("id") % POSSIBLE_COLORS.length];
+    return svg("svg", {
+      style: mergeStyles({
+        overflow: "visible",
+        width: inputStyle.size,
+        height: inputStyle.size }, isDraggable && isHighlighted ? svgElevation1Style : {}),
+      attributes: { viewBox: "0 0 1 1" } }, [svg("circle", {
+      style: {
+        stroke: Colors.black,
+        fill: color
+      },
+      attributes: {
+        cx: 0.5, cy: 0.5, r: 0.47,
+        "stroke-width": "0.06px"
+      }
+    })]);
+  };
+
+  var vrenderInnerContent = function (data, inputStyle) {
+    return h("p", {
+      style: mergeStyles({
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        top: "0",
+        margin: "0",
+        textAlign: "center",
+        lineHeight: inputStyle.size }, textUnselectable)
+    }, "" + data.get("content"));
+  };
+
+  var vrender = function (data, isDraggable, inputStyle, isHighlighted) {
+    return h("div", {
+      style: mergeStyles({
+        left: "" + data.get("time") + "%",
+        zIndex: data.get("time") }, createContainerStyle(inputStyle), isDraggable ? draggableContainerStyle : null),
+      attributes: { "data-marble-id": data.get("id") },
+      onmousedown: "mousedown$",
+      onmouseenter: "mouseenter$",
+      onmouseleave: "mouseleave$"
+    }, [vrenderSvg(data, isDraggable, inputStyle, isHighlighted), vrenderInnerContent(data, inputStyle)]);
+  };
+
+  var POSSIBLE_COLORS = [Colors.blue, Colors.green, Colors.yellow, Colors.red];
+
+  var draggableContainerStyle = {
+    cursor: "ew-resize"
+  };
+
+  return {
+    vtree$: Rx.Observable.combineLatest(Model.get("data$"), Model.get("isDraggable$"), Model.get("style$"), Model.get("isHighlighted$"), vrender)
+  };
+});
+
+var MarbleIntent = Cycle.createIntent(function (View) {
+  return {
+    startHighlight$: View.get("mouseenter$").map(function () {
+      return 1;
+    }),
+    stopHighlight$: View.get("mouseleave$").map(function () {
+      return 1;
+    })
+  };
+});
+
+module.exports = Cycle.createView(function (Properties) {
+  var Model = MarbleModel.clone();
+  var View = MarbleView.clone();
+  var Intent = MarbleIntent.clone();
+
+  Intent.inject(View).inject(Model).inject(Properties, Intent);
+
+  return {
+    vtree$: View.get("vtree$"),
+    mousedown$: View.get("mousedown$")
+  };
+});
+},{"cyclejs":51,"cyclejs/node_modules/virtual-dom/virtual-hyperscript/svg":34,"rxmarbles/styles/colors":78,"rxmarbles/styles/utils":81}],67:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) {
@@ -23713,11 +24030,40 @@ function augmentWithExampleKey(diagramData, exampleKey) {
   }));
 }
 
+function replaceDiagramDataIn(diagrams, newDiagramData) {
+  return diagrams.map(function (diagramData) {
+    if (diagramData.get("id") === newDiagramData.get("id")) {
+      return newDiagramData;
+    } else {
+      return diagramData;
+    }
+  });
+}
+
+function makeNewInputDiagramsData$(changeInputDiagram$, inputs$) {
+  return Rx.Observable.merge(changeInputDiagram$, inputs$).scan(function (prev, curr) {
+    var currentIsDiagramData = !!curr && curr.get && !!curr.get("notifications");
+    if (!currentIsDiagramData) {
+      return curr.set("isInitialData", true);
+    }
+    if (!prev || !prev.get || !Array.isArray(prev.get("diagrams"))) {
+      console.warn("Inconsistency in SandboxComponent.makeNewInputDiagramsData$()");
+    }
+    var inputs = prev;
+    var newDiagramData = curr;
+    return inputs.set("diagrams", replaceDiagramDataIn(inputs.get("diagrams"), newDiagramData)).set("isInitialData", false);
+  }).filter(function (x) {
+    return !x.get("isInitialData");
+  }) // only allow new diagram data
+  ;
+}
+
 module.exports = {
   prepareInputDiagram: prepareInputDiagram,
-  augmentWithExampleKey: augmentWithExampleKey
+  augmentWithExampleKey: augmentWithExampleKey,
+  makeNewInputDiagramsData$: makeNewInputDiagramsData$
 };
-},{"cyclejs":51,"immutable":60,"rxmarbles/components/sandbox/utils":65}],63:[function(require,module,exports){
+},{"cyclejs":51,"immutable":60,"rxmarbles/components/sandbox/utils":70}],68:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) {
@@ -23827,7 +24173,7 @@ function getOutputDiagram$(example$, inputDiagrams$) {
 module.exports = {
   getOutputDiagram$: getOutputDiagram$
 };
-},{"cyclejs":51,"immutable":60,"rxmarbles/components/sandbox/utils":65}],64:[function(require,module,exports){
+},{"cyclejs":51,"immutable":60,"rxmarbles/components/sandbox/utils":70}],69:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) {
@@ -23840,98 +24186,103 @@ var Examples = _interopRequire(require("rxmarbles/data/examples"));
 
 var prepareInputDiagram = require("rxmarbles/components/sandbox/sandbox-input").prepareInputDiagram;
 var augmentWithExampleKey = require("rxmarbles/components/sandbox/sandbox-input").augmentWithExampleKey;
+var makeNewInputDiagramsData$ = require("rxmarbles/components/sandbox/sandbox-input").makeNewInputDiagramsData$;
 var getOutputDiagram$ = require("rxmarbles/components/sandbox/sandbox-output").getOutputDiagram$;
 var Immutable = _interopRequire(require("immutable"));
 
+var Colors = _interopRequire(require("rxmarbles/styles/colors"));
+
+var Dimens = _interopRequire(require("rxmarbles/styles/dimens"));
+
+var Fonts = _interopRequire(require("rxmarbles/styles/fonts"));
+
+var mergeStyles = require("rxmarbles/styles/utils").mergeStyles;
+var elevation1Style = require("rxmarbles/styles/utils").elevation1Style;
+var elevation2Style = require("rxmarbles/styles/utils").elevation2Style;
+var elevation2Before = require("rxmarbles/styles/utils").elevation2Before;
+var elevation2After = require("rxmarbles/styles/utils").elevation2After;
 var Rx = Cycle.Rx;
 var h = Cycle.h;
 
-var isTruthy = function (x) {
-  return !!x;
-};
+var SandboxComponentModel = Cycle.createModel(function (Properties, Intent) {
+  var isTruthy = function (x) {
+    return !!x;
+  };
 
-function vrenderOperatorLabel(label) {
-  var attrs = label.length > 20 ? { style: { "font-size": "1.5rem" } } : {};
-  return h("span.operator-box-label", attrs, label);
-}
+  var example$ = Properties.get("route$").filter(isTruthy).map(function (key) {
+    return Immutable.Map(Examples[key]).set("key", key);
+  });
 
-function vrenderOperator(label) {
-  return h("div.operator-box", [vrenderOperatorLabel(label)]);
-}
+  var inputDiagrams$ = example$.map(function (example) {
+    return Immutable.Map({
+      diagrams: example.get("inputs").map(prepareInputDiagram).map(function (diag) {
+        return augmentWithExampleKey(diag, example.get("key"));
+      })
+    });
+  });
 
-function makeNewInputDiagramsData$(changeInputDiagram$, inputs$) {
-  return Rx.Observable.merge(changeInputDiagram$, inputs$).scan(function (prev, curr) {
-    var currentIsDiagramData = !!curr && !!curr.get("notifications");
-    if (currentIsDiagramData) {
-      var _ret = (function () {
-        if (!prev || !prev.get || !Array.isArray(prev.get("diagrams"))) {
-          console.warn("Inconsistency in SandboxComponent.makeNewInputDiagramsData$()");
-        }
-        var inputs = prev;
-        var newDiagramData = curr;
-        return {
-          v: inputs.set("diagrams", inputs.get("diagrams").map(function (diagramData) {
-            if (diagramData.get("id") === newDiagramData.get("id")) {
-              return newDiagramData;
-            } else {
-              return diagramData;
-            }
-          })).set("isInitialData", false)
-        };
-      })();
+  var newInputDiagrams$ = makeNewInputDiagramsData$(Intent.get("changeInputDiagram$"), inputDiagrams$);
 
-      if (typeof _ret === "object") return _ret.v;
-    } else {
-      return curr.set("isInitialData", true);
-    }
-  }).filter(function (x) {
-    return !x.get("isInitialData");
-  }) // only allow new diagram data
-  ;
-}
+  var allInputDiagrams$ = inputDiagrams$.merge(newInputDiagrams$);
+
+  return {
+    inputDiagrams$: inputDiagrams$,
+    operatorLabel$: example$.map(function (example) {
+      return example.get("label");
+    }),
+    outputDiagram$: getOutputDiagram$(example$, allInputDiagrams$),
+    width$: Properties.get("width$").startWith("100%")
+  };
+});
+
+var SandboxComponentView = Cycle.createView(function (Model) {
+  var vrenderOperatorLabel = function (label) {
+    var fontSize = label.length >= 45 ? 1.3 : label.length >= 30 ? 1.5 : 2;
+    var style = {
+      fontFamily: Fonts.fontCode,
+      fontWeight: "400",
+      fontSize: "" + fontSize + "rem"
+    };
+    return h("span", { style: style }, label);
+  };
+
+  var vrenderOperator = function (label) {
+    var style = mergeStyles({
+      border: "1px solid rgba(0,0,0,0.06)",
+      padding: Dimens.spaceMedium,
+      textAlign: "center" }, elevation2Style);
+    return h("div", { style: style }, [elevation2Before, vrenderOperatorLabel(label), elevation2After]);
+  };
+
+  var getSandboxStyle = function (width) {
+    return mergeStyles({
+      background: Colors.white,
+      width: width,
+      borderRadius: "2px" }, elevation1Style);
+  };
+
+  return { vtree$: Rx.Observable.combineLatest(Model.get("inputDiagrams$"), Model.get("operatorLabel$"), Model.get("outputDiagram$"), Model.get("width$"), function (inputDiagrams, operatorLabel, outputDiagram, width) {
+      return h("div", { style: getSandboxStyle(width) }, [inputDiagrams.get("diagrams").map(function (diagram) {
+        return h("x-diagram", {
+          data: diagram,
+          interactive: true,
+          onnewdata: "diagramNewData$"
+        });
+      }), vrenderOperator(operatorLabel), h("x-diagram", { data: outputDiagram, interactive: false })]);
+    })
+  };
+});
+
+var SandboxComponentIntent = Cycle.createIntent(function (View) {
+  return {
+    changeInputDiagram$: View.get("diagramNewData$")
+  };
+});
 
 var SandboxComponent = Cycle.createView(function (Attributes) {
-  var Model = Cycle.createModel(function (Attributes, Intent) {
-    var example$ = Attributes.get("route$").filter(isTruthy).map(function (key) {
-      return Immutable.Map(Examples[key]).set("key", key);
-    });
-    var inputDiagrams$ = example$.map(function (example) {
-      return Immutable.Map({
-        diagrams: example.get("inputs").map(prepareInputDiagram).map(function (diag) {
-          return augmentWithExampleKey(diag, example.get("key"));
-        })
-      });
-    });
-    var newInputDiagrams$ = makeNewInputDiagramsData$(Intent.get("changeInputDiagram$"), inputDiagrams$);
-    var allInputDiagrams$ = inputDiagrams$.merge(newInputDiagrams$);
-
-    return {
-      inputDiagrams$: inputDiagrams$,
-      operatorLabel$: example$.map(function (example) {
-        return example.get("label");
-      }),
-      outputDiagram$: getOutputDiagram$(example$, allInputDiagrams$)
-    };
-  });
-
-  var View = Cycle.createView(function (Model) {
-    return {
-      vtree$: Rx.Observable.combineLatest(Model.get("inputDiagrams$"), Model.get("operatorLabel$"), Model.get("outputDiagram$"), function (inputDiagrams, operatorLabel, outputDiagram) {
-        return h("div.sandbox", [inputDiagrams.get("diagrams").map(function (diagram) {
-          return h("x-diagram", {
-            attributes: { data: diagram, interactive: true },
-            onnewdata: "diagramNewData$"
-          });
-        }), vrenderOperator(operatorLabel), h("x-diagram", { attributes: { data: outputDiagram, interactive: false } })]);
-      })
-    };
-  });
-
-  var Intent = Cycle.createIntent(function (View) {
-    return {
-      changeInputDiagram$: View.get("diagramNewData$")
-    };
-  });
+  var Model = SandboxComponentModel.clone();
+  var View = SandboxComponentView.clone();
+  var Intent = SandboxComponentIntent.clone();
 
   Intent.inject(View).inject(Model).inject(Attributes, Intent);
 
@@ -23941,7 +24292,7 @@ var SandboxComponent = Cycle.createView(function (Attributes) {
 });
 
 module.exports = SandboxComponent;
-},{"cyclejs":51,"immutable":60,"rxmarbles/components/sandbox/sandbox-input":62,"rxmarbles/components/sandbox/sandbox-output":63,"rxmarbles/data/examples":69}],65:[function(require,module,exports){
+},{"cyclejs":51,"immutable":60,"rxmarbles/components/sandbox/sandbox-input":67,"rxmarbles/components/sandbox/sandbox-output":68,"rxmarbles/data/examples":74,"rxmarbles/styles/colors":78,"rxmarbles/styles/dimens":79,"rxmarbles/styles/fonts":80,"rxmarbles/styles/utils":81}],70:[function(require,module,exports){
 "use strict";
 
 /*
@@ -23976,7 +24327,7 @@ module.exports = {
   calculateNotificationHash: calculateNotificationHash,
   calculateNotificationContentHash: calculateNotificationContentHash
 };
-},{}],66:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 "use strict";
 
 var Rx = require("cyclejs").Rx;
@@ -24022,7 +24373,7 @@ module.exports = {
     }
   }
 };
-},{"cyclejs":51}],67:[function(require,module,exports){
+},{"cyclejs":51}],72:[function(require,module,exports){
 "use strict";
 
 var Rx = require("cyclejs").Rx;
@@ -24090,7 +24441,7 @@ module.exports = {
     }
   }
 };
-},{"cyclejs":51}],68:[function(require,module,exports){
+},{"cyclejs":51}],73:[function(require,module,exports){
 "use strict";
 
 var Rx = require("cyclejs").Rx;
@@ -24104,7 +24455,7 @@ module.exports = {
     }
   }
 };
-},{"cyclejs":51}],69:[function(require,module,exports){
+},{"cyclejs":51}],74:[function(require,module,exports){
 "use strict";
 
 /*
@@ -24139,7 +24490,7 @@ function applyCategory(examples, categoryName) {
 };
 
 module.exports = merge(applyCategory(transformExamples, "Transforming Operators"), applyCategory(combineExamples, "Combining Operators"), applyCategory(filterExamples, "Filtering Operators"), applyCategory(mathExamples, "Mathematical Operators"), applyCategory(booleanExamples, "Boolean Operators"), applyCategory(conditionalExamples, "Conditional Operators"));
-},{"rxmarbles/data/boolean-examples":66,"rxmarbles/data/combine-examples":67,"rxmarbles/data/conditional-examples":68,"rxmarbles/data/filter-examples":70,"rxmarbles/data/math-examples":71,"rxmarbles/data/transform-examples":72}],70:[function(require,module,exports){
+},{"rxmarbles/data/boolean-examples":71,"rxmarbles/data/combine-examples":72,"rxmarbles/data/conditional-examples":73,"rxmarbles/data/filter-examples":75,"rxmarbles/data/math-examples":76,"rxmarbles/data/transform-examples":77}],75:[function(require,module,exports){
 "use strict";
 
 var Rx = require("cyclejs").Rx;
@@ -24287,7 +24638,7 @@ module.exports = {
     }
   }
 };
-},{"cyclejs":51}],71:[function(require,module,exports){
+},{"cyclejs":51}],76:[function(require,module,exports){
 "use strict";
 
 var Rx = require("cyclejs").Rx;
@@ -24376,7 +24727,7 @@ module.exports = {
     }
   }
 };
-},{"cyclejs":51}],72:[function(require,module,exports){
+},{"cyclejs":51}],77:[function(require,module,exports){
 "use strict";
 
 var Rx = require("cyclejs").Rx;
@@ -24448,4 +24799,107 @@ module.exports = {
     }
   }
 };
-},{"cyclejs":51}]},{},[1]);
+},{"cyclejs":51}],78:[function(require,module,exports){
+"use strict";
+
+var white = exports.white = "#FFFFFF";
+var almostWhite = exports.almostWhite = "#ECECEC";
+var greyLight = exports.greyLight = "#D4D4D4";
+var grey = exports.grey = "#A7A7A7";
+var greyDark = exports.greyDark = "#7C7C7C";
+var black = exports.black = "#323232";
+var blue = exports.blue = "#3EA1CB";
+var yellow = exports.yellow = "#FFCB46";
+var red = exports.red = "#FF6946";
+var green = exports.green = "#82D736";
+},{}],79:[function(require,module,exports){
+"use strict";
+
+var spaceTiny = exports.spaceTiny = "5px";
+var spaceSmall = exports.spaceSmall = "10px";
+var spaceMedium = exports.spaceMedium = "22px";
+var spaceLarge = exports.spaceLarge = "32px";
+
+var animationDurationQuick = exports.animationDurationQuick = "100ms";
+var animationDurationNormal = exports.animationDurationNormal = "200ms";
+var animationDurationSlow = exports.animationDurationSlow = "400ms";
+},{}],80:[function(require,module,exports){
+"use strict";
+
+var fontBase = exports.fontBase = "'Source Sans Pro', sans-serif";
+var fontSpecial = exports.fontSpecial = "'Signika', Helvetica, serif";
+var fontCode = exports.fontCode = "'Source Code Pro', monospace";
+},{}],81:[function(require,module,exports){
+"use strict";
+
+var _interopRequire = function (obj) {
+  return obj && (obj["default"] || obj);
+};
+
+exports.mergeStyles = mergeStyles;
+var Immutable = _interopRequire(require("immutable"));
+
+var Cycle = _interopRequire(require("cyclejs"));
+
+var h = Cycle.h;
+
+var isTruthy = function (style) {
+  return !!style;
+};
+
+function mergeStyles() {
+  for (var _len = arguments.length, styleObjects = Array(_len), _key = 0; _key < _len; _key++) {
+    styleObjects[_key] = arguments[_key];
+  }
+
+  return styleObjects.filter(isTruthy).reduce(function (styleA, styleB) {
+    var mapA = Immutable.Map(styleA);
+    var mapB = Immutable.Map(styleB);
+    return mapA.merge(mapB).toObject(); // notice B first
+  }, {});
+}
+
+var elevation1Style = exports.elevation1Style = {
+  "-webkit-box-shadow": "0px 1px 2px 1px rgba(0,0,0,0.17)",
+  "-moz-box-shadow": "0px 1px 2px 1px rgba(0,0,0,0.17)",
+  "box-shadow": "0px 1px 2px 1px rgba(0,0,0,0.17)"
+};
+
+var elevation2Style = exports.elevation2Style = {
+  position: "relative"
+};
+
+function getElevationPseudoElementStyle(dy, blur, opacity) {
+  return {
+    display: "block",
+    position: "absolute",
+    left: "0", top: "0", right: "0", bottom: "0",
+    "-webkit-box-shadow": "0 " + dy + " " + blur + " 0 rgba(0,0,0," + opacity + ")",
+    "-moz-box-shadow": "0 " + dy + " " + blur + " 0 rgba(0,0,0," + opacity + ")",
+    "box-shadow": "0 " + dy + " " + blur + " 0 rgba(0,0,0," + opacity + ")"
+  };
+}
+
+var elevation2Before = exports.elevation2Before = h("div", { style: getElevationPseudoElementStyle("2px", "10px", "0.17")
+}, "");
+var elevation2After = exports.elevation2After = h("div", { style: getElevationPseudoElementStyle("2px", "5px", "0.26")
+}, "");
+
+var elevation3Before = exports.elevation3Before = h("div", { style: getElevationPseudoElementStyle("6px", "20px", "0.19")
+}, "");
+var elevation3After = exports.elevation3After = h("div", { style: getElevationPseudoElementStyle("6px", "17px", "0.2")
+}, "");
+
+var svgElevation1Style = exports.svgElevation1Style = {
+  "-webkit-filter": "drop-shadow(0px 3px 2px rgba(0,0,0,0.26))",
+  filter: "drop-shadow(0px 3px 2px rgba(0,0,0,0.26))"
+};
+
+var textUnselectable = exports.textUnselectable = {
+  "-webkit-user-select": "none",
+  "-khtml-user-select": "none",
+  "-moz-user-select": "-moz-none",
+  "-o-user-select": "none",
+  "user-select": "none"
+};
+},{"cyclejs":51,"immutable":60}]},{},[1]);

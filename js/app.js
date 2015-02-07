@@ -5,17 +5,23 @@ var Cycle = require("cyclejs");
 var AppModel = require("rxmarbles/app-model");
 var AppView = require("rxmarbles/app-view");
 var Renderer = Cycle.createRenderer(".js-appContainer");
+var OperatorsMenuLinkComponent = require("rxmarbles/components/operators-menu-link");
 var OperatorsMenuComponent = require("rxmarbles/components/operators-menu");
 var SandboxComponent = require("rxmarbles/components/sandbox/sandbox");
-var DiagramComponent = require("rxmarbles/components/diagram");
+var DiagramComponent = require("rxmarbles/components/diagram/diagram");
+var MarbleComponent = require("rxmarbles/components/marble");
+var DiagramCompletionComponent = require("rxmarbles/components/diagram-completion");
 
+Cycle.registerCustomElement("x-operators-menu-link", OperatorsMenuLinkComponent);
 Cycle.registerCustomElement("x-operators-menu", OperatorsMenuComponent);
 Cycle.registerCustomElement("x-sandbox", SandboxComponent);
+Cycle.registerCustomElement("x-marble", MarbleComponent);
+Cycle.registerCustomElement("x-diagram-completion", DiagramCompletionComponent);
 Cycle.registerCustomElement("x-diagram", DiagramComponent);
 
 Renderer.inject(AppView);
 AppView.inject(AppModel);
-},{"cyclejs":52,"rxmarbles/app-model":63,"rxmarbles/app-view":64,"rxmarbles/components/diagram":65,"rxmarbles/components/operators-menu":66,"rxmarbles/components/sandbox/sandbox":69}],2:[function(require,module,exports){
+},{"cyclejs":52,"rxmarbles/app-model":63,"rxmarbles/app-view":64,"rxmarbles/components/diagram-completion":65,"rxmarbles/components/diagram/diagram":69,"rxmarbles/components/marble":70,"rxmarbles/components/operators-menu":72,"rxmarbles/components/operators-menu-link":71,"rxmarbles/components/sandbox/sandbox":75}],2:[function(require,module,exports){
 
 },{}],3:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
@@ -15809,7 +15815,11 @@ module.exports={
   "readme": "[![Build Status](https://travis-ci.org/Reactive-Extensions/RxJS.png)](https://travis-ci.org/Reactive-Extensions/RxJS)\n[![GitHub version](http://img.shields.io/github/tag/reactive-extensions/rxjs.svg)](https://github.com/Reactive-Extensions/RxJS)\n[![NPM version](http://img.shields.io/npm/v/rx.svg)](https://npmjs.org/package/rx)\n[![Downloads](http://img.shields.io/npm/dm/rx.svg)](https://npmjs.org/package/rx)\n[![NuGet](http://img.shields.io/nuget/v/RxJS-All.svg)](http://www.nuget.org/packages/RxJS-All/)\n[![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)\n\n**[The Need to go Reactive](#the-need-to-go-reactive)** |\n**[About the Reactive Extensions](#about-the-reactive-extensions)** |\n**[Batteries Included](#batteries-included)** |\n**[Why RxJS?](#why-rxjs)** |\n**[Dive In!](#dive-in)** |\n**[Resources](#resources)** |\n**[Getting Started](#getting-started)** |\n**[What about my libraries?](#what-about-my-libraries)** |\n**[Compatibility](#compatibility)** |\n**[Contributing](#contributing)** |\n**[License](#license)**\n\n# The Reactive Extensions for JavaScript (RxJS) <sup>2.3</sup>... #\n*...is a set of libraries to compose asynchronous and event-based programs using observable collections and [Array#extras](http://blogs.msdn.com/b/ie/archive/2010/12/13/ecmascript-5-part-2-array-extras.aspx) style composition in JavaScript*\n\nThe project is actively developed by [Microsoft Open Technologies, Inc.](http://msopentech.com/), in collaboration with a community of open source developers.\n\n## The Need to go Reactive ##\n\nApplications, especially on the web have changed over the years from being a simple static page, to DHTML with animations, to the Ajax revolution.  Each time, we're adding more complexity, more data, and asynchronous behavior to our applications.  How do we manage it all?  How do we scale it?  By moving towards \"Reactive Architectures\" which are event-driven, resilient and responsive.  With the Reactive Extensions, you have all the tools you need to help build these systems.\n\n## About the Reactive Extensions ##\n\nThe Reactive Extensions for JavaScript (RxJS) is a set of libraries for composing asynchronous and event-based programs using observable sequences and fluent query operators that many of you already know by [Array#extras](http://blogs.msdn.com/b/ie/archive/2010/12/13/ecmascript-5-part-2-array-extras.aspx) in JavaScript. Using RxJS, developers represent asynchronous data streams with Observables, query asynchronous data streams using our many operators, and parameterize the concurrency in the asynchronous data streams using Schedulers. Simply put, RxJS = Observables + Operators + Schedulers.\n\nWhether you are authoring a web-based application in JavaScript or a server-side application in Node.js, you have to deal with asynchronous and event-based programming as a matter of course. Although some patterns are emerging such as the Promise pattern, handling exceptions, cancellation, and synchronization is difficult and error-prone.\n\nUsing RxJS, you can represent multiple asynchronous data streams (that come from diverse sources, e.g., stock quote, tweets, computer events, web service requests, etc.), and subscribe to the event stream using the Observer object. The Observable notifies the subscribed Observer instance whenever an event occurs.\n\nBecause observable sequences are data streams, you can query them using standard query operators implemented by the Observable type. Thus you can filter, project, aggregate, compose and perform time-based operations on multiple events easily by using these operators. In addition, there are a number of other reactive stream specific operators that allow powerful queries to be written. Cancellation, exceptions, and synchronization are also handled gracefully by using the methods on the Observable object.\n\nBut the best news of all is that you already know how to program like this.  Take for example the following JavaScript code, where we get some stock data and then manipulate and then iterate the results.\n\n```js\n/* Get stock data somehow */\nvar source = getStockData();\n\nsource\n  .filter(function (quote) {\n      return quote.price > 30;\n  })\n  .map(function (quote) {\n      return quote.price;\n  })\n  .forEach(function (price) {\n    console.log('Prices higher than $30: $' + price);\n  });\n```\n\nNow what if this data were to come as some sort of event, for example a stream, such as as a WebSocket, then we could pretty much write the same query to iterate our data, with very little change.\n\n```js\n/* Get stock data somehow */\nvar source = getAsyncStockData();\n\nvar subscription = source\n  .filter(function (quote) {\n    return quote.price > 30;\n  })\n  .map(function (quote) {\n    return quote.price;\n  })\n  .forEach(\n    function (price) {\n      console.log('Prices higher than $30: $' + price);\n    },\n    function (err) {\n      console.log('Something went wrong: ' + err.message);\n    });\n\n/* When we're done */\nsubscription.dispose();\n```\n\nThe only difference is that we can handle the errors inline with our subscription.  And when we're no longer interested in receiving the data as it comes streaming in, we call `dispose` on our subscription.\n\n## Batteries Included ##\n\nSure, there are a lot of libraries to get started with RxJS?  Confused on where to get started?  Start out with the complete set of operators with [`rx.all.js`](doc/libraries/rx.complete.md), then you can reduce it to the number of operators that you really need, and perhaps stick with something as small as [`rx.lite.js`](doc/libraries/rx.lite.md).\n\nThis set of libraries include:\n\n- [`rx.all.js`](doc/libraries/rx.complete.md) - complete version of RxJS with all operators, minus the testing operators, and comes with a compat file for older browsers.\n- [`rx.lite.js`](doc/libraries/rx.lite.md) - lite version with event bindings, creation, time and standard query operators with a compat file for older browsers.  For most operations, this is the file you'll want to use unless you want the full power of RxJS.\n- [`rx.lite.extras.js`](doc/libraries/rx.lite.extras.md) - the operators missing from rx.lite.js that can be found in rx.js.\n- [`rx.js`](doc/libraries/rx.md) - core library for ES5 compliant browsers and runtimes plus compatibility for older browsers.\n- [`rx.aggregates.js`](doc/libraries/rx.aggregates.md) - aggregation event processing query operations\n- [`rx.async.js`](doc/libraries/rx.async.md) - async operations such as events, callbacks and promises plus a compat file for older browsers.\n- [`rx.backpressure.js`](doc/libraries/rx.backpressure.md) - backpressure operators such as pause/resume and controlled.\n- [`rx.binding.js`](doc/libraries/rx.binding.md) - binding operators including multicast, publish, publishLast, publishValue, and replay\n- [`rx.coincidence.js`](doc/libraries/rx.coincidence.md) - reactive coincidence join event processing query operations\n- [`rx.experimental.js`](doc/libraries/rx.experimental.md) - experimental operators including imperative operators and forkJoin\n- [`rx.joinpatterns.js`](doc/libraries/rx.joinpatterns.md) - join patterns event processing query operations\n- [`rx.testing.js`](doc/libraries/rx.testing.md) - used to write unit tests for complex event processing queries\n- [`rx.time.js`](doc/libraries/rx.time.md) - time-based event processing query operations\n- [`rx.virtualtime.js`](doc/libraries/rx.virtualtime.md) - virtual-time-based schedulers\n\n## Why RxJS? ##\n\nOne question you may ask yourself, is why RxJS?  What about Promises?  Promises are good for solving asynchronous operations such as querying a service with an XMLHttpRequest, where the expected behavior is one value and then completion.  The Reactive Extensions for JavaScript unifies both the world of Promises, callbacks as well as evented data such as DOM Input, Web Workers, Web Sockets.  Once we have unified these concepts, this enables rich composition.\n\nTo give you an idea about rich composition, we can create an autocompletion service which takes the user input from a text input and then query a service, making sure not to flood the service with calls for every key stroke, but instead allow to go at a more natural pace.\n\nFirst, we'll reference the JavaScript files, including jQuery, although RxJS has no dependencies on jQuery...\n```html\n<script src=\"http://code.jquery.com/jquery.js\"></script>\n<script src=\"rx.lite.js\"></script>\n```\nNext, we'll get the user input from an input, listening to the keyup event by using the `Rx.Observable.fromEvent` method.  This will either use the event binding from [jQuery](http://jquery.com), [Zepto](http://zeptojs.com/), [AngularJS](https://angularjs.org/), [Backbone.js](http://backbonejs.org/) and [Ember.js](http://emberjs.com/) if available, and if not, falls back to the native event binding.  This gives you consistent ways of thinking of events depending on your framework, so there are no surprises.\n\n```js\nvar $input = $('#input'),\n    $results = $('#results');\n\n/* Only get the value from each key up */\nvar keyups = Rx.Observable.fromEvent($input, 'keyup')\n  .map(function (e) {\n    return e.target.value;\n  })\n  .filter(function (text) {\n    return text.length > 2;\n  });\n\n/* Now debounce the input for 500ms */\nvar debounced = keyups\n  .debounce(500 /* ms */);\n\n/* Now get only distinct values, so we eliminate the arrows and other control characters */\nvar distinct = debounced\n  .distinctUntilChanged();\n```\n\nNow, let's query Wikipedia!  In RxJS, we can instantly bind to any [Promises A+](https://github.com/promises-aplus/promises-spec) implementation through the `Rx.Observable.fromPromise` method or by just directly returning it, and we wrap it for you.\n\n```js\nfunction searchWikipedia (term) {\n  return $.ajax({\n    url: 'http://en.wikipedia.org/w/api.php',\n    dataType: 'jsonp',\n    data: {\n      action: 'opensearch',\n      format: 'json',\n      search: term\n    }\n  }).promise();\n}\n```\n\nOnce that is created, now we can tie together the distinct throttled input and then query the service.  In this case, we'll call `flatMapLatest` to get the value and ensure that we're not introducing any out of order sequence calls.\n\n```js\nvar suggestions = distinct\n  .flatMapLatest(searchWikipedia);\n```\n\nFinally, we call the `forEach` method on our observable sequence to start pulling data.\n\n```js\nsuggestions.forEach(\n  function (data) {\n    $results\n      .empty()\n      .append ($.map(data[1], function (value) {\n        return $('<li>').text(value);\n      }));\n  },\n  function (error) {\n    $results\n      .empty()\n      .append($('<li>'))\n        .text('Error:' + error);\n  });\n```\n\nAnd there you have it!\n\n## Dive In! ##\n\nPlease check out:\n\n - [The full documentation](https://github.com/Reactive-Extensions/RxJS/tree/master/doc)\n - [Our many great examples](https://github.com/Reactive-Extensions/RxJS/tree/master/examples)\n - [Our design guidelines](https://github.com/Reactive-Extensions/RxJS/tree/master/doc/designguidelines)\n - [Our contribution guidelines](https://github.com/Reactive-Extensions/RxJS/tree/master/doc/contributing)\n - [Our complete Unit Tests](https://github.com/Reactive-Extensions/RxJS/tree/master/tests)\n\n## Resources\n\n- Contact us\n    - [Tech Blog](http://blogs.msdn.com/b/rxteam)\n    - [Twitter @ReactiveX](https://twitter.com/ReactiveX)\n    - [Twitter @OpenAtMicrosoft](http://twitter.com/OpenAtMicrosoft)\n    - [IRC #reactivex](http://webchat.freenode.net/#reactivex)\n    - [JabbR rx](https://jabbr.net/#/rooms/rx)\n    - [StackOverflow rxjs](http://stackoverflow.com/questions/tagged/rxjs)\n    - [Google Group rxjs](https://groups.google.com/forum/#!forum/rxjs)\n\n- Tutorials\n    - [The introduction to Reactive Programming you've been missing](https://gist.github.com/staltz/868e7e9bc2a7b8c1f754)\n    - [2 minute introduction to Rx](https://medium.com/@andrestaltz/2-minute-introduction-to-rx-24c8ca793877)\n    - [Learn RxJS](https://github.com/jhusain/learnrx)\n    - [RxJS Koans](https://github.com/Reactive-Extensions/RxJSKoans)\n    - [RxJS Workshop](https://github.com/Reactive-Extensions/BuildStuffWorkshop)\n    - [Rx Workshop](http://rxworkshop.codeplex.com/)\n    - [Reactive Programming and MVC](http://aaronstacy.com/writings/reactive-programming-and-mvc/)\n\n- Reference Material\n    - [Rx Marbles](http://rxmarbles.com/)\n    - [RxJS GitBook](http://xgrommx.github.io/rx-book/)\n    - [Intro to Rx](http://introtorx.com/)\n    - [101 Rx Samples Wiki](http://rxwiki.wikidot.com/101samples)\n    - [Rx Design Guidelines](https://github.com/Reactive-Extensions/RxJS/tree/master/doc/designguidelines)\n    - [Beginners Guide to Rx](http://msdn.microsoft.com/en-us/data/gg577611)\n\n- Community Examples\n    - [React](http://facebook.github.io/react/)\n        - [Rx-React](https://github.com/fdecampredon/rx-react)\n        - [Rx-Flux](https://github.com/fdecampredon/rx-flux)\n        - [React RxJS Autocomplete](https://github.com/eliseumds/react-autocomplete)\n        - [React RxJS TODO MVC](https://github.com/fdecampredon/react-rxjs-todomvc)\n        - [React RxJS Router](https://github.com/kmcclosk/reactjs-rxjs-example)\n        - [React + RxJS + Angular 2.0 di.js TODO MVC](https://github.com/joelhooks/react-rxjs-angular-di-todomvc)\n    - [Ember](http://emberjs.com/)\n        - [RxEmber](https://github.com/blesh/RxEmber)\n    - [AngularJS](http://angularjs.org)\n        - [Ninya.io - Angular + RxJS + rx.angular.js](https://github.com/ninya-io/ninya.io) - [Site](http://stackwho.herokuapp.com/)\n        - [The Car Game](https://github.com/mikkark/TheCarGame) - [Site](https://thecargame.herokuapp.com/) - [Blog Post](https://allthingsarchitectural.wordpress.com/2014/11/24/game-programming-with-angular-rxjs-and-node-js/)\n    - [Cycle](https://github.com/staltz/cycle)\n        - [Cycle TODO MVC](https://github.com/staltz/todomvc-cycle)\n    - Everything else\n        - [Mario Elm Example](http://fudini.github.io/rx/mario.html)\n        - [Firebase + RxJS](http://blog.cryptoguru.com/2014/11/frp-using-rxjs-and-firebase.html)  \n        - [Reactive Trader](https://github.com/AdaptiveConsulting/ReactiveTrader) - [Site](https://reactivetrader.azurewebsites.net/)\n\n- Presentations\n    - Don't Cross the Streams - Cascadia.js 2012 [slides/demos](http://www.slideshare.net/mattpodwysocki/cascadiajs-dont-cross-the-streams) | [video](http://www.youtube.com/watch?v=FqBq4uoiG0M)\n    - Curing Your Asynchronous Blues - Strange Loop 2013 [slides/demos](https://github.com/Reactive-Extensions/StrangeLoop2013) | [video](http://www.infoq.com/presentations/rx-event-processing)\n    - Streaming and event-based programming using FRP and RxJS - FutureJS 2014 [slides/demos](https://github.com/Reactive-Extensions/FutureJS) | [video](https://www.youtube.com/watch?v=zlERo_JMGCw)\n    - [Tyrannosaurus Rx](http://yobriefca.se/presentations/tyrannosaurus-rx.pdf) - [James Hughes](http://twitter.com/kouphax)\n    - Taming Asynchronous Workflows with Functional Reactive Programming - EuroClojure - [Leonardo Borges](https://twitter.com/leonardo_borges) [slides](http://www.slideshare.net/borgesleonardo/functional-reactive-programming-compositional-event-systems) | [video](http://www.slideshare.net/borgesleonardo/functional-reactive-programming-compositional-event-systems)\n\n- Videos\n    - [Practical Rx with Matthew Podwysocki, Bart de Smet and Jafar Husain](http://channel9.msdn.com/posts/Bart-De-Smet-Jafar-Hussain-Matthew-Podwysocki-Pragmatic-Rx)\n    - [Netflix and RxJS](http://channel9.msdn.com/posts/Rx-and-Netflix)\n    - [Hello RxJS - Channel 9](http://channel9.msdn.com/Blogs/Charles/Introducing-RxJS-Reactive-Extensions-for-JavaScript)\n    - [MIX 2011](http://channel9.msdn.com/events/MIX/MIX11/HTM07)\n    - [RxJS Today and Tomorrow - Channel 9](http://channel9.msdn.com/Blogs/Charles/Matthew-Podwysocki-and-Bart-J-F-De-Smet-RxJS-Today-and-Tomorrow)\n    - [Reactive Extensions Videos on Channel 9](http://channel9.msdn.com/Tags/reactive+extensions)\n    - [Asynchronous JavaScript at Netflix - Netflix JavaScript Talks - Jafar Husain](https://www.youtube.com/watch?v=XRYN2xt11Ek)\n    - [Asynchronous JavaScript at Netflix - MountainWest JavaScript 2014 - Jafar Husain](https://www.youtube.com/watch?v=XE692Clb5LU)\n    - [Asynchronous JavaScript at Netflix - HTML5DevConf - Jafar Husain](https://www.youtube.com/watch?v=5uxSu-F5Kj0)\n    - [Adding Even More Fun to Functional Programming With RXJS - Ryan Anklam](https://www.youtube.com/watch?v=8EExNfm0gt4)\n    - [Reactive Angular - Devoxx France 2014 - Martin Gontovnikas](http://parleys.com/play/53677646e4b0593229b85841/chapter0/about)\n    - [Reactive Game Programming for the Discerning Hipster - JSConf 2014 - Bodil Stokke](https://www.youtube.com/watch?v=x8mmAu7ZR9Y)\n\n- Podcasts\n    - [.NET Rocks #907](http://dotnetrocks.com/default.aspx?showNum=907)\n    - [JavaScript Jabber #83](http://javascriptjabber.com/083-jsj-frp-and-rxjs-with-matthew-podwysocki/)\n\n- Articles\n    - [Your Mouse is a Database](http://queue.acm.org/detail.cfm?id=2169076)\n\n- Books\n    - [RxJS](http://xgrommx.github.io/rx-book)\n    - [Intro to Rx](http://www.amazon.com/Introduction-to-Rx-ebook/dp/B008GM3YPM/)\n    - [Programming Reactive Extensions and LINQ](http://www.amazon.com/Programming-Reactive-Extensions-Jesse-Liberty/dp/1430237473/)\n\n## Getting Started\n\nThere are a number of ways to get started with RxJS. The files are available on [cdnjs](http://cdnjs.com/libraries/rxjs/) and [jsDelivr](http://www.jsdelivr.com/#!rxjs).\n\n### Custom Builds\n\nYou can use the [`rx-cli`](https://www.npmjs.org/package/rx-cli) to perform custom builds to create the RxJS you want:\n\n```bash\n$ rx --lite --compat --methods select,selectmany,takeuntil,fromevent\n```\n\n### Download the Source\n\n```bash\ngit clone https://github.com/Reactive-Extensions/rxjs.git\ncd ./rxjs\n```\n\n### Installing with [NPM](https://npmjs.org/)\n\n```bash`\n$ npm install rx\n$ npm install -g rx\n```\n\n### Using with Node.js and Ringo.js\n\n```js\nvar Rx = require('rx');\n```\n\n### Installing with [Bower](http://bower.io/)\n\n```bash\n$ bower install rxjs\n```\n\n### Installing with [Jam](http://jamjs.org/)\n```bash\n$ jam install rx\n```\n### Installing All of RxJS via [NuGet](http://nuget.org/)\n```bash\n$ Install-Package RxJS-All\n```\n### Install individual packages via [NuGet](http://nuget.org/):\n\n    Install-Package RxJS-All\n    Install-Package RxJS-Lite\n    Install-Package RxJS-Main\n    Install-Package RxJS-Aggregates\n    Install-Package RxJS-Async\n    Install-Package RxJS-BackPressure\n    Install-Package RxJS-Binding\n    Install-Package RxJS-Coincidence\n    Install-Package RxJS-Experimental\n    Install-Package RxJS-JoinPatterns\n    Install-Package RxJS-Testing\n    Install-Package RxJS-Time\n\n### In a Browser:\n\n```html\n<!-- Just the core RxJS -->\n<script src=\"rx.js\"></script>\n\n<!-- Or all of RxJS minus testing -->\n<script src=\"rx.all.js\"></script>\n\n<!-- Or keeping it lite -->\n<script src=\"rx.lite.js\"></script>\n```\n\n### Along with a number of our extras for RxJS:\n\n```html\n<script src=\"rx.aggregates.js\"></script>\n<script src=\"rx.async.js\"></script>\n<script src=\"rx.backpressure.js\"></script>\n<script src=\"rx.binding.js\"></script>\n<script src=\"rx.coincidencejs\"></script>\n<script src=\"rx.experimental.js\"></script>\n<script src=\"rx.joinpatterns.js\"></script>\n<script src=\"rx.time.js\"></script>\n<script src=\"rx.virtualtime.js\"></script>\n<script src=\"rx.testing.js\"></script>\n```\n\n### Using RxJS with an AMD loader such as Require.js\n\n```js\nrequire({\n  'paths': {\n    'rx': 'path/to/rx-lite.js'\n  }\n},\n['rx'], function(Rx) {\n  var obs = Rx.Observable.of(42);\n  obs.forEach(function (x) { console.log(x); });\n});\n```\n\n## What about my libraries? ##\n\nThe Reactive Extensions for JavaScript have no external dependencies any library, so they'll work well with just about any library.  We provide bridges and support for various libraries including:\n\n- [React](http://facebook.github.io/react/)\n    - [Rx-React](https://github.com/fdecampredon/rx-react)\n    - [Rx-Flux](https://github.com/fdecampredon/rx-flux)\n- [Ember](http://emberjs.com/)\n    - [RxEmber](https://github.com/blesh/RxEmber)\n- [AngularJS](https://github.com/Reactive-Extensions/rx.angular.js)\n- [HTML DOM](https://github.com/Reactive-Extensions/RxJS-DOM)\n- [jQuery (1.4+)](https://github.com/Reactive-Extensions/RxJS-jQuery)\n- [MooTools](https://github.com/Reactive-Extensions/RxJS-MooTools)\n- [Dojo 1.7+](https://github.com/Reactive-Extensions/RxJS-Dojo)\n- [ExtJS](https://github.com/Reactive-Extensions/RxJS-ExtJS)\n\nIn addition, we have support for [common Node.js functions](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/nodejs/nodejs.md) such as binding to callbacks and the `EventEmitter` class.\n\n## Compatibility ##\n\nRxJS has been thoroughly tested against all major browsers and supports IE6+, Chrome 4+, FireFox 1+, and Node.js v0.4+.\n\n## Contributing ##\n\nThere are lots of ways to contribute to the project, and we appreciate our [contributors](https://github.com/Reactive-Extensions/RxJS/wiki/Contributors).  If you wish to contribute, check out our [style guide]((https://github.com/Reactive-Extensions/RxJS/tree/master/doc/contributing)).\n\nYou can contribute by reviewing and sending feedback on code checkins, suggesting and trying out new features as they are implemented, submit bugs and help us verify fixes as they are checked in, as well as submit code fixes or code contributions of your own. Note that all code submissions will be rigorously reviewed and tested by the Rx Team, and only those that meet an extremely high bar for both quality and design/roadmap appropriateness will be merged into the source.\n\n## License ##\n\nCopyright (c) Microsoft Open Technologies, Inc.  All rights reserved.\nMicrosoft Open Technologies would like to thank its contributors, a list\nof whom are at https://github.com/Reactive-Extensions/RxJS/wiki/Contributors.\n\nLicensed under the Apache License, Version 2.0 (the \"License\"); you\nmay not use this file except in compliance with the License. You may\nobtain a copy of the License at\n\nhttp://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an \"AS IS\" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or\nimplied. See the License for the specific language governing permissions\nand limitations under the License.\n",
   "readmeFilename": "readme.md",
   "_id": "rx@2.3.24",
-  "_from": "rx@2.3.24"
+  "dist": {
+    "shasum": "e18bec74b824daa6a603b990cdc39ab440902f85"
+  },
+  "_from": "rx@2.3.24",
+  "_resolved": "https://registry.npmjs.org/rx/-/rx-2.3.24.tgz"
 }
 
 },{}],11:[function(require,module,exports){
@@ -17978,8 +17988,8 @@ function getEventsOrigDestMap(vtree) {
 
 function createContainerElement(tagName) {
   var elem = document.createElement('div');
-  elem.className = 'cycleCustomElementContainer-' + tagName.toUpperCase();
-  elem.cycleCustomElementAttributes = new InputProxy();
+  elem.className = 'cycleCustomElement-' + tagName.toUpperCase();
+  elem.cycleCustomElementProperties = new InputProxy();
   return elem;
 }
 
@@ -18020,7 +18030,7 @@ function forwardOriginEventsToDestinations(events, origDestMap) {
 function makeConstructor() {
   return function customElementConstructor(vtree) {
     this.type = 'Widget';
-    this.attributes = vtree.properties.attributes;
+    this.properties = vtree.properties;
     this.eventsOrigDestMap = getEventsOrigDestMap(vtree);
   };
 }
@@ -18035,7 +18045,7 @@ function makeInit(tagName, dataFlowNode) {
     forwardOriginEventsToDestinations(events, this.eventsOrigDestMap);
     renderer.inject(dfn);
     dfn._inCustomElement = true;
-    dfn.inject(elem.cycleCustomElementAttributes);
+    dfn.inject(elem.cycleCustomElementProperties);
     this.update(null, elem);
     return elem;
   };
@@ -18044,20 +18054,20 @@ function makeInit(tagName, dataFlowNode) {
 function makeUpdate() {
   return function updateCustomElement(prev, elem) {
     if (!elem ||
-      !elem.cycleCustomElementAttributes ||
-      !(elem.cycleCustomElementAttributes instanceof InputProxy) ||
-      !elem.cycleCustomElementAttributes.proxiedProps)
+      !elem.cycleCustomElementProperties ||
+      !(elem.cycleCustomElementProperties instanceof InputProxy) ||
+      !elem.cycleCustomElementProperties.proxiedProps)
     {
       return;
     }
-    var proxiedProps = elem.cycleCustomElementAttributes.proxiedProps;
+    var proxiedProps = elem.cycleCustomElementProperties.proxiedProps;
     for (var prop in proxiedProps) {
-      var attrStreamName = prop;
-      var attrName = prop.slice(0, -1);
-      if (proxiedProps.hasOwnProperty(attrStreamName) &&
-        this.attributes.hasOwnProperty(attrName))
+      var propStreamName = prop;
+      var propName = prop.slice(0, -1);
+      if (proxiedProps.hasOwnProperty(propStreamName) &&
+        this.properties.hasOwnProperty(propName))
       {
-        proxiedProps[attrStreamName].onNext(this.attributes[attrName]);
+        proxiedProps[propStreamName].onNext(this.properties[propName]);
       }
     }
   };
@@ -23495,7 +23505,7 @@ module.exports={
   "license": "BSD 3-Clause",
   "main": "js/app.js",
   "dependencies": {
-    "cyclejs": "0.10.1",
+    "cyclejs": "0.11.0",
     "immutable": "^3.6.2"
   },
   "devDependencies": {
@@ -23512,9 +23522,13 @@ module.exports={
     "less": "lessc styles/main.less dist/css/main.css",
     "6to5": "mkdir -p ignore/es5src && 6to5 src --out-dir ignore/es5src",
     "browserify": "browserify -e ignore/es5src/app.js --outfile dist/js/app.js",
+    "browserify-element": "browserify -e ignore/es5src/element.js --outfile dist/js/element.js",
     "build": "npm run less && npm run 6to5 && npm run browserify",
     "build-production": "npm run less && npm run 6to5 && npm run browserify && npm run uglify",
+    "build-element": "npm run less && npm run 6to5 && npm run browserify-element",
+    "build-element-production": "npm run less && npm run 6to5 && npm run browserify-element && npm run uglify-element",
     "uglify": "uglifyjs dist/js/app.js -o dist/js/app.js",
+    "uglify-element": "uglifyjs dist/js/element.js -o dist/js/element.js",
     "docs": "node ./scripts/make-api-docs.js",
     "release": "npm run release-patch",
     "release-patch": "git checkout master && npm run build && git commit -a -m 'Compiled' && npm version patch && git push origin master --tags && npm publish",
@@ -23545,23 +23559,70 @@ module.exports = Cycle.createModel(function () {
 },{"cyclejs":52,"cyclejs/node_modules/rx/package.json":10,"package.json":62}],64:[function(require,module,exports){
 "use strict";
 
-var Cycle = require("cyclejs");
+var _interopRequire = function (obj) {
+  return obj && (obj["default"] || obj);
+};
+
+var Cycle = _interopRequire(require("cyclejs"));
+
+var Colors = _interopRequire(require("rxmarbles/styles/colors"));
+
+var Dimens = _interopRequire(require("rxmarbles/styles/dimens"));
+
+var Fonts = _interopRequire(require("rxmarbles/styles/fonts"));
+
+var mergeStyles = require("rxmarbles/styles/utils").mergeStyles;
 var Rx = Cycle.Rx;
 var h = Cycle.h;
 
 var rxmarblesGithubUrl = "https://github.com/staltz/rxmarbles";
 var rxjsGithubUrl = "https://github.com/Reactive-Extensions/RxJS";
 
+var pageRowWidth = "1060px";
+var sandboxWidth = "820px";
+
+var pageRowStyle = {
+  position: "relative",
+  width: pageRowWidth,
+  margin: "0 auto"
+};
+
+var pageRowChildStyle = {
+  display: "inline-block",
+  marginLeft: "-" + Dimens.spaceMedium
+};
+
+var pageRowFirstChildStyle = mergeStyles(pageRowChildStyle, {
+  width: "calc(" + pageRowWidth + " - " + sandboxWidth + " - " + Dimens.spaceMedium + ")",
+  marginRight: Dimens.spaceMedium
+});
+
+var pageRowLastChildStyle = mergeStyles(pageRowChildStyle, {
+  width: sandboxWidth
+});
+
 function vrenderHeader() {
-  return h("div.pageRow", [h("h1.pageTitle", "RxMarbles"), h("h3.valueProposition", "Interactive diagrams of Rx Observables")]);
+  return h("div", { style: pageRowStyle }, [h("h1", { style: mergeStyles({
+      fontFamily: Fonts.fontSpecial,
+      color: Colors.greyDark }, pageRowFirstChildStyle) }, "RxMarbles"), h("h3", { style: mergeStyles({
+      color: Colors.greyDark }, pageRowLastChildStyle) }, "Interactive diagrams of Rx Observables")]);
 }
 
 function vrenderContent(route) {
-  return h("div.pageRow", [h("x-operators-menu"), h("x-sandbox", { attributes: { route: route } })]);
+  return h("div", { style: mergeStyles(pageRowStyle, { marginTop: Dimens.spaceSmall }) }, [h("div", { style: pageRowFirstChildStyle }, h("x-operators-menu")), h("div", { style: mergeStyles({
+      position: "absolute",
+      top: "0" }, pageRowLastChildStyle) }, h("x-sandbox", { route: route, width: "820px" }))]);
 }
 
 function vrenderFooter(appVersion, rxVersion) {
-  return h("section.footer", [h("a", { href: "" + rxmarblesGithubUrl + "/releases/tag/v" + appVersion }, "v" + appVersion), " built on ", h("a", { href: "" + rxjsGithubUrl + "/tree/v" + rxVersion }, "RxJS v" + rxVersion), " by ", h("a", { href: "https://twitter.com/andrestaltz" }, "@andrestaltz")]);
+  return h("section", {
+    style: {
+      position: "fixed",
+      bottom: "2px",
+      right: Dimens.spaceMedium,
+      color: Colors.greyDark
+    }
+  }, [h("a", { href: "" + rxmarblesGithubUrl + "/releases/tag/v" + appVersion }, "v" + appVersion), " built on ", h("a", { href: "" + rxjsGithubUrl + "/tree/v" + rxVersion }, "RxJS v" + rxVersion), " by ", h("a", { href: "https://twitter.com/andrestaltz" }, "@andrestaltz")]);
 }
 
 module.exports = Cycle.createView(function (Model) {
@@ -23571,7 +23632,107 @@ module.exports = Cycle.createView(function (Model) {
     })
   };
 });
-},{"cyclejs":52}],65:[function(require,module,exports){
+},{"cyclejs":52,"rxmarbles/styles/colors":84,"rxmarbles/styles/dimens":85,"rxmarbles/styles/fonts":86,"rxmarbles/styles/utils":87}],65:[function(require,module,exports){
+"use strict";
+
+var _interopRequire = function (obj) {
+  return obj && (obj["default"] || obj);
+};
+
+var Cycle = _interopRequire(require("cyclejs"));
+
+var mergeStyles = require("rxmarbles/styles/utils").mergeStyles;
+var textUnselectable = require("rxmarbles/styles/utils").textUnselectable;
+var elevation1Style = require("rxmarbles/styles/utils").elevation1Style;
+var Rx = Cycle.Rx;
+var h = Cycle.h;
+
+var DiagramCompletionComponentModel = Cycle.createModel(function (Properties, Intent) {
+  return {
+    time$: Properties.get("time$"),
+    isDraggable$: Properties.get("isDraggable$").startWith(false),
+    isTall$: Properties.get("isTall$").startWith(false),
+    style$: Properties.get("style$").startWith({}),
+    isHighlighted$: Rx.Observable.merge(Intent.get("startHighlight$").map(function () {
+      return true;
+    }), Intent.get("stopHighlight$").map(function () {
+      return false;
+    })).startWith(false)
+  };
+});
+
+var DiagramCompletionComponentView = Cycle.createView(function (Model) {
+  var createContainerStyle = function (inputStyle) {
+    return {
+      display: "inline-block",
+      position: "relative",
+      width: "calc(8 * " + inputStyle.thickness + ")",
+      height: inputStyle.height,
+      margin: "0 calc(-4 * " + inputStyle.thickness + ")"
+    };
+  };
+
+  var createInnerStyle = function (inputStyle) {
+    return {
+      width: inputStyle.thickness,
+      height: "50%",
+      marginLeft: "calc(3.5 * " + inputStyle.thickness + ")",
+      marginTop: "calc(" + inputStyle.height + " / 4.0)",
+      backgroundColor: inputStyle.color };
+  };
+
+  var vrender = function (time, isDraggable, isTall, inputStyle, isHighlighted) {
+    var containerStyle = createContainerStyle(inputStyle);
+    var innerStyle = createInnerStyle(inputStyle);
+    return h("div", {
+      style: mergeStyles({
+        left: "" + time + "%" }, containerStyle, isDraggable ? draggableContainerStyle : {}),
+      onmousedown: "completionMouseDown$",
+      onmouseenter: "mouseenter$",
+      onmouseleave: "mouseleave$"
+    }, [h("div", {
+      style: mergeStyles(innerStyle, isDraggable && isHighlighted ? elevation1Style : null, isTall ? innerTallStyle : null)
+    })]);
+  };
+
+  var draggableContainerStyle = {
+    cursor: "ew-resize"
+  };
+
+  var innerTallStyle = {
+    height: "100%",
+    marginTop: 0
+  };
+
+  return {
+    vtree$: Rx.Observable.combineLatest(Model.get("time$"), Model.get("isDraggable$"), Model.get("isTall$"), Model.get("style$"), Model.get("isHighlighted$"), vrender)
+  };
+});
+
+var DiagramCompletionComponentIntent = Cycle.createIntent(function (View) {
+  return {
+    startHighlight$: View.get("mouseenter$").map(function () {
+      return 1;
+    }),
+    stopHighlight$: View.get("mouseleave$").map(function () {
+      return 1;
+    })
+  };
+});
+
+module.exports = Cycle.createView(function (Properties) {
+  var Model = DiagramCompletionComponentModel.clone();
+  var View = DiagramCompletionComponentView.clone();
+  var Intent = DiagramCompletionComponentIntent.clone();
+
+  Intent.inject(View).inject(Model).inject(Properties, Intent);
+
+  return {
+    vtree$: View.get("vtree$"),
+    mousedown$: View.get("completionMouseDown$")
+  };
+});
+},{"cyclejs":52,"rxmarbles/styles/utils":87}],66:[function(require,module,exports){
 "use strict";
 
 var _slicedToArray = function (arr, i) {
@@ -23596,279 +23757,604 @@ var _interopRequire = function (obj) {
 
 var Cycle = _interopRequire(require("cyclejs"));
 
-var svg = _interopRequire(require("cyclejs/node_modules/virtual-dom/virtual-hyperscript/svg"));
-
 var Immutable = _interopRequire(require("immutable"));
 
 var Rx = Cycle.Rx;
+
+module.exports = Cycle.createIntent(function (View) {
+  var getPxToPercentageRatio = function (element) {
+    var pxToPercentage = undefined;
+    try {
+      if (element && element.parentElement && element.parentElement.clientWidth) {
+        pxToPercentage = 100 / element.parentElement.clientWidth;
+      } else {
+        throw new Error("Invalid marble parent or parent width.");
+      }
+    } catch (err) {
+      console.warn(err);
+      pxToPercentage = 0.15; // a 'safe enough' magic number
+    }
+    return pxToPercentage;
+  };
+
+  var makeDeltaTime$ = function (mouseDown$, resultFn) {
+    return mouseDown$.map(function (downevent) {
+      var target = downevent.currentTarget;
+      var pxToPercentage = getPxToPercentageRatio(target);
+      return mouseMove$.takeUntil(mouseUp$).pairwise().map(function (_ref) {
+        var _ref2 = _slicedToArray(_ref, 2);
+
+        var ev1 = _ref2[0];
+        var ev2 = _ref2[1];
+        var dx = ev2.pageX - ev1.pageX; // the drag dx in pixels
+        var deltaTime = dx * pxToPercentage;
+        if (!!resultFn) {
+          return resultFn(deltaTime, target);
+        } else {
+          return deltaTime;
+        }
+      }).filter(function (x) {
+        return x !== 0;
+      });
+    }).concatAll();
+  };
+
+  var mouseMove$ = Rx.Observable.fromEvent(document, "mousemove");
+  var mouseUp$ = Rx.Observable.fromEvent(document, "mouseup");
+
+  return {
+    changeMarbleTime$: makeDeltaTime$(View.get("marbleMouseDown$"), function (deltaTime, target) {
+      return Immutable.Map({
+        deltaTime: deltaTime,
+        id: target.attributes["data-marble-id"].value
+      });
+    }),
+    changeEndTime$: makeDeltaTime$(View.get("completionMouseDown$"))
+  };
+});
+},{"cyclejs":52,"immutable":61}],67:[function(require,module,exports){
+"use strict";
+
+var _interopRequire = function (obj) {
+  return obj && (obj["default"] || obj);
+};
+
+var Cycle = _interopRequire(require("cyclejs"));
+
+var Rx = Cycle.Rx;
+
+module.exports = Cycle.createModel(function (Properties, Intent) {
+  var findLargestMarbleTime = function (diagramData) {
+    return diagramData.get("notifications").max(function (notifA, notifB) {
+      if (notifA.get("time") < notifB.get("time")) {
+        return -1;
+      }
+      if (notifA.get("time") > notifB.get("time")) {
+        return 1;
+      }
+      return 0;
+    }).get("time");
+  };
+
+  var applyChangeMarbleTime = function (diagramData, marbleDelta) {
+    return diagramData.set("notifications", diagramData.get("notifications").map(function (notif) {
+      if (String(notif.get("id")) === String(marbleDelta.get("id"))) {
+        var newTime = notif.get("time") + marbleDelta.get("deltaTime");
+        return notif.set("time", newTime);
+      } else {
+        return notif;
+      }
+    }));
+  };
+
+  var applyChangeEndTime = function (diagramData, endDelta) {
+    return diagramData.set("end", diagramData.get("end") + endDelta);
+  };
+
+  var applyMarbleDataConstraints = function (marbleData) {
+    var newTime = marbleData.get("time");
+    newTime = Math.round(newTime);
+    newTime = Math.min(newTime, 100);
+    newTime = Math.max(0, newTime);
+    return marbleData.set("time", newTime);
+  };
+
+  var applyEndTimeConstraint = function (diagramData) {
+    var largestMarbleTime = findLargestMarbleTime(diagramData);
+    var newEndTime = diagramData.get("end");
+    newEndTime = Math.max(newEndTime, largestMarbleTime);
+    newEndTime = Math.round(newEndTime);
+    newEndTime = Math.min(newEndTime, 100);
+    newEndTime = Math.max(0, newEndTime);
+    return diagramData.set("end", newEndTime);
+  };
+
+  var applyDiagramDataConstraints = function (diagramData) {
+    var newDiagramData = diagramData.set("notifications", diagramData.get("notifications").map(applyMarbleDataConstraints));
+    newDiagramData = applyEndTimeConstraint(newDiagramData);
+    return newDiagramData;
+  };
+
+  var newDiagramDataScanner = function (prev, curr) {
+    var currentIsDiagramData = !!curr && !!curr.get && !!curr.get("notifications");
+    if (!currentIsDiagramData) {
+      var previousIsDiagramData = !!prev && !!prev.get("notifications");
+      if (!previousIsDiagramData) {
+        console.warn("Inconsistency in DiagramComponent.makeNewDiagramData$()");
+      }
+      var diagramData = prev;
+      var changeInstructions = curr;
+      var newDiagramData = undefined;
+      if (typeof changeInstructions === "number") {
+        newDiagramData = applyChangeEndTime(diagramData, changeInstructions);
+      } else {
+        newDiagramData = applyChangeMarbleTime(diagramData, changeInstructions);
+      }
+      return newDiagramData.set("isInitialData", false);
+    } else {
+      return curr.set("isInitialData", true);
+    }
+  };
+
+  var makeNewDiagramData$ = function (data$, changeMarbleTime$, changeEndTime$, interactive$) {
+    return data$.merge(changeMarbleTime$).merge(changeEndTime$).scan(newDiagramDataScanner).filter(function (diagramData) {
+      return !diagramData.get("isInitialData");
+    }).map(applyDiagramDataConstraints).pausable(interactive$);
+  };
+
+  return {
+    data$: Properties.get("data$").distinctUntilChanged(),
+    newData$: makeNewDiagramData$(Properties.get("data$").distinctUntilChanged(), Intent.get("changeMarbleTime$"), Intent.get("changeEndTime$"), Properties.get("interactive$")),
+    isInteractive$: Properties.get("interactive$").startWith(false)
+  };
+});
+},{"cyclejs":52}],68:[function(require,module,exports){
+"use strict";
+
+var _interopRequire = function (obj) {
+  return obj && (obj["default"] || obj);
+};
+
+var Cycle = _interopRequire(require("cyclejs"));
+
+var Colors = _interopRequire(require("rxmarbles/styles/colors"));
+
+var Dimens = _interopRequire(require("rxmarbles/styles/dimens"));
+
+var Fonts = _interopRequire(require("rxmarbles/styles/fonts"));
+
+var mergeStyles = require("rxmarbles/styles/utils").mergeStyles;
+var textUnselectable = require("rxmarbles/styles/utils").textUnselectable;
+var Rx = Cycle.Rx;
 var h = Cycle.h;
 
-var MARBLE_WIDTH = 5; // estimate of a marble width, in percentages
-var NUM_COLORS = 4;
-var mouseMove$ = Rx.Observable.fromEvent(document, "mousemove");
-var mouseUp$ = Rx.Observable.fromEvent(document, "mouseup");
-
-function getPxToPercentageRatio(element) {
-  var pxToPercentage = undefined;
-  try {
-    if (element && element.parentElement && element.parentElement.clientWidth) {
-      pxToPercentage = 100 / element.parentElement.clientWidth;
-    } else {
-      throw new Error("Invalid marble parent or parent width.");
-    }
-  } catch (err) {
-    console.warn(err);
-    pxToPercentage = 0.15; // a 'safe enough' magic number
-  }
-  return pxToPercentage;
-}
-
-function makeDeltaTime$(mouseDown$, resultFn) {
-  return mouseDown$.map(function (downevent) {
-    var target = downevent.currentTarget;
-    var pxToPercentage = getPxToPercentageRatio(target);
-    return mouseMove$.takeUntil(mouseUp$).pairwise().map(function (_ref) {
-      var _ref2 = _slicedToArray(_ref, 2);
-
-      var ev1 = _ref2[0];
-      var ev2 = _ref2[1];
-      var dx = ev2.pageX - ev1.pageX; // the drag dx in pixels
-      var deltaTime = dx * pxToPercentage;
-      if (!!resultFn) {
-        return resultFn(deltaTime, target);
-      } else {
-        return deltaTime;
-      }
-    }).filter(function (x) {
-      return x !== 0;
+module.exports = Cycle.createView(function (Model) {
+  var vrenderMarble = function (marbleData) {
+    var isDraggable = arguments[1] === undefined ? false : arguments[1];
+    return h("x-marble", {
+      data: marbleData,
+      isDraggable: isDraggable,
+      style: { size: diagramMarbleSize },
+      onmousedown: "marbleMouseDown$"
     });
-  }).concatAll();
-}
+  };
 
-function vrenderMarble(marbleData) {
-  var isDraggable = arguments[1] === undefined ? false : arguments[1];
-  var colornum = marbleData.get("id") % NUM_COLORS + 1;
-  var leftPos = "" + marbleData.get("time") + "%";
-  var content = "" + marbleData.get("content");
-  return h("div.marble.js-marble" + (isDraggable ? ".is-draggable" : ""), {
-    style: { left: leftPos, "z-index": marbleData.get("time") },
-    attributes: { "data-marble-id": marbleData.get("id") },
-    onmousedown: "marbleMouseDown$"
-  }, [svg("svg", { attributes: { "class": "marble-inner", viewBox: "0 0 1 1" } }, [svg("circle", {
-    attributes: {
-      "class": "marble-shape marble-shape--color" + colornum,
-      cx: 0.5, cy: 0.5, r: 0.47,
-      "stroke-width": "0.06px"
-    }
-  })]), h("p.marble-content", String(content))]);
-}
+  var vrenderCompletion = function (diagramData) {
+    var isDraggable = arguments[1] === undefined ? false : arguments[1];
+    var endTime = diagramData.get("end");
+    var isTall = diagramData.get("notifications").some(function (marbleData) {
+      return Math.abs(marbleData.get("time") - diagramData.get("end")) <= MARBLE_WIDTH * 0.5;
+    });
+    return h("x-diagram-completion", {
+      time: endTime,
+      isDraggable: isDraggable,
+      isTall: isTall,
+      style: {
+        thickness: diagramArrowThickness,
+        color: diagramArrowColor,
+        height: diagramCompletionHeight
+      },
+      onmousedown: "completionMouseDown$"
+    });
+  };
 
-function vrenderCompletion(diagramData) {
-  var isDraggable = arguments[1] === undefined ? false : arguments[1];
-  var isDraggableClass = isDraggable ? ".is-draggable" : "";
-  var isTall = diagramData.get("notifications").some(function (marbleData) {
-    return Math.abs(marbleData.get("time") - diagramData.get("end")) <= MARBLE_WIDTH * 0.5;
-  });
-  var isTallClass = isTall ? ".is-tall" : "";
-  return h("div.diagramCompletion" + isDraggableClass + isTallClass, {
-    style: { left: diagramData.get("end") + "%" },
-    attributes: { "data-diagram-id": diagramData.get("id") },
-    onmousedown: "completionMouseDown$"
-  }, [h("div.diagramCompletion-inner")]);
-}
+  var vrenderDiagramArrow = function () {
+    return h("div", { style: {
+        backgroundColor: diagramArrowColor,
+        height: diagramArrowThickness,
+        position: "absolute",
+        top: "calc(" + diagramVerticalMargin + " + (" + diagramMarbleSize + " / 2))",
+        left: diagramSidePadding,
+        right: diagramSidePadding
+      } });
+  };
 
-function vrenderDiagram(data, isInteractive) {
-  var marblesVTree = data.get("notifications").map(function (notification) {
-    return vrenderMarble(notification, isInteractive);
-  }).toArray(); // from Immutable.List
-  var completionVTree = vrenderCompletion(data, isInteractive);
+  var vrenderDiagramArrowHead = function () {
+    return h("div", { style: {
+        width: 0,
+        height: 0,
+        borderTop: "" + diagramArrowHeadSize + " solid transparent",
+        borderBottom: "" + diagramArrowHeadSize + " solid transparent",
+        borderLeft: "calc(2 * " + diagramArrowHeadSize + ") solid " + diagramArrowColor,
+        display: "inline-block",
+        right: "calc(" + diagramSidePadding + " - 1px)",
+        position: "absolute",
+        top: "calc(" + diagramVerticalMargin + " + (" + diagramMarbleSize + " / 2) \n        - " + diagramArrowHeadSize + " + (" + diagramArrowThickness + " / 2))"
+      } });
+  };
 
-  return h("div.diagram", [h("div.diagram-arrow"), h("div.diagram-arrowHead"), h("div.diagram-body", [completionVTree].concat(marblesVTree))]);
-}
+  var vrenderDiagram = function (data, isInteractive) {
+    var marblesVTree = data.get("notifications").map(function (notification) {
+      return vrenderMarble(notification, isInteractive);
+    }).toArray(); // from Immutable.List
+    var completionVTree = vrenderCompletion(data, isInteractive);
+    return h("div", { style: diagramStyle }, [vrenderDiagramArrow(), vrenderDiagramArrowHead(), h("div", { style: diagramBodyStyle }, [completionVTree].concat(marblesVTree))]);
+  };
 
-function findLargestMarbleTime(diagramData) {
-  return diagramData.get("notifications").max(function (notifA, notifB) {
-    if (notifA.get("time") < notifB.get("time")) {
-      return -1;
-    }
-    if (notifA.get("time") > notifB.get("time")) {
-      return 1;
-    }
-    return 0;
-  }).get("time");
-}
+  var MARBLE_WIDTH = 5; // estimate of a marble width, in percentages
+  var diagramSidePadding = Dimens.spaceMedium;
+  var diagramVerticalMargin = Dimens.spaceLarge;
+  var diagramArrowThickness = "2px";
+  var diagramArrowSidePadding = Dimens.spaceLarge;
+  var diagramArrowHeadSize = "8px";
+  var diagramArrowColor = Colors.black;
+  var diagramMarbleSize = Dimens.spaceLarge;
+  var diagramCompletionHeight = "44px";
 
-function applyChangeMarbleTime(diagramData, marbleDelta) {
-  return diagramData.set("notifications", diagramData.get("notifications").map(function (notif) {
-    if (String(notif.get("id")) === String(marbleDelta.get("id"))) {
-      var newTime = notif.get("time") + marbleDelta.get("deltaTime");
-      return notif.set("time", newTime);
-    } else {
-      return notif;
-    }
-  }));
-}
+  var diagramStyle = mergeStyles({
+    position: "relative",
+    display: "block",
+    width: "100%",
+    height: "calc(" + diagramMarbleSize + " + 2 * " + diagramVerticalMargin + ")",
+    overflow: "visible",
+    cursor: "default" }, textUnselectable);
 
-function applyChangeEndTime(diagramData, endDelta) {
-  return diagramData.set("end", diagramData.get("end") + endDelta);
-}
+  var diagramBodyStyle = {
+    position: "absolute",
+    left: "calc(" + diagramArrowSidePadding + " + " + diagramSidePadding + " \n        + (" + diagramMarbleSize + " / 2))",
+    right: "calc(" + diagramArrowSidePadding + " + " + diagramSidePadding + " \n        + (" + diagramMarbleSize + " / 2))",
+    top: "calc(" + diagramVerticalMargin + " + (" + diagramMarbleSize + " / 2))",
+    height: diagramCompletionHeight,
+    marginTop: "calc(0px - (" + diagramCompletionHeight + " / 2))"
+  };
 
-function applyMarbleDataConstraints(marbleData) {
-  var newTime = marbleData.get("time");
-  newTime = Math.round(newTime);
-  newTime = Math.min(newTime, 100);
-  newTime = Math.max(0, newTime);
-  return marbleData.set("time", newTime);
-}
+  return {
+    vtree$: Rx.Observable.combineLatest(Model.get("data$").merge(Model.get("newData$")), Model.get("isInteractive$"), vrenderDiagram)
+  };
+});
+},{"cyclejs":52,"rxmarbles/styles/colors":84,"rxmarbles/styles/dimens":85,"rxmarbles/styles/fonts":86,"rxmarbles/styles/utils":87}],69:[function(require,module,exports){
+"use strict";
 
-function applyEndTimeConstraint(diagramData) {
-  var largestMarbleTime = findLargestMarbleTime(diagramData);
-  var newEndTime = diagramData.get("end");
-  newEndTime = Math.max(newEndTime, largestMarbleTime);
-  newEndTime = Math.round(newEndTime);
-  newEndTime = Math.min(newEndTime, 100);
-  newEndTime = Math.max(0, newEndTime);
-  return diagramData.set("end", newEndTime);
-}
+var _interopRequire = function (obj) {
+  return obj && (obj["default"] || obj);
+};
 
-function applyDiagramDataConstraints(diagramData) {
-  var newDiagramData = diagramData.set("notifications", diagramData.get("notifications").map(applyMarbleDataConstraints));
-  newDiagramData = applyEndTimeConstraint(newDiagramData);
-  return newDiagramData;
-}
+var Cycle = _interopRequire(require("cyclejs"));
 
-function newDiagramDataScanner(prev, curr) {
-  var currentIsDiagramData = !!curr && !!curr.get && !!curr.get("notifications");
-  if (!currentIsDiagramData) {
-    var previousIsDiagramData = !!prev && !!prev.get("notifications");
-    if (!previousIsDiagramData) {
-      console.warn("Inconsistency in DiagramComponent.makeNewDiagramData$()");
-    }
-    var diagramData = prev;
-    var changeInstructions = curr;
-    var newDiagramData = undefined;
-    if (typeof changeInstructions === "number") {
-      newDiagramData = applyChangeEndTime(diagramData, changeInstructions);
-    } else {
-      newDiagramData = applyChangeMarbleTime(diagramData, changeInstructions);
-    }
-    return newDiagramData.set("isInitialData", false);
-  } else {
-    return curr.set("isInitialData", true);
-  }
-}
+var DiagramComponentModel = _interopRequire(require("rxmarbles/components/diagram/diagram-model"));
 
-function makeNewDiagramData$(data$, changeMarbleTime$, changeEndTime$, interactive$) {
-  return data$.merge(changeMarbleTime$).merge(changeEndTime$).scan(newDiagramDataScanner).filter(function (diagramData) {
-    return !diagramData.get("isInitialData");
-  }).map(applyDiagramDataConstraints).pausable(interactive$);
-}
+var DiagramComponentView = _interopRequire(require("rxmarbles/components/diagram/diagram-view"));
 
-var DiagramComponent = Cycle.createView(function (Attributes) {
-  var Model = Cycle.createModel(function (Attributes, Intent) {
-    return {
-      data$: Attributes.get("data$").distinctUntilChanged(),
-      newData$: makeNewDiagramData$(Attributes.get("data$").distinctUntilChanged(), Intent.get("changeMarbleTime$"), Intent.get("changeEndTime$"), Attributes.get("interactive$")),
-      isInteractive$: Attributes.get("interactive$").startWith(false)
-    };
-  });
+var DiagramComponentIntent = _interopRequire(require("rxmarbles/components/diagram/diagram-intent"));
 
-  var View = Cycle.createView(function (Model) {
-    return {
-      vtree$: Rx.Observable.combineLatest(Model.get("data$").merge(Model.get("newData$")), Model.get("isInteractive$"), vrenderDiagram)
-    };
-  });
+module.exports = Cycle.createView(function (Properties) {
+  var Model = DiagramComponentModel.clone();
+  var View = DiagramComponentView.clone();
+  var Intent = DiagramComponentIntent.clone();
 
-  var Intent = Cycle.createIntent(function (View) {
-    return {
-      changeMarbleTime$: makeDeltaTime$(View.get("marbleMouseDown$"), function (deltaTime, target) {
-        return Immutable.Map({
-          deltaTime: deltaTime,
-          id: target.attributes["data-marble-id"].value
-        });
-      }),
-      changeEndTime$: makeDeltaTime$(View.get("completionMouseDown$"))
-    };
-  });
-
-  Intent.inject(View).inject(Model).inject(Attributes, Intent);
+  Intent.inject(View).inject(Model).inject(Properties, Intent);
 
   return {
     vtree$: View.get("vtree$"),
     newdata$: Model.get("newData$")
   };
 });
-
-module.exports = DiagramComponent;
-},{"cyclejs":52,"cyclejs/node_modules/virtual-dom/virtual-hyperscript/svg":35,"immutable":61}],66:[function(require,module,exports){
+},{"cyclejs":52,"rxmarbles/components/diagram/diagram-intent":66,"rxmarbles/components/diagram/diagram-model":67,"rxmarbles/components/diagram/diagram-view":68}],70:[function(require,module,exports){
 "use strict";
 
-var Cycle = require("cyclejs");
+var _interopRequire = function (obj) {
+  return obj && (obj["default"] || obj);
+};
+
+var Cycle = _interopRequire(require("cyclejs"));
+
+var svg = _interopRequire(require("cyclejs/node_modules/virtual-dom/virtual-hyperscript/svg"));
+
+var Colors = _interopRequire(require("rxmarbles/styles/colors"));
+
+var mergeStyles = require("rxmarbles/styles/utils").mergeStyles;
+var svgElevation1Style = require("rxmarbles/styles/utils").svgElevation1Style;
+var textUnselectable = require("rxmarbles/styles/utils").textUnselectable;
 var Rx = Cycle.Rx;
 var h = Cycle.h;
-var Examples = require("rxmarbles/data/examples");
 
-/**
- * Returns a hashmap of category headers to lists of examples in that category.
- */
-function organizeExamplesByCategory(examples) {
-  var categoryMap = {};
-  for (var key in examples) {
-    if (!examples.hasOwnProperty(key)) continue;
-    var value = examples[key];
-    value.key = key;
-    if (categoryMap.hasOwnProperty(value.category)) {
-      categoryMap[value.category].push(value);
-    } else {
-      categoryMap[value.category] = [value];
+var MarbleModel = Cycle.createModel(function (Properties, Intent) {
+  return {
+    data$: Properties.get("data$"),
+    isDraggable$: Properties.get("isDraggable$").startWith(false),
+    style$: Properties.get("style$").startWith({}),
+    isHighlighted$: Rx.Observable.merge(Intent.get("startHighlight$").map(function () {
+      return true;
+    }), Intent.get("stopHighlight$").map(function () {
+      return false;
+    })).startWith(false)
+  };
+});
+
+var MarbleView = Cycle.createView(function (Model) {
+  var createContainerStyle = function (inputStyle) {
+    return {
+      width: inputStyle.size,
+      height: inputStyle.size,
+      position: "relative",
+      display: "inline-block",
+      margin: "calc(0px - (" + inputStyle.size + " / 2))",
+      bottom: "calc((100% - " + inputStyle.size + ") / 2)",
+      cursor: "default"
+    };
+  };
+
+  var vrenderSvg = function (data, isDraggable, inputStyle, isHighlighted) {
+    var color = POSSIBLE_COLORS[data.get("id") % POSSIBLE_COLORS.length];
+    return svg("svg", {
+      style: mergeStyles({
+        overflow: "visible",
+        width: inputStyle.size,
+        height: inputStyle.size }, isDraggable && isHighlighted ? svgElevation1Style : {}),
+      attributes: { viewBox: "0 0 1 1" } }, [svg("circle", {
+      style: {
+        stroke: Colors.black,
+        fill: color
+      },
+      attributes: {
+        cx: 0.5, cy: 0.5, r: 0.47,
+        "stroke-width": "0.06px"
+      }
+    })]);
+  };
+
+  var vrenderInnerContent = function (data, inputStyle) {
+    return h("p", {
+      style: mergeStyles({
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        top: "0",
+        margin: "0",
+        textAlign: "center",
+        lineHeight: inputStyle.size }, textUnselectable)
+    }, "" + data.get("content"));
+  };
+
+  var vrender = function (data, isDraggable, inputStyle, isHighlighted) {
+    return h("div", {
+      style: mergeStyles({
+        left: "" + data.get("time") + "%",
+        zIndex: data.get("time") }, createContainerStyle(inputStyle), isDraggable ? draggableContainerStyle : null),
+      attributes: { "data-marble-id": data.get("id") },
+      onmousedown: "mousedown$",
+      onmouseenter: "mouseenter$",
+      onmouseleave: "mouseleave$"
+    }, [vrenderSvg(data, isDraggable, inputStyle, isHighlighted), vrenderInnerContent(data, inputStyle)]);
+  };
+
+  var POSSIBLE_COLORS = [Colors.blue, Colors.green, Colors.yellow, Colors.red];
+
+  var draggableContainerStyle = {
+    cursor: "ew-resize"
+  };
+
+  return {
+    vtree$: Rx.Observable.combineLatest(Model.get("data$"), Model.get("isDraggable$"), Model.get("style$"), Model.get("isHighlighted$"), vrender)
+  };
+});
+
+var MarbleIntent = Cycle.createIntent(function (View) {
+  return {
+    startHighlight$: View.get("mouseenter$").map(function () {
+      return 1;
+    }),
+    stopHighlight$: View.get("mouseleave$").map(function () {
+      return 1;
+    })
+  };
+});
+
+module.exports = Cycle.createView(function (Properties) {
+  var Model = MarbleModel.clone();
+  var View = MarbleView.clone();
+  var Intent = MarbleIntent.clone();
+
+  Intent.inject(View).inject(Model).inject(Properties, Intent);
+
+  return {
+    vtree$: View.get("vtree$"),
+    mousedown$: View.get("mousedown$")
+  };
+});
+},{"cyclejs":52,"cyclejs/node_modules/virtual-dom/virtual-hyperscript/svg":35,"rxmarbles/styles/colors":84,"rxmarbles/styles/utils":87}],71:[function(require,module,exports){
+"use strict";
+
+var _interopRequire = function (obj) {
+  return obj && (obj["default"] || obj);
+};
+
+var Cycle = _interopRequire(require("cyclejs"));
+
+var Colors = _interopRequire(require("rxmarbles/styles/colors"));
+
+var Dimens = _interopRequire(require("rxmarbles/styles/dimens"));
+
+var mergeStyles = require("rxmarbles/styles/utils").mergeStyles;
+var Rx = Cycle.Rx;
+var h = Cycle.h;
+
+var OperatorsMenuLinkModel = Cycle.createModel(function (Properties, Intent) {
+  return {
+    href$: Properties.get("href$"),
+    content$: Properties.get("content$").startWith(""),
+    isHighlighted$: Rx.Observable.merge(Intent.get("startHighlight$").map(function () {
+      return true;
+    }), Intent.get("stopHighlight$").map(function () {
+      return false;
+    })).startWith(false)
+  };
+});
+
+var OperatorsMenuLinkView = Cycle.createView(function (Model) {
+  var highlightingArrow = h("span", {
+    style: {
+      display: "inline-block",
+      position: "absolute",
+      right: Dimens.spaceTiny }
+  }, "❯");
+
+  return {
+    vtree$: Rx.Observable.combineLatest(Model.get("href$"), Model.get("content$"), Model.get("isHighlighted$"), function (href, content, isHighlighted) {
+      return h("a", {
+        style: mergeStyles({
+          position: "relative",
+          display: "block",
+          color: Colors.greyDark }, isHighlighted ? { color: Colors.black } : null),
+        href: href,
+        onmouseenter: "mouseenter$",
+        onmouseleave: "mouseleave$" }, [content, isHighlighted ? highlightingArrow : null]);
+    })
+  };
+});
+
+var OperatorsMenuLinkIntent = Cycle.createIntent(function (View) {
+  return {
+    startHighlight$: View.get("mouseenter$").map(function () {
+      return 1;
+    }),
+    stopHighlight$: View.get("mouseleave$").map(function () {
+      return 1;
+    })
+  };
+});
+
+module.exports = Cycle.createView(function (Properties) {
+  var Model = OperatorsMenuLinkModel.clone();
+  var View = OperatorsMenuLinkView.clone();
+  var Intent = OperatorsMenuLinkIntent.clone();
+
+  Intent.inject(View).inject(Model).inject(Properties, Intent);
+
+  return {
+    vtree$: View.get("vtree$")
+  };
+});
+},{"cyclejs":52,"rxmarbles/styles/colors":84,"rxmarbles/styles/dimens":85,"rxmarbles/styles/utils":87}],72:[function(require,module,exports){
+"use strict";
+
+var _interopRequire = function (obj) {
+  return obj && (obj["default"] || obj);
+};
+
+var Cycle = _interopRequire(require("cyclejs"));
+
+var Colors = _interopRequire(require("rxmarbles/styles/colors"));
+
+var Dimens = _interopRequire(require("rxmarbles/styles/dimens"));
+
+var Examples = _interopRequire(require("rxmarbles/data/examples"));
+
+var mergeStyles = require("rxmarbles/styles/utils").mergeStyles;
+var Rx = Cycle.Rx;
+var h = Cycle.h;
+
+var OperatorsMenuModel = Cycle.createModel(function () {
+  /**
+   * Returns a hashmap of category headers to lists of examples in that category.
+   */
+  var organizeExamplesByCategory = function (examples) {
+    var categoryMap = {};
+    for (var key in examples) {
+      if (!examples.hasOwnProperty(key)) continue;
+      var value = examples[key];
+      value.key = key;
+      if (categoryMap.hasOwnProperty(value.category)) {
+        categoryMap[value.category].push(value);
+      } else {
+        categoryMap[value.category] = [value];
+      }
     }
-  }
-  return categoryMap;
-};
+    return categoryMap;
+  };
 
-function vrenderMenuContent(categoryMap) {
-  var listItems = [];
-  for (var categoryName in categoryMap) {
-    if (!categoryMap.hasOwnProperty(categoryName)) continue;
-    listItems.push(vrenderExampleCategory(categoryName));
-    listItems = listItems.concat(vrenderExampleItems(categoryMap[categoryName]));
-  }
-  listItems.push(h("li.operatorsMenu-category", "More"));
-  listItems.push(h("li.operatorsMenu-item", "Coming soon..."));
-  return listItems;
-};
+  ;
 
-function vrenderExampleCategory(categoryName) {
-  return h("li.operatorsMenu-category", "" + categoryName);
-};
+  return {
+    categoryMap$: Rx.Observable.just(organizeExamplesByCategory(Examples))
+  };
+});
 
-function vrenderExampleItems(examples) {
-  var items = [];
-  for (var i = 0; i < examples.length; i++) {
-    var example = examples[i];
-    items.push(vrenderExampleItem(example));
-  }
-  return items;
-};
+var OperatorsMenuView = Cycle.createView(function (Model) {
+  var vrenderMenuContent = function (categoryMap) {
+    var listItems = [];
+    var isFirstCategory = true;
+    for (var categoryName in categoryMap) {
+      if (!categoryMap.hasOwnProperty(categoryName)) continue;
+      listItems.push(vrenderExampleCategory(categoryName, isFirstCategory));
+      listItems = listItems.concat(vrenderExampleItems(categoryMap[categoryName]));
+      isFirstCategory = false;
+    }
+    listItems.push(h("li", { style: operatorsMenuCategoryStyle }, "More"));
+    listItems.push(h("li", { style: operatorsMenuItemStyle }, "Coming soon..."));
+    return listItems;
+  };
 
-function vrenderExampleItem(example) {
-  return h("li.operatorsMenu-item", [h("a", { href: "#" + example.key }, example.key)]);
-};
+  var vrenderExampleCategory = function (categoryName, isFirstCategory) {
+    return h("li", {
+      style: mergeStyles(operatorsMenuCategoryStyle, isFirstCategory ? { marginTop: "0" } : {}) }, "" + categoryName);
+  };
+
+  var vrenderExampleItems = function (examples) {
+    var items = [];
+    for (var i = 0; i < examples.length; i++) {
+      var example = examples[i];
+      items.push(vrenderExampleItem(example));
+    }
+    return items;
+  };
+
+  var vrenderExampleItem = function (example) {
+    return h("li", { style: operatorsMenuItemStyle }, h("x-operators-menu-link", { href: "#" + example.key, content: example.key }));
+  };
+
+  var operatorsMenuCategoryStyle = {
+    textTransform: "uppercase",
+    fontSize: "0.7em",
+    color: Colors.grey,
+    marginTop: Dimens.spaceMedium
+  };
+
+  var operatorsMenuItemStyle = {
+    color: Colors.greyDark,
+    fontSize: "1rem",
+    lineHeight: "1.6rem"
+  };
+
+  return {
+    vtree$: Model.get("categoryMap$").map(function (categoryMap) {
+      return h("div", { style: {
+          paddingRight: "36px",
+          boxSizing: "border-box",
+          // 100px is the estimated header page row height
+          height: "calc(100vh - 100px)" } }, [h("ul", { style: {
+          margin: "0",
+          padding: "0",
+          listStyleType: "none",
+          overflowY: "scroll",
+          height: "100%" } }, vrenderMenuContent(categoryMap))]);
+    })
+  };
+});
 
 module.exports = Cycle.createView(function () {
-  var Model = Cycle.createModel(function () {
-    return {
-      categoryMap$: Rx.Observable.just(organizeExamplesByCategory(Examples))
-    };
-  });
-
-  var View = Cycle.createView(function (Model) {
-    return {
-      vtree$: Model.get("categoryMap$").map(function (categoryMap) {
-        return h("div.operatorsMenu-container", [h("ul.operatorsMenu", vrenderMenuContent(categoryMap))]);
-      })
-    };
-  });
+  var Model = OperatorsMenuModel.clone();
+  var View = OperatorsMenuView.clone();
 
   View.inject(Model);
 
@@ -23876,7 +24362,7 @@ module.exports = Cycle.createView(function () {
     vtree$: View.get("vtree$")
   };
 });
-},{"cyclejs":52,"rxmarbles/data/examples":74}],67:[function(require,module,exports){
+},{"cyclejs":52,"rxmarbles/data/examples":80,"rxmarbles/styles/colors":84,"rxmarbles/styles/dimens":85,"rxmarbles/styles/utils":87}],73:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) {
@@ -23922,11 +24408,40 @@ function augmentWithExampleKey(diagramData, exampleKey) {
   }));
 }
 
+function replaceDiagramDataIn(diagrams, newDiagramData) {
+  return diagrams.map(function (diagramData) {
+    if (diagramData.get("id") === newDiagramData.get("id")) {
+      return newDiagramData;
+    } else {
+      return diagramData;
+    }
+  });
+}
+
+function makeNewInputDiagramsData$(changeInputDiagram$, inputs$) {
+  return Rx.Observable.merge(changeInputDiagram$, inputs$).scan(function (prev, curr) {
+    var currentIsDiagramData = !!curr && curr.get && !!curr.get("notifications");
+    if (!currentIsDiagramData) {
+      return curr.set("isInitialData", true);
+    }
+    if (!prev || !prev.get || !Array.isArray(prev.get("diagrams"))) {
+      console.warn("Inconsistency in SandboxComponent.makeNewInputDiagramsData$()");
+    }
+    var inputs = prev;
+    var newDiagramData = curr;
+    return inputs.set("diagrams", replaceDiagramDataIn(inputs.get("diagrams"), newDiagramData)).set("isInitialData", false);
+  }).filter(function (x) {
+    return !x.get("isInitialData");
+  }) // only allow new diagram data
+  ;
+}
+
 module.exports = {
   prepareInputDiagram: prepareInputDiagram,
-  augmentWithExampleKey: augmentWithExampleKey
+  augmentWithExampleKey: augmentWithExampleKey,
+  makeNewInputDiagramsData$: makeNewInputDiagramsData$
 };
-},{"cyclejs":52,"immutable":61,"rxmarbles/components/sandbox/utils":70}],68:[function(require,module,exports){
+},{"cyclejs":52,"immutable":61,"rxmarbles/components/sandbox/utils":76}],74:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) {
@@ -24036,7 +24551,7 @@ function getOutputDiagram$(example$, inputDiagrams$) {
 module.exports = {
   getOutputDiagram$: getOutputDiagram$
 };
-},{"cyclejs":52,"immutable":61,"rxmarbles/components/sandbox/utils":70}],69:[function(require,module,exports){
+},{"cyclejs":52,"immutable":61,"rxmarbles/components/sandbox/utils":76}],75:[function(require,module,exports){
 "use strict";
 
 var _interopRequire = function (obj) {
@@ -24049,98 +24564,103 @@ var Examples = _interopRequire(require("rxmarbles/data/examples"));
 
 var prepareInputDiagram = require("rxmarbles/components/sandbox/sandbox-input").prepareInputDiagram;
 var augmentWithExampleKey = require("rxmarbles/components/sandbox/sandbox-input").augmentWithExampleKey;
+var makeNewInputDiagramsData$ = require("rxmarbles/components/sandbox/sandbox-input").makeNewInputDiagramsData$;
 var getOutputDiagram$ = require("rxmarbles/components/sandbox/sandbox-output").getOutputDiagram$;
 var Immutable = _interopRequire(require("immutable"));
 
+var Colors = _interopRequire(require("rxmarbles/styles/colors"));
+
+var Dimens = _interopRequire(require("rxmarbles/styles/dimens"));
+
+var Fonts = _interopRequire(require("rxmarbles/styles/fonts"));
+
+var mergeStyles = require("rxmarbles/styles/utils").mergeStyles;
+var elevation1Style = require("rxmarbles/styles/utils").elevation1Style;
+var elevation2Style = require("rxmarbles/styles/utils").elevation2Style;
+var elevation2Before = require("rxmarbles/styles/utils").elevation2Before;
+var elevation2After = require("rxmarbles/styles/utils").elevation2After;
 var Rx = Cycle.Rx;
 var h = Cycle.h;
 
-var isTruthy = function (x) {
-  return !!x;
-};
+var SandboxComponentModel = Cycle.createModel(function (Properties, Intent) {
+  var isTruthy = function (x) {
+    return !!x;
+  };
 
-function vrenderOperatorLabel(label) {
-  var attrs = label.length > 20 ? { style: { "font-size": "1.5rem" } } : {};
-  return h("span.operator-box-label", attrs, label);
-}
+  var example$ = Properties.get("route$").filter(isTruthy).map(function (key) {
+    return Immutable.Map(Examples[key]).set("key", key);
+  });
 
-function vrenderOperator(label) {
-  return h("div.operator-box", [vrenderOperatorLabel(label)]);
-}
+  var inputDiagrams$ = example$.map(function (example) {
+    return Immutable.Map({
+      diagrams: example.get("inputs").map(prepareInputDiagram).map(function (diag) {
+        return augmentWithExampleKey(diag, example.get("key"));
+      })
+    });
+  });
 
-function makeNewInputDiagramsData$(changeInputDiagram$, inputs$) {
-  return Rx.Observable.merge(changeInputDiagram$, inputs$).scan(function (prev, curr) {
-    var currentIsDiagramData = !!curr && !!curr.get("notifications");
-    if (currentIsDiagramData) {
-      var _ret = (function () {
-        if (!prev || !prev.get || !Array.isArray(prev.get("diagrams"))) {
-          console.warn("Inconsistency in SandboxComponent.makeNewInputDiagramsData$()");
-        }
-        var inputs = prev;
-        var newDiagramData = curr;
-        return {
-          v: inputs.set("diagrams", inputs.get("diagrams").map(function (diagramData) {
-            if (diagramData.get("id") === newDiagramData.get("id")) {
-              return newDiagramData;
-            } else {
-              return diagramData;
-            }
-          })).set("isInitialData", false)
-        };
-      })();
+  var newInputDiagrams$ = makeNewInputDiagramsData$(Intent.get("changeInputDiagram$"), inputDiagrams$);
 
-      if (typeof _ret === "object") return _ret.v;
-    } else {
-      return curr.set("isInitialData", true);
-    }
-  }).filter(function (x) {
-    return !x.get("isInitialData");
-  }) // only allow new diagram data
-  ;
-}
+  var allInputDiagrams$ = inputDiagrams$.merge(newInputDiagrams$);
+
+  return {
+    inputDiagrams$: inputDiagrams$,
+    operatorLabel$: example$.map(function (example) {
+      return example.get("label");
+    }),
+    outputDiagram$: getOutputDiagram$(example$, allInputDiagrams$),
+    width$: Properties.get("width$").startWith("100%")
+  };
+});
+
+var SandboxComponentView = Cycle.createView(function (Model) {
+  var vrenderOperatorLabel = function (label) {
+    var fontSize = label.length >= 45 ? 1.3 : label.length >= 30 ? 1.5 : 2;
+    var style = {
+      fontFamily: Fonts.fontCode,
+      fontWeight: "400",
+      fontSize: "" + fontSize + "rem"
+    };
+    return h("span", { style: style }, label);
+  };
+
+  var vrenderOperator = function (label) {
+    var style = mergeStyles({
+      border: "1px solid rgba(0,0,0,0.06)",
+      padding: Dimens.spaceMedium,
+      textAlign: "center" }, elevation2Style);
+    return h("div", { style: style }, [elevation2Before, vrenderOperatorLabel(label), elevation2After]);
+  };
+
+  var getSandboxStyle = function (width) {
+    return mergeStyles({
+      background: Colors.white,
+      width: width,
+      borderRadius: "2px" }, elevation1Style);
+  };
+
+  return { vtree$: Rx.Observable.combineLatest(Model.get("inputDiagrams$"), Model.get("operatorLabel$"), Model.get("outputDiagram$"), Model.get("width$"), function (inputDiagrams, operatorLabel, outputDiagram, width) {
+      return h("div", { style: getSandboxStyle(width) }, [inputDiagrams.get("diagrams").map(function (diagram) {
+        return h("x-diagram", {
+          data: diagram,
+          interactive: true,
+          onnewdata: "diagramNewData$"
+        });
+      }), vrenderOperator(operatorLabel), h("x-diagram", { data: outputDiagram, interactive: false })]);
+    })
+  };
+});
+
+var SandboxComponentIntent = Cycle.createIntent(function (View) {
+  return {
+    changeInputDiagram$: View.get("diagramNewData$")
+  };
+});
 
 var SandboxComponent = Cycle.createView(function (Attributes) {
-  var Model = Cycle.createModel(function (Attributes, Intent) {
-    var example$ = Attributes.get("route$").filter(isTruthy).map(function (key) {
-      return Immutable.Map(Examples[key]).set("key", key);
-    });
-    var inputDiagrams$ = example$.map(function (example) {
-      return Immutable.Map({
-        diagrams: example.get("inputs").map(prepareInputDiagram).map(function (diag) {
-          return augmentWithExampleKey(diag, example.get("key"));
-        })
-      });
-    });
-    var newInputDiagrams$ = makeNewInputDiagramsData$(Intent.get("changeInputDiagram$"), inputDiagrams$);
-    var allInputDiagrams$ = inputDiagrams$.merge(newInputDiagrams$);
-
-    return {
-      inputDiagrams$: inputDiagrams$,
-      operatorLabel$: example$.map(function (example) {
-        return example.get("label");
-      }),
-      outputDiagram$: getOutputDiagram$(example$, allInputDiagrams$)
-    };
-  });
-
-  var View = Cycle.createView(function (Model) {
-    return {
-      vtree$: Rx.Observable.combineLatest(Model.get("inputDiagrams$"), Model.get("operatorLabel$"), Model.get("outputDiagram$"), function (inputDiagrams, operatorLabel, outputDiagram) {
-        return h("div.sandbox", [inputDiagrams.get("diagrams").map(function (diagram) {
-          return h("x-diagram", {
-            attributes: { data: diagram, interactive: true },
-            onnewdata: "diagramNewData$"
-          });
-        }), vrenderOperator(operatorLabel), h("x-diagram", { attributes: { data: outputDiagram, interactive: false } })]);
-      })
-    };
-  });
-
-  var Intent = Cycle.createIntent(function (View) {
-    return {
-      changeInputDiagram$: View.get("diagramNewData$")
-    };
-  });
+  var Model = SandboxComponentModel.clone();
+  var View = SandboxComponentView.clone();
+  var Intent = SandboxComponentIntent.clone();
 
   Intent.inject(View).inject(Model).inject(Attributes, Intent);
 
@@ -24150,7 +24670,7 @@ var SandboxComponent = Cycle.createView(function (Attributes) {
 });
 
 module.exports = SandboxComponent;
-},{"cyclejs":52,"immutable":61,"rxmarbles/components/sandbox/sandbox-input":67,"rxmarbles/components/sandbox/sandbox-output":68,"rxmarbles/data/examples":74}],70:[function(require,module,exports){
+},{"cyclejs":52,"immutable":61,"rxmarbles/components/sandbox/sandbox-input":73,"rxmarbles/components/sandbox/sandbox-output":74,"rxmarbles/data/examples":80,"rxmarbles/styles/colors":84,"rxmarbles/styles/dimens":85,"rxmarbles/styles/fonts":86,"rxmarbles/styles/utils":87}],76:[function(require,module,exports){
 "use strict";
 
 /*
@@ -24185,7 +24705,7 @@ module.exports = {
   calculateNotificationHash: calculateNotificationHash,
   calculateNotificationContentHash: calculateNotificationContentHash
 };
-},{}],71:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 "use strict";
 
 var Rx = require("cyclejs").Rx;
@@ -24231,7 +24751,7 @@ module.exports = {
     }
   }
 };
-},{"cyclejs":52}],72:[function(require,module,exports){
+},{"cyclejs":52}],78:[function(require,module,exports){
 "use strict";
 
 var Rx = require("cyclejs").Rx;
@@ -24299,7 +24819,7 @@ module.exports = {
     }
   }
 };
-},{"cyclejs":52}],73:[function(require,module,exports){
+},{"cyclejs":52}],79:[function(require,module,exports){
 "use strict";
 
 var Rx = require("cyclejs").Rx;
@@ -24313,7 +24833,7 @@ module.exports = {
     }
   }
 };
-},{"cyclejs":52}],74:[function(require,module,exports){
+},{"cyclejs":52}],80:[function(require,module,exports){
 "use strict";
 
 /*
@@ -24348,7 +24868,7 @@ function applyCategory(examples, categoryName) {
 };
 
 module.exports = merge(applyCategory(transformExamples, "Transforming Operators"), applyCategory(combineExamples, "Combining Operators"), applyCategory(filterExamples, "Filtering Operators"), applyCategory(mathExamples, "Mathematical Operators"), applyCategory(booleanExamples, "Boolean Operators"), applyCategory(conditionalExamples, "Conditional Operators"));
-},{"rxmarbles/data/boolean-examples":71,"rxmarbles/data/combine-examples":72,"rxmarbles/data/conditional-examples":73,"rxmarbles/data/filter-examples":75,"rxmarbles/data/math-examples":76,"rxmarbles/data/transform-examples":77}],75:[function(require,module,exports){
+},{"rxmarbles/data/boolean-examples":77,"rxmarbles/data/combine-examples":78,"rxmarbles/data/conditional-examples":79,"rxmarbles/data/filter-examples":81,"rxmarbles/data/math-examples":82,"rxmarbles/data/transform-examples":83}],81:[function(require,module,exports){
 "use strict";
 
 var Rx = require("cyclejs").Rx;
@@ -24496,7 +25016,7 @@ module.exports = {
     }
   }
 };
-},{"cyclejs":52}],76:[function(require,module,exports){
+},{"cyclejs":52}],82:[function(require,module,exports){
 "use strict";
 
 var Rx = require("cyclejs").Rx;
@@ -24585,7 +25105,7 @@ module.exports = {
     }
   }
 };
-},{"cyclejs":52}],77:[function(require,module,exports){
+},{"cyclejs":52}],83:[function(require,module,exports){
 "use strict";
 
 var Rx = require("cyclejs").Rx;
@@ -24657,4 +25177,107 @@ module.exports = {
     }
   }
 };
-},{"cyclejs":52}]},{},[1]);
+},{"cyclejs":52}],84:[function(require,module,exports){
+"use strict";
+
+var white = exports.white = "#FFFFFF";
+var almostWhite = exports.almostWhite = "#ECECEC";
+var greyLight = exports.greyLight = "#D4D4D4";
+var grey = exports.grey = "#A7A7A7";
+var greyDark = exports.greyDark = "#7C7C7C";
+var black = exports.black = "#323232";
+var blue = exports.blue = "#3EA1CB";
+var yellow = exports.yellow = "#FFCB46";
+var red = exports.red = "#FF6946";
+var green = exports.green = "#82D736";
+},{}],85:[function(require,module,exports){
+"use strict";
+
+var spaceTiny = exports.spaceTiny = "5px";
+var spaceSmall = exports.spaceSmall = "10px";
+var spaceMedium = exports.spaceMedium = "22px";
+var spaceLarge = exports.spaceLarge = "32px";
+
+var animationDurationQuick = exports.animationDurationQuick = "100ms";
+var animationDurationNormal = exports.animationDurationNormal = "200ms";
+var animationDurationSlow = exports.animationDurationSlow = "400ms";
+},{}],86:[function(require,module,exports){
+"use strict";
+
+var fontBase = exports.fontBase = "'Source Sans Pro', sans-serif";
+var fontSpecial = exports.fontSpecial = "'Signika', Helvetica, serif";
+var fontCode = exports.fontCode = "'Source Code Pro', monospace";
+},{}],87:[function(require,module,exports){
+"use strict";
+
+var _interopRequire = function (obj) {
+  return obj && (obj["default"] || obj);
+};
+
+exports.mergeStyles = mergeStyles;
+var Immutable = _interopRequire(require("immutable"));
+
+var Cycle = _interopRequire(require("cyclejs"));
+
+var h = Cycle.h;
+
+var isTruthy = function (style) {
+  return !!style;
+};
+
+function mergeStyles() {
+  for (var _len = arguments.length, styleObjects = Array(_len), _key = 0; _key < _len; _key++) {
+    styleObjects[_key] = arguments[_key];
+  }
+
+  return styleObjects.filter(isTruthy).reduce(function (styleA, styleB) {
+    var mapA = Immutable.Map(styleA);
+    var mapB = Immutable.Map(styleB);
+    return mapA.merge(mapB).toObject(); // notice B first
+  }, {});
+}
+
+var elevation1Style = exports.elevation1Style = {
+  "-webkit-box-shadow": "0px 1px 2px 1px rgba(0,0,0,0.17)",
+  "-moz-box-shadow": "0px 1px 2px 1px rgba(0,0,0,0.17)",
+  "box-shadow": "0px 1px 2px 1px rgba(0,0,0,0.17)"
+};
+
+var elevation2Style = exports.elevation2Style = {
+  position: "relative"
+};
+
+function getElevationPseudoElementStyle(dy, blur, opacity) {
+  return {
+    display: "block",
+    position: "absolute",
+    left: "0", top: "0", right: "0", bottom: "0",
+    "-webkit-box-shadow": "0 " + dy + " " + blur + " 0 rgba(0,0,0," + opacity + ")",
+    "-moz-box-shadow": "0 " + dy + " " + blur + " 0 rgba(0,0,0," + opacity + ")",
+    "box-shadow": "0 " + dy + " " + blur + " 0 rgba(0,0,0," + opacity + ")"
+  };
+}
+
+var elevation2Before = exports.elevation2Before = h("div", { style: getElevationPseudoElementStyle("2px", "10px", "0.17")
+}, "");
+var elevation2After = exports.elevation2After = h("div", { style: getElevationPseudoElementStyle("2px", "5px", "0.26")
+}, "");
+
+var elevation3Before = exports.elevation3Before = h("div", { style: getElevationPseudoElementStyle("6px", "20px", "0.19")
+}, "");
+var elevation3After = exports.elevation3After = h("div", { style: getElevationPseudoElementStyle("6px", "17px", "0.2")
+}, "");
+
+var svgElevation1Style = exports.svgElevation1Style = {
+  "-webkit-filter": "drop-shadow(0px 3px 2px rgba(0,0,0,0.26))",
+  filter: "drop-shadow(0px 3px 2px rgba(0,0,0,0.26))"
+};
+
+var textUnselectable = exports.textUnselectable = {
+  "-webkit-user-select": "none",
+  "-khtml-user-select": "none",
+  "-moz-user-select": "-moz-none",
+  "-o-user-select": "none",
+  "user-select": "none"
+};
+},{"cyclejs":52,"immutable":61}]},{},[1]);
