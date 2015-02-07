@@ -44,7 +44,37 @@ function augmentWithExampleKey(diagramData, exampleKey) {
     );
 }
 
+function replaceDiagramDataIn(diagrams, newDiagramData) {
+  return diagrams.map(diagramData => {
+    if (diagramData.get('id') === newDiagramData.get('id')) {
+      return newDiagramData;
+    } else {
+      return diagramData;
+    }
+  });
+}
+
+function makeNewInputDiagramsData$(changeInputDiagram$, inputs$) {
+  return Rx.Observable.merge(changeInputDiagram$, inputs$)
+    .scan((prev, curr) => {
+      let currentIsDiagramData = !!curr && curr.get && !!curr.get('notifications');
+      if (!currentIsDiagramData) {
+        return curr.set('isInitialData', true);
+      }
+      if (!prev || !prev.get || !Array.isArray(prev.get('diagrams'))) {
+        console.warn('Inconsistency in SandboxComponent.makeNewInputDiagramsData$()');
+      }
+      let inputs = prev;
+      let newDiagramData = curr;
+      return inputs
+        .set('diagrams', replaceDiagramDataIn(inputs.get('diagrams'), newDiagramData))
+        .set('isInitialData', false);
+    })
+    .filter(x => !x.get('isInitialData')) // only allow new diagram data
+}
+
 module.exports = {
   prepareInputDiagram: prepareInputDiagram,
-  augmentWithExampleKey: augmentWithExampleKey
+  augmentWithExampleKey: augmentWithExampleKey,
+  makeNewInputDiagramsData$: makeNewInputDiagramsData$
 };

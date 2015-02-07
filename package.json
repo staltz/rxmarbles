@@ -9,7 +9,7 @@
   "license": "BSD 3-Clause",
   "main": "js/app.js",
   "dependencies": {
-    "cyclejs": "0.10.1",
+    "cyclejs": "0.11.0",
     "immutable": "^3.6.2"
   },
   "devDependencies": {

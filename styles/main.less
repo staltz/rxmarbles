@@ -1,13 +1,19 @@
 
-@import "colors";
-@import "dimens";
-@import "fonts";
-@import "mixins";
-@import "components/pageRow";
-@import "components/operatorsMenu";
-@import "components/sandbox";
-@import "components/diagram/diagram";
-@import "components/gh-fork-ribbon";
+@import "gh-fork-ribbon";
+
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro);
+@import url(http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500);
+@import url(http://fonts.googleapis.com/css?family=Signika);
+
+@color-white:        #FFFFFF;
+@color-almost-white: #ECECEC;
+@color-grey-light:   #D4D4D4;
+@color-grey:         #A7A7A7;
+@color-grey-dark:    #7C7C7C;
+@color-black:        #323232;
+@color-blue:         #3EA1CB;
+
+@font-base: 'Source Sans Pro', sans-serif;
 
 body {
   position: relative;
@@ -18,20 +24,4 @@ body {
 
 a {
   color: @color-blue;
-}
-
-.pageTitle {
-  font-family: @font-special;
-  color: @color-grey-dark;
-}
-
-.valueProposition {
-  color: @color-grey-dark;
-}
-
-.footer {
-  position: fixed;
-  bottom: 2px;
-  right: @space-medium;
-  color: @color-grey-dark;
 }

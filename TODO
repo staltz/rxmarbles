@@ -66,9 +66,10 @@ DONE Review all RxJS operators to remove deprecated
 DONE Fix build-production script
 >>> v1.2.1
 
+DNE Package sandbox as DOM custom element <x-rxmarbles>
+DONE Move all styles to Javascript
 TODO Embeddable rxmarbles
-  app.js 'exports' a function which can be called in <script> in index.html
->>>
+>>> v1.3.0
 
 TODO Disambiguate simultaneous marbles
   Vertically spread them
