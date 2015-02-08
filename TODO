@@ -68,7 +68,7 @@ DONE Fix build-production script
 
 DONE Package sandbox as DOM custom element <x-rxmarbles>
 DONE Move all styles to Javascript
-TODO Embeddable rxmarbles
+DONE Embeddable rxmarbles
 >>> v1.3.0
 
 TODO Disambiguate simultaneous marbles
