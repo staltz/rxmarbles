@@ -20,6 +20,6 @@ SandboxPrototype.createdCallback = function createdCallback() {
   Renderer.inject(View);
 };
 
-var XRxMarbles = document.registerElement('x-rxmarbles', {
+var XRxMarbles = document.registerElement('rx-marbles', {
   prototype: SandboxPrototype
 });
