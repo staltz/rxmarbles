@@ -23652,12 +23652,9 @@ function DiagramCompletionComponent(User, Properties) {
   var Intent = DiagramCompletionComponentIntent.clone();
 
   User.inject(View).inject(Model).inject(Properties, Intent)[1].inject(User);
-
-  return {};
 }
 
 module.exports = DiagramCompletionComponent;
-// mousedown$: User.event$('.completionRoot', 'mousedown')
 },{"cyclejs":52,"rxmarbles/styles/utils":87}],66:[function(require,module,exports){
 "use strict";
 
@@ -24068,12 +24065,9 @@ function MarbleComponent(User, Properties) {
   var Intent = MarbleIntent.clone();
 
   User.inject(View).inject(Model).inject(Properties, Intent)[1].inject(User);
-
-  return {};
 }
 
 module.exports = MarbleComponent;
-// mousedown$: User.event$('.marbleRoot', 'mousedown')
 },{"cyclejs":52,"cyclejs/node_modules/virtual-dom/virtual-hyperscript/svg":35,"rxmarbles/styles/colors":84,"rxmarbles/styles/utils":87}],71:[function(require,module,exports){
 "use strict";
 
