@@ -90,10 +90,6 @@ function DiagramCompletionComponent(User, Properties) {
   let Intent = DiagramCompletionComponentIntent.clone();
 
   User.inject(View).inject(Model).inject(Properties, Intent)[1].inject(User);
-
-  return {
-    // mousedown$: User.event$('.completionRoot', 'mousedown')
-  };
 }
 
 module.exports = DiagramCompletionComponent;

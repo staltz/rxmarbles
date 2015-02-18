@@ -109,10 +109,6 @@ function MarbleComponent(User, Properties) {
   let Intent = MarbleIntent.clone();
 
   User.inject(View).inject(Model).inject(Properties, Intent)[1].inject(User);
-
-  return {
-    // mousedown$: User.event$('.marbleRoot', 'mousedown')
-  };
 }
 
 module.exports = MarbleComponent;
