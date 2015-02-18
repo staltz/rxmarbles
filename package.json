@@ -7,6 +7,7 @@
     "url": "git@github.com:staltz/rxmarbles.git"
   },
   "license": "BSD 3-Clause",
+  "private": true,
   "main": "js/app.js",
   "dependencies": {
     "cyclejs": "0.14.1",
@@ -34,8 +35,8 @@
     "uglify-element": "uglifyjs dist/js/element.js -o dist/js/element.js",
     "update-gh-pages": "git checkout gh-pages && git merge master && rm dist/js/app.js && gulp build && git add dist/js/app.js && git commit --amend --no-edit && git push origin gh-pages && git checkout master",
     "release": "npm run release-patch",
-    "release-patch": "git checkout master && npm run build && git commit -a -m 'Compiled' && npm version patch && git push origin master --tags && npm publish",
-    "release-minor": "git checkout master && npm run build && git commit -a -m 'Compiled' && npm version minor && git push origin master --tags && npm publish",
-    "release-major": "git checkout master && npm run build && git commit -a -m 'Compiled' && npm version major && git push origin master --tags && npm publish"
+    "release-patch": "git checkout master && npm run build && git commit -a -m 'Compiled' && npm version patch && git push origin master --tags",
+    "release-minor": "git checkout master && npm run build && git commit -a -m 'Compiled' && npm version minor && git push origin master --tags",
+    "release-major": "git checkout master && npm run build && git commit -a -m 'Compiled' && npm version major && git push origin master --tags"
   }
 }
