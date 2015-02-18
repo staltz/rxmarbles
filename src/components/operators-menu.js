@@ -102,13 +102,10 @@ var OperatorsMenuView = Cycle.createView(Model => {
   };
 });
 
-module.exports = Cycle.createView(() => {
+function OperatorsMenuComponent(User) {
   let Model = OperatorsMenuModel.clone();
   let View = OperatorsMenuView.clone();
+  User.inject(View).inject(Model);
+}
 
-  View.inject(Model);
-
-  return {
-    vtree$: View.get('vtree$')
-  };
-});
+module.exports = OperatorsMenuComponent;

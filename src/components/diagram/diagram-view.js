@@ -18,11 +18,10 @@ module.exports = Cycle.createView(Model => {
   let diagramCompletionHeight = '44px';
 
   function vrenderMarble(marbleData, isDraggable = false) {
-    return h('x-marble', {
+    return h('x-marble.diagramMarble', {
       data: marbleData,
       isDraggable,
-      style: {size: diagramMarbleSize},
-      onmousedown: 'marbleMouseDown$'
+      style: {size: diagramMarbleSize}
     });
   }
 
@@ -31,7 +30,7 @@ module.exports = Cycle.createView(Model => {
     let isTall = diagramData.get('notifications').some(marbleData =>
       Math.abs(marbleData.get('time') - diagramData.get('end')) <= MARBLE_WIDTH*0.5
     );
-    return h('x-diagram-completion', {
+    return h('x-diagram-completion.diagramCompletion', {
       time: endTime,
       isDraggable,
       isTall,
@@ -39,8 +38,7 @@ module.exports = Cycle.createView(Model => {
         thickness: diagramArrowThickness,
         color: diagramArrowColor,
         height: diagramCompletionHeight
-      },
-      onmousedown: 'completionMouseDown$'
+      }
     });
   }
 
@@ -55,7 +53,7 @@ module.exports = Cycle.createView(Model => {
   );
 
   function vrenderDiagramArrow() {
-    return h('div', {style: {
+    return h('div.diagramArrow', {style: {
       backgroundColor: diagramArrowColor,
       height: diagramArrowThickness,
       position: 'absolute',
@@ -66,7 +64,7 @@ module.exports = Cycle.createView(Model => {
   }
 
   function vrenderDiagramArrowHead() {
-    return h('div', {style: {
+    return h('div.diagramArrowHead', {style: {
       width: 0,
       height: 0,
       borderTop: `${diagramArrowHeadSize} solid transparent`,

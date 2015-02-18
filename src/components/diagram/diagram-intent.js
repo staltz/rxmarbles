@@ -2,7 +2,7 @@ import Cycle from 'cyclejs';
 import Immutable from 'immutable';
 let Rx = Cycle.Rx;
 
-module.exports = Cycle.createIntent(View => {
+module.exports = Cycle.createIntent(User => {
   let mouseMove$ = Rx.Observable.fromEvent(document, 'mousemove');
   let mouseUp$ = Rx.Observable.fromEvent(document, 'mouseup');
 
@@ -44,12 +44,12 @@ module.exports = Cycle.createIntent(View => {
 
   return {
     changeMarbleTime$: makeDeltaTime$(
-      View.get('marbleMouseDown$'),
+      User.event$('.diagramMarble', 'mousedown'),
       (deltaTime, target) => Immutable.Map({
         deltaTime: deltaTime,
         id: target.attributes['data-marble-id'].value
       })
     ),
-    changeEndTime$: makeDeltaTime$(View.get('completionMouseDown$'))
+    changeEndTime$: makeDeltaTime$(User.event$('.diagramCompletion', 'mousedown'))
   };
 });

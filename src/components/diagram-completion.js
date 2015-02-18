@@ -8,7 +8,11 @@ var DiagramCompletionComponentModel = Cycle.createModel((Properties, Intent) => 
   time$: Properties.get('time$'),
   isDraggable$: Properties.get('isDraggable$').startWith(false),
   isTall$: Properties.get('isTall$').startWith(false),
-  style$: Properties.get('style$').startWith({}),
+  style$: Properties.get('style$').startWith({
+    thickness: '2px',
+    height: '10px',
+    color: 'black'
+  }),
   isHighlighted$: Rx.Observable.merge(
     Intent.get('startHighlight$').map(() => true),
     Intent.get('stopHighlight$').map(() => false)
@@ -48,16 +52,13 @@ var DiagramCompletionComponentView = Cycle.createView(Model => {
   function vrender(time, isDraggable, isTall, inputStyle, isHighlighted) {
     let containerStyle = createContainerStyle(inputStyle);
     let innerStyle = createInnerStyle(inputStyle);
-    return h('div', {
+    return h('div.completionRoot', {
       style: mergeStyles({
         left: `${time}%`},
         containerStyle,
-        isDraggable ? draggableContainerStyle : {}),
-      onmousedown: 'completionMouseDown$',
-      onmouseenter: 'mouseenter$',
-      onmouseleave: 'mouseleave$'
+        isDraggable ? draggableContainerStyle : {})
     },[
-      h('div', {
+      h('div.completionInner', {
         style: mergeStyles(
           innerStyle,
           isDraggable && isHighlighted ? elevation1Style : null,
@@ -78,20 +79,21 @@ var DiagramCompletionComponentView = Cycle.createView(Model => {
   };
 });
 
-let DiagramCompletionComponentIntent = Cycle.createIntent(View => ({
-  startHighlight$: View.get('mouseenter$').map(() => 1),
-  stopHighlight$: View.get('mouseleave$').map(() => 1)
+let DiagramCompletionComponentIntent = Cycle.createIntent(User => ({
+  startHighlight$: User.event$('.completionRoot', 'mouseenter').map(() => 1),
+  stopHighlight$: User.event$('.completionRoot', 'mouseleave').map(() => 1)
 }));
 
-module.exports = Cycle.createView(Properties => {
+function DiagramCompletionComponent(User, Properties) {
   let Model = DiagramCompletionComponentModel.clone();
   let View = DiagramCompletionComponentView.clone();
   let Intent = DiagramCompletionComponentIntent.clone();
 
-  Intent.inject(View).inject(Model).inject(Properties, Intent);
+  User.inject(View).inject(Model).inject(Properties, Intent)[1].inject(User);
 
   return {
-    vtree$: View.get('vtree$'),
-    mousedown$: View.get('completionMouseDown$')
+    // mousedown$: User.event$('.completionRoot', 'mousedown')
   };
-});
+}
+
+module.exports = DiagramCompletionComponent;

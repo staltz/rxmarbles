@@ -1,7 +1,6 @@
 var Cycle = require('cyclejs');
 var AppModel = require('rxmarbles/app-model');
 var AppView = require('rxmarbles/app-view');
-var Renderer = Cycle.createRenderer('.js-appContainer');
 var OperatorsMenuLinkComponent = require('rxmarbles/components/operators-menu-link');
 var OperatorsMenuComponent = require('rxmarbles/components/operators-menu');
 var SandboxComponent = require('rxmarbles/components/sandbox/sandbox');
@@ -16,5 +15,6 @@ Cycle.registerCustomElement('x-marble', MarbleComponent);
 Cycle.registerCustomElement('x-diagram-completion', DiagramCompletionComponent);
 Cycle.registerCustomElement('x-diagram', DiagramComponent);
 
-Renderer.inject(AppView);
-AppView.inject(AppModel);
+var User = Cycle.createDOMUser('.js-appContainer');
+
+User.inject(AppView).inject(AppModel);

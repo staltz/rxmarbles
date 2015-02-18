@@ -9,27 +9,27 @@
   "license": "BSD 3-Clause",
   "main": "js/app.js",
   "dependencies": {
-    "cyclejs": "0.11.0",
+    "cyclejs": "0.14.1",
     "immutable": "^3.6.2"
   },
   "devDependencies": {
-    "6to5": "^2.12.6",
-    "browserify": "8.0.2",
+    "browserify": "8.1.3",
     "less": "^2.2.0",
     "uglify-js": "~2.4.13",
-    "watchify": "~0.4.1"
+    "watchify": "~0.4.1",
+    "babel": "^4.0.1"
   },
   "scripts": {
     "preinstall": "rm -rf build && rm -rf node_modules && mkdir -p ignore/es5src",
     "postinstall": "ln -s ../ignore/es5src node_modules/rxmarbles && ln -s ../package.json node_modules/package.json",
     "less": "lessc styles/main.less dist/css/main.css",
-    "6to5": "mkdir -p ignore/es5src && 6to5 src --out-dir ignore/es5src",
+    "babel": "mkdir -p ignore/es5src && babel src --out-dir ignore/es5src",
     "browserify": "browserify -e ignore/es5src/app.js --outfile dist/js/app.js",
     "browserify-element": "browserify -e ignore/es5src/element.js --outfile dist/js/element.js",
-    "build": "npm run less && npm run 6to5 && npm run browserify",
-    "build-production": "npm run less && npm run 6to5 && npm run browserify && npm run uglify",
-    "build-element": "npm run less && npm run 6to5 && npm run browserify-element",
-    "build-element-production": "npm run less && npm run 6to5 && npm run browserify-element && npm run uglify-element",
+    "build": "npm run less && npm run babel && npm run browserify",
+    "build-production": "npm run less && npm run babel && npm run browserify && npm run uglify",
+    "build-element": "npm run less && npm run babel && npm run browserify-element",
+    "build-element-production": "npm run less && npm run babel && npm run browserify-element && npm run uglify-element",
     "uglify": "uglifyjs dist/js/app.js -o dist/js/app.js",
     "uglify-element": "uglifyjs dist/js/element.js -o dist/js/element.js",
     "update-gh-pages": "git checkout gh-pages && git merge master && rm dist/js/app.js && gulp build && git add dist/js/app.js && git commit --amend --no-edit && git push origin gh-pages && git checkout master",

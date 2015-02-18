@@ -1,9 +1,11 @@
 
-export const spaceTiny =   '5px';
-export const spaceSmall =  '10px';
-export const spaceMedium = '22px';
-export const spaceLarge =  '32px';
+export default {
+  spaceTiny:   '5px',
+  spaceSmall:  '10px',
+  spaceMedium: '22px',
+  spaceLarge:  '32px',
 
-export const animationDurationQuick =  '100ms';
-export const animationDurationNormal = '200ms';
-export const animationDurationSlow =   '400ms';
+  animationDurationQuick:  '100ms',
+  animationDurationNormal: '200ms',
+  animationDurationSlow:   '400ms'
+};

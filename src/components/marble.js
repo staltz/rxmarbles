@@ -37,7 +37,7 @@ let MarbleView = Cycle.createView(Model => {
 
   function vrenderSvg(data, isDraggable, inputStyle, isHighlighted) {
     let color = POSSIBLE_COLORS[data.get('id') % POSSIBLE_COLORS.length];
-    return svg('svg', {
+    return svg('svg.marbleShape', {
       style: mergeStyles({
         overflow: 'visible',
         width: inputStyle.size,
@@ -60,7 +60,7 @@ let MarbleView = Cycle.createView(Model => {
   }
 
   function vrenderInnerContent(data, inputStyle) {
-    return h('p', {
+    return h('p.marbleContent', {
       style: mergeStyles({
         position: 'absolute',
         width: '100%',
@@ -74,16 +74,13 @@ let MarbleView = Cycle.createView(Model => {
   }
 
   function vrender(data, isDraggable, inputStyle, isHighlighted) {
-    return h('div', {
+    return h('div.marbleRoot', {
       style: mergeStyles({
         left: `${data.get('time')}%`,
         zIndex: data.get('time')},
         createContainerStyle(inputStyle),
         isDraggable ? draggableContainerStyle : null),
-      attributes: {'data-marble-id': data.get('id')},
-      onmousedown: 'mousedown$',
-      onmouseenter: 'mouseenter$',
-      onmouseleave: 'mouseleave$'
+      attributes: {'data-marble-id': data.get('id')}
     },[
       vrenderSvg(data, isDraggable, inputStyle, isHighlighted),
       vrenderInnerContent(data, inputStyle)
@@ -101,20 +98,21 @@ let MarbleView = Cycle.createView(Model => {
   }
 });
 
-let MarbleIntent = Cycle.createIntent(View => ({
-  startHighlight$: View.get('mouseenter$').map(() => 1),
-  stopHighlight$: View.get('mouseleave$').map(() => 1)
+let MarbleIntent = Cycle.createIntent(User => ({
+  startHighlight$: User.event$('.marbleRoot', 'mouseenter').map(() => 1),
+  stopHighlight$: User.event$('.marbleRoot', 'mouseleave').map(() => 1)
 }));
 
-module.exports = Cycle.createView(Properties => {
+function MarbleComponent(User, Properties) {
   let Model = MarbleModel.clone();
   let View = MarbleView.clone();
   let Intent = MarbleIntent.clone();
 
-  Intent.inject(View).inject(Model).inject(Properties, Intent);
+  User.inject(View).inject(Model).inject(Properties, Intent)[1].inject(User);
 
   return {
-    vtree$: View.get('vtree$'),
-    mousedown$: View.get('mousedown$')
+    // mousedown$: User.event$('.marbleRoot', 'mousedown')
   };
-});
+}
+
+module.exports = MarbleComponent;

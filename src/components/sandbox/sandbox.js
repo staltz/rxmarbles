@@ -48,7 +48,7 @@ let SandboxComponentView = Cycle.createView(Model => {
       fontWeight: '400',
       fontSize: `${fontSize}rem`
     };
-    return h('span', {style}, label);
+    return h('span.operatorLabel', {style}, label);
   }
 
   function vrenderOperator(label) {
@@ -58,7 +58,7 @@ let SandboxComponentView = Cycle.createView(Model => {
       textAlign: 'center'},
       elevation2Style
     );
-    return h('div', {style}, [
+    return h('div.operatorBox', {style}, [
       elevation2Before,
       vrenderOperatorLabel(label),
       elevation2After
@@ -74,41 +74,41 @@ let SandboxComponentView = Cycle.createView(Model => {
     );
   }
 
-  return {vtree$: Rx.Observable.combineLatest(
-    Model.get('inputDiagrams$'),
-    Model.get('operatorLabel$'),
-    Model.get('outputDiagram$'),
-    Model.get('width$'),
-    (inputDiagrams, operatorLabel, outputDiagram, width) =>
-      h('div', {style: getSandboxStyle(width)}, [
-        inputDiagrams.get('diagrams').map(diagram =>
-          h('x-diagram', {
-            data: diagram,
-            interactive: true,
-            onnewdata: 'diagramNewData$'
+  return {
+    vtree$: Rx.Observable.combineLatest(
+      Model.get('inputDiagrams$'),
+      Model.get('operatorLabel$'),
+      Model.get('outputDiagram$'),
+      Model.get('width$'),
+      (inputDiagrams, operatorLabel, outputDiagram, width) =>
+        h('div.sandboxRoot', {style: getSandboxStyle(width)}, [
+          inputDiagrams.get('diagrams').map(diagram =>
+            h('x-diagram.sandboxInputDiagram', {
+              data: diagram,
+              interactive: true
+            })
+          ),
+          vrenderOperator(operatorLabel),
+          h('x-diagram.sandboxOutputDiagram', {
+            data: outputDiagram,
+            interactive: false
           })
-        ),
-        vrenderOperator(operatorLabel),
-        h('x-diagram', {data: outputDiagram, interactive: false})
-      ])
+        ])
     )
   };
 });
 
-let SandboxComponentIntent = Cycle.createIntent(View => ({
-  changeInputDiagram$: View.get('diagramNewData$')
+let SandboxComponentIntent = Cycle.createIntent(User => ({
+  changeInputDiagram$: User.event$('.sandboxInputDiagram', 'newdata')
+    .map(ev => ev.data)
 }));
 
-let SandboxComponent = Cycle.createView(Attributes => {
+function SandboxComponent(User, Properties) {
   let Model = SandboxComponentModel.clone();
   let View = SandboxComponentView.clone();
   let Intent = SandboxComponentIntent.clone();
 
-  Intent.inject(View).inject(Model).inject(Attributes, Intent);
-
-  return {
-    vtree$: View.get('vtree$')
-  };
-});
+  User.inject(View).inject(Model).inject(Properties, Intent)[1].inject(User);
+}
 
 module.exports = SandboxComponent;

@@ -1,6 +1,6 @@
-var Cycle = require('cyclejs');
+import Cycle from 'cyclejs';
 var Rx = Cycle.Rx;
-var packageJson = require('package.json');
+var packageJson = require('package');
 var RxPackageJson = require('cyclejs/node_modules/rx/package.json');
 
 const DEFAULT_EXAMPLE = 'merge';

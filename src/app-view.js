@@ -60,8 +60,8 @@ function vrenderContent(route) {
         {style: mergeStyles({
           position: 'absolute',
           top: '0'},
-          pageRowLastChildStyle)},
-        h('x-sandbox', {route: route, width: '820px'})
+          pageRowLastChildStyle)}
+        ,h('x-sandbox', {route: route, width: '820px'})
       )
     ]
   );

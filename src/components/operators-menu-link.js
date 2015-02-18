@@ -29,15 +29,13 @@ var OperatorsMenuLinkView = Cycle.createView(Model => {
       Model.get('content$'),
       Model.get('isHighlighted$'),
       (href, content, isHighlighted) =>
-        h('a', {
+        h('a.link', {
           style: mergeStyles({
             position: 'relative',
             display: 'block',
             color: Colors.greyDark},
             isHighlighted ? {color: Colors.black} : null),
-          href: href,
-          onmouseenter: 'mouseenter$',
-          onmouseleave: 'mouseleave$'},
+          href: href},
           [
             content,
             isHighlighted ? highlightingArrow : null
@@ -47,19 +45,18 @@ var OperatorsMenuLinkView = Cycle.createView(Model => {
   };
 });
 
-let OperatorsMenuLinkIntent = Cycle.createIntent(View => ({
-  startHighlight$: View.get('mouseenter$').map(() => 1),
-  stopHighlight$: View.get('mouseleave$').map(() => 1)
+let OperatorsMenuLinkIntent = Cycle.createIntent(User => ({
+  startHighlight$: User.event$('.link', 'mouseenter').map(() => 1),
+  stopHighlight$: User.event$('.link', 'mouseleave').map(() => 1)
 }));
 
-module.exports = Cycle.createView(Properties => {
+function OperatorsMenuLink(User, Properties) {
   let Model = OperatorsMenuLinkModel.clone();
   let View = OperatorsMenuLinkView.clone();
   let Intent = OperatorsMenuLinkIntent.clone();
 
-  Intent.inject(View).inject(Model).inject(Properties, Intent);
+  var asd = User.inject(View).inject(Model).inject(Properties, Intent);
+  asd[1].inject(User);
+}
 
-  return {
-    vtree$: View.get('vtree$')
-  };
-});
+module.exports = OperatorsMenuLink;

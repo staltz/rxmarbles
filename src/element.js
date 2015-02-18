@@ -13,11 +13,11 @@ SandboxPrototype.createdCallback = function createdCallback() {
   Cycle.registerCustomElement('x-diagram-completion', DiagramCompletionComponent);
   Cycle.registerCustomElement('x-diagram', DiagramComponent);
   Cycle.registerCustomElement('x-sandbox', SandboxComponent);
-  let Renderer = Cycle.createRenderer(this);
+  let User = Cycle.createDOMUser(this);
   let View = Cycle.createView(() =>
     ({ vtree$: Cycle.Rx.Observable.just(h('x-sandbox', {route: key})) })
   );
-  Renderer.inject(View);
+  User.inject(View);
 };
 
 var XRxMarbles = document.registerElement('rx-marbles', {
