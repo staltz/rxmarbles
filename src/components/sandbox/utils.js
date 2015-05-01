@@ -10,7 +10,7 @@ function calculateNotificationContentHash(content) {
       .map(function(x) { return x.charCodeAt(0); })
       .reduce(function(x, y) { return x + y; });
   } else if (typeof content === "number") {
-    return content * SOME_PRIME_NUMBER;
+    return parseInt(content) * SOME_PRIME_NUMBER;
   } else if (typeof content === 'boolean') {
     return content ? SOME_PRIME_NUMBER : SOME_PRIME_NUMBER*3;
   }
