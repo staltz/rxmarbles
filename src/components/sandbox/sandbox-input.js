@@ -70,7 +70,7 @@ function makeNewInputDiagramsData$(changeInputDiagram$, inputs$) {
         .set('diagrams', replaceDiagramDataIn(inputs.get('diagrams'), newDiagramData))
         .set('isInitialData', false);
     })
-    .filter(x => !x.get('isInitialData')) // only allow new diagram data
+    .filter(x => !x.get('isInitialData')); // only allow new diagram data
 }
 
 module.exports = {

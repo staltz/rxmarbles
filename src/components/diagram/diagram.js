@@ -1,17 +1,16 @@
 import Cycle from 'cyclejs';
-import DiagramComponentModel from 'rxmarbles/components/diagram/diagram-model';
-import DiagramComponentView from 'rxmarbles/components/diagram/diagram-view';
-import DiagramComponentIntent from 'rxmarbles/components/diagram/diagram-intent';
+import diagramModel from 'rxmarbles/components/diagram/diagram-model';
+import diagramView from 'rxmarbles/components/diagram/diagram-view';
+import diagramIntent from 'rxmarbles/components/diagram/diagram-intent';
 
-function DiagramComponent(User, Properties) {
-  let Model = DiagramComponentModel.clone();
-  let View = DiagramComponentView.clone();
-  let Intent = DiagramComponentIntent.clone();
-
-  User.inject(View).inject(Model).inject(Properties, Intent)[1].inject(User);
+function DiagramComponent(interactions, properties) {
+  let intent = diagramIntent(interactions);
+  let model = diagramModel(properties, intent);
+  let view = diagramView(model);
 
   return {
-    newdata$: Model.get('newData$')
+    vtree$: view.vtree$,
+    newdata$: model.newData$
   };
 }
 

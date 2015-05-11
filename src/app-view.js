@@ -3,11 +3,11 @@ import Colors from 'rxmarbles/styles/colors';
 import Dimens from 'rxmarbles/styles/dimens';
 import Fonts from 'rxmarbles/styles/fonts';
 import {mergeStyles} from 'rxmarbles/styles/utils';
-var Rx = Cycle.Rx;
-var h = Cycle.h;
+let Rx = Cycle.Rx;
+let h = Cycle.h;
 
-const rxmarblesGithubUrl = 'https://github.com/staltz/rxmarbles'
-const rxjsGithubUrl = 'https://github.com/Reactive-Extensions/RxJS'
+const rxmarblesGithubUrl = 'https://github.com/staltz/rxmarbles';
+const rxjsGithubUrl = 'https://github.com/Reactive-Extensions/RxJS';
 
 const pageRowWidth = '1060px';
 const sandboxWidth = '820px';
@@ -49,19 +49,19 @@ function vrenderHeader() {
 }
 
 function vrenderContent(route) {
-  return h('div', 
+  return h('div',
     {style: mergeStyles(pageRowStyle, {marginTop: Dimens.spaceSmall})},
     [
-      h('div', 
+      h('div',
         {style: pageRowFirstChildStyle},
-        h('x-operators-menu')
+        h('x-operators-menu', {key: 'operatorsMenu'})
       ),
-      h('div', 
+      h('div',
         {style: mergeStyles({
           position: 'absolute',
           top: '0'},
           pageRowLastChildStyle)}
-        ,h('x-sandbox', {route: route, width: '820px'})
+        ,h('x-sandbox', {key: 'sandbox', route: route, width: '820px'})
       )
     ]
   );
@@ -84,11 +84,11 @@ function vrenderFooter(appVersion, rxVersion) {
   ]);
 }
 
-module.exports = Cycle.createView(Model => ({
-  vtree$: Rx.Observable.combineLatest(
-    Model.get('route$'),
-    Model.get('appVersion$'),
-    Model.get('rxVersion$'),
+module.exports = function appView(model) {
+  return Rx.Observable.combineLatest(
+    model.route$,
+    model.appVersion$,
+    model.rxVersion$,
     (route, appVersion, rxVersion) =>
       h('div', [
         vrenderHeader(),
@@ -96,4 +96,4 @@ module.exports = Cycle.createView(Model => ({
         vrenderFooter(appVersion, rxVersion)
       ])
   )
-}));
+};

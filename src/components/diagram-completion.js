@@ -4,92 +4,72 @@ import {mergeStyles, textUnselectable, elevation1Style}
 let Rx = Cycle.Rx;
 let h = Cycle.h;
 
-var DiagramCompletionComponentModel = Cycle.createModel((Properties, Intent) => ({
-  time$: Properties.get('time$'),
-  isDraggable$: Properties.get('isDraggable$').startWith(false),
-  isTall$: Properties.get('isTall$').startWith(false),
-  style$: Properties.get('style$').startWith({
-    thickness: '2px',
-    height: '10px',
-    color: 'black'
-  }),
-  isHighlighted$: Rx.Observable.merge(
-    Intent.get('startHighlight$').map(() => true),
-    Intent.get('stopHighlight$').map(() => false)
-  ).startWith(false)
-}));
+function createContainerStyle(inputStyle) {
+  return {
+    display: 'inline-block',
+    position: 'relative',
+    width: `calc(8 * ${inputStyle.thickness})`,
+    height: inputStyle.height,
+    margin: `0 calc(-4 * ${inputStyle.thickness})`
+  };
+}
 
-var DiagramCompletionComponentView = Cycle.createView(Model => {
+function createInnerStyle(inputStyle) {
+  return {
+    width: inputStyle.thickness,
+    height: '50%',
+    marginLeft: `calc(3.5 * ${inputStyle.thickness})`,
+    marginTop: `calc(${inputStyle.height} / 4.0)`,
+    backgroundColor: inputStyle.color
+  };
+}
+
+function render(time, isDraggable, isTall, inputStyle, isHighlighted) {
   let draggableContainerStyle = {
     cursor: 'ew-resize'
   };
-
-  function createContainerStyle(inputStyle) {
-    return {
-      display: 'inline-block',
-      position: 'relative',
-      width: `calc(8 * ${inputStyle.thickness})`,
-      height: inputStyle.height,
-      margin: `0 calc(-4 * ${inputStyle.thickness})`
-    };
-  }
-
-  function createInnerStyle(inputStyle) {
-    return {
-      width: inputStyle.thickness,
-      height: '50%',
-      marginLeft: `calc(3.5 * ${inputStyle.thickness})`,
-      marginTop: `calc(${inputStyle.height} / 4.0)`,
-      backgroundColor: inputStyle.color,
-    };
-  }
-
   let innerTallStyle = {
     height: '100%',
     marginTop: 0
   };
-
-  function vrender(time, isDraggable, isTall, inputStyle, isHighlighted) {
-    let containerStyle = createContainerStyle(inputStyle);
-    let innerStyle = createInnerStyle(inputStyle);
-    return h('div.completionRoot', {
-      style: mergeStyles({
+  let containerStyle = createContainerStyle(inputStyle);
+  let innerStyle = createInnerStyle(inputStyle);
+  return h('div.completionRoot', {
+    style: mergeStyles({
         left: `${time}%`},
-        containerStyle,
-        isDraggable ? draggableContainerStyle : {})
-    },[
-      h('div.completionInner', {
-        style: mergeStyles(
-          innerStyle,
-          isDraggable && isHighlighted ? elevation1Style : null,
-          isTall ? innerTallStyle : null)
-      })
-    ]);
-  }
+      containerStyle,
+      isDraggable ? draggableContainerStyle : {})
+  },[
+    h('div.completionInner', {
+      style: mergeStyles(
+        innerStyle,
+        isDraggable && isHighlighted ? elevation1Style : null,
+        isTall ? innerTallStyle : null)
+    })
+  ]);
+}
+
+function diagramCompletionComponent(interactions, properties) {
+  let startHighlight$ = interactions.get('.completionRoot', 'mouseenter');
+  let stopHighlight$ = interactions.get('.completionRoot', 'mouseleave');
+  let time$ = properties.get('time').startWith(100);
+  let isDraggable$ = properties.get('isDraggable').startWith(false);
+  let isTall$ = properties.get('isTall').startWith(false);
+  let style$ = properties.get('style').startWith({
+    thickness: '2px',
+    height: '10px',
+    color: 'black'
+  });
+  let isHighlighted$ = Rx.Observable.merge(
+    startHighlight$.map(() => true),
+    stopHighlight$.map(() => false)
+  ).startWith(false);
 
   return {
     vtree$: Rx.Observable.combineLatest(
-      Model.get('time$'),
-      Model.get('isDraggable$'),
-      Model.get('isTall$'),
-      Model.get('style$'),
-      Model.get('isHighlighted$'),
-      vrender
+      time$, isDraggable$, isTall$, style$, isHighlighted$, render
     )
   };
-});
-
-let DiagramCompletionComponentIntent = Cycle.createIntent(User => ({
-  startHighlight$: User.event$('.completionRoot', 'mouseenter').map(() => 1),
-  stopHighlight$: User.event$('.completionRoot', 'mouseleave').map(() => 1)
-}));
-
-function DiagramCompletionComponent(User, Properties) {
-  let Model = DiagramCompletionComponentModel.clone();
-  let View = DiagramCompletionComponentView.clone();
-  let Intent = DiagramCompletionComponentIntent.clone();
-
-  User.inject(View).inject(Model).inject(Properties, Intent)[1].inject(User);
 }
 
-module.exports = DiagramCompletionComponent;
+module.exports = diagramCompletionComponent;

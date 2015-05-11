@@ -1,20 +1,20 @@
 var Cycle = require('cyclejs');
-var AppModel = require('rxmarbles/app-model');
-var AppView = require('rxmarbles/app-view');
-var OperatorsMenuLinkComponent = require('rxmarbles/components/operators-menu-link');
-var OperatorsMenuComponent = require('rxmarbles/components/operators-menu');
-var SandboxComponent = require('rxmarbles/components/sandbox/sandbox');
-var DiagramComponent = require('rxmarbles/components/diagram/diagram');
-var MarbleComponent = require('rxmarbles/components/marble');
-var DiagramCompletionComponent = require('rxmarbles/components/diagram-completion');
+var appModel = require('rxmarbles/app-model');
+var appView = require('rxmarbles/app-view');
+var operatorsMenuLinkComponent = require('rxmarbles/components/operators-menu-link');
+var operatorsMenuComponent = require('rxmarbles/components/operators-menu');
+var sandboxComponent = require('rxmarbles/components/sandbox/sandbox');
+var diagramComponent = require('rxmarbles/components/diagram/diagram');
+var marbleComponent = require('rxmarbles/components/marble');
+var diagramCompletionComponent = require('rxmarbles/components/diagram-completion');
 
-Cycle.registerCustomElement('x-operators-menu-link', OperatorsMenuLinkComponent);
-Cycle.registerCustomElement('x-operators-menu', OperatorsMenuComponent);
-Cycle.registerCustomElement('x-sandbox', SandboxComponent);
-Cycle.registerCustomElement('x-marble', MarbleComponent);
-Cycle.registerCustomElement('x-diagram-completion', DiagramCompletionComponent);
-Cycle.registerCustomElement('x-diagram', DiagramComponent);
+Cycle.registerCustomElement('x-operators-menu-link', operatorsMenuLinkComponent);
+Cycle.registerCustomElement('x-operators-menu', operatorsMenuComponent);
+Cycle.registerCustomElement('x-sandbox', sandboxComponent);
+Cycle.registerCustomElement('x-marble', marbleComponent);
+Cycle.registerCustomElement('x-diagram-completion', diagramCompletionComponent);
+Cycle.registerCustomElement('x-diagram', diagramComponent);
 
-var User = Cycle.createDOMUser('.js-appContainer');
-
-User.inject(AppView).inject(AppModel);
+Cycle.applyToDOM('.js-appContainer', function app() {
+  return appView(appModel());
+});

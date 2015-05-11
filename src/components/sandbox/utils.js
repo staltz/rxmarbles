@@ -4,7 +4,7 @@
  */
 
 function calculateNotificationContentHash(content) {
-  var SOME_PRIME_NUMBER = 877;
+  const SOME_PRIME_NUMBER = 877;
   if (typeof content === "string") {
     return content.split("")
       .map(function(x) { return x.charCodeAt(0); })
@@ -14,15 +14,15 @@ function calculateNotificationContentHash(content) {
   } else if (typeof content === 'boolean') {
     return content ? SOME_PRIME_NUMBER : SOME_PRIME_NUMBER*3;
   }
-};
+}
 
 function calculateNotificationHash(marbleData) {
-  var SMALL_PRIME = 7;
-  var LARGE_PRIME = 1046527;
-  var MAX = 100000;
-  var contentHash = calculateNotificationContentHash(marbleData.content);
+  const SMALL_PRIME = 7;
+  const LARGE_PRIME = 1046527;
+  const MAX = 100000;
+  const contentHash = calculateNotificationContentHash(marbleData.content);
   return ((marbleData.time + contentHash + SMALL_PRIME) * LARGE_PRIME) % MAX;
-};
+}
 
 module.exports = {
   calculateNotificationHash: calculateNotificationHash,

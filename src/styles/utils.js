@@ -50,7 +50,7 @@ const elevation3After = h('div', {style:
 const svgElevation1Style = {
   '-webkit-filter': 'drop-shadow(0px 3px 2px rgba(0,0,0,0.26))',
           'filter': 'drop-shadow(0px 3px 2px rgba(0,0,0,0.26))'
-}
+};
 
 const textUnselectable = {
   '-webkit-user-select': 'none',

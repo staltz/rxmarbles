@@ -6,7 +6,7 @@ import {Rx} from 'cyclejs';
 import Utils from 'rxmarbles/components/sandbox/utils';
 import Immutable from 'immutable';
 
-var MAX_VT_TIME = 100; // Time of completion
+const MAX_VT_TIME = 100; // Time of completion
 
 function makeScheduler() {
   let scheduler = new Rx.VirtualTimeScheduler(0, (x, y) => {
@@ -35,7 +35,7 @@ function toVTStream(diagramData, scheduler) {
     justIncomplete(item, scheduler).delay(item.get('time'), scheduler)
   ).toArray();
   // Necessary correction to include marbles at time exactly diagramData.end:
-  var correctedEndTime = diagramData.get('end') + 0.01;
+  let correctedEndTime = diagramData.get('end') + 0.01;
   return Rx.Observable.merge(singleMarbleStreams)
     .takeUntilWithTime(correctedEndTime, scheduler)
     .publish().refCount();
