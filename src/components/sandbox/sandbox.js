@@ -1,4 +1,5 @@
 import Cycle from 'cyclejs';
+import RxTween from 'rxtween';
 import Examples from 'rxmarbles/data/examples';
 import {prepareInputDiagram, augmentWithExampleKey, makeNewInputDiagramsData$}
   from 'rxmarbles/components/sandbox/sandbox-input';
@@ -71,7 +72,40 @@ function makeInputDiagrams(example) {
   });
 }
 
+function markAsFirstDiagram(diagram) {
+  return diagram.set('isFirst', true);
+}
+
+function markAllDiagramsAsFirst(diagramsData) {
+  return diagramsData.update('diagrams', diagrams =>
+    diagrams.map(markAsFirstDiagram)
+  );
+}
+
 let isTruthy = (x => !!x);
+
+//function animateData$(inputDiagrams$) {
+//  //return diagrams$.doOnNext(diagrams => console.log(diagrams.toJS()));
+//  const animConf = {
+//    from: 10,
+//    to: 0,
+//    ease: RxTween.Power3.easeOut,
+//    duration: 1000
+//  };
+//  return inputDiagrams$.flatMapLatest(inputDiagrams => {
+//    return RxTween(animConf).map(x =>
+//      inputDiagrams.update('diagrams', diagrams =>
+//        diagrams.map(diagram =>
+//          diagram.update('notifications', notifications =>
+//            notifications.map(notif =>
+//              notif.update('time', time => time + x)
+//            )
+//          )
+//        )
+//      )
+//    );
+//  })
+//}
 
 function sandboxComponent(interactions, properties) {
   let changeInputDiagram$ = interactions.get('.sandboxInputDiagram', 'newdata')
@@ -83,13 +117,18 @@ function sandboxComponent(interactions, properties) {
     .shareReplay(1);
   let inputDiagrams$ = example$
     .map(makeInputDiagrams)
+    .map(markAllDiagramsAsFirst)
     .shareReplay(1);
+  //inputDiagrams$ = animateData$(inputDiagrams$);
   let newInputDiagrams$ = makeNewInputDiagramsData$(
     changeInputDiagram$, inputDiagrams$
   );
-  let allInputDiagrams$ = inputDiagrams$.merge(newInputDiagrams$);
+  //let allInputDiagrams$ = inputDiagrams$.merge(newInputDiagrams$);
   let operatorLabel$ = example$.map(example => example.get('label'));
-  let outputDiagram$ = getOutputDiagram$(example$, allInputDiagrams$);
+  let firstOutputDiagram$ = getOutputDiagram$(example$, inputDiagrams$)
+    .map(markAsFirstDiagram);
+  let newOutputDiagram$ = getOutputDiagram$(example$, newInputDiagrams$);
+  let outputDiagram$ = firstOutputDiagram$.merge(newOutputDiagram$);
 
   return {
     vtree$: Rx.Observable.combineLatest(

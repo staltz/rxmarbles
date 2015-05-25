@@ -2,6 +2,7 @@ import Cycle from 'cyclejs';
 import Colors from 'rxmarbles/styles/colors';
 import Dimens from 'rxmarbles/styles/dimens';
 import Fonts from 'rxmarbles/styles/fonts';
+import RxTween from 'rxtween';
 import {mergeStyles, textUnselectable} from 'rxmarbles/styles/utils';
 let Rx = Cycle.Rx;
 let h = Cycle.h;
@@ -103,10 +104,51 @@ function renderDiagram(data, isInteractive) {
   ])
 }
 
+function sanitizeDiagramItem(x) {
+  return Math.max(0, Math.min(100, x));
+}
+
+function interpolate(from, to, x) {
+  return (from * (1 - x) + to * x);
+}
+
+function animateData$(data$) {
+  const animConf = {
+    from: 0,
+    to: 1,
+    ease: RxTween.Power3.easeOut,
+    duration: 600
+  };
+  return data$.flatMapLatest(data => {
+    if (!data.get('isFirst')) {
+      return Rx.Observable.just(data);
+    } else {
+      let randomizedNotifs = data.get('notifications').map(notif =>
+        notif.update('time', time =>
+          time - 10 + 20 * Math.random()
+        )
+      );
+
+      return RxTween(animConf).map(x =>
+        data.update('notifications', notifications =>
+          notifications.zipWith((n1, n2) =>
+            n1.update('time', t1 => {
+              let t2 = n2.get('time');
+              return interpolate(t2, t1, x);
+            }),
+            randomizedNotifs
+          )
+        )
+      );
+    }
+  })
+}
+
 function diagramView(model) {
   return {
     vtree$: Rx.Observable.combineLatest(
-      model.data$.merge(model.newData$), model.isInteractive$,
+      animateData$(model.data$).merge(model.newData$),
+      model.isInteractive$,
       renderDiagram
     )
   };

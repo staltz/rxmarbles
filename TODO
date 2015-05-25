@@ -71,10 +71,10 @@ DONE Move all styles to Javascript
 DONE Embeddable rxmarbles
 >>> v1.3.0
 
+DONE Initial affordance animation in diagram
 TODO Disambiguate simultaneous marbles
   Vertically spread them
   Change example takeLast(1) to takeLast(2)
-TODO Initial affordance animation in diagram using internal state
 >>>
 
 TODO Render each stream with a different regular polygon

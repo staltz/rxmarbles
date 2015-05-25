@@ -87,10 +87,11 @@ function makeNewDiagramData$(data$, changeMarbleTime$, changeEndTime$, interacti
 }
 
 function diagramModel(properties, intent) {
+  let data$ = properties.get('data').distinctUntilChanged().shareReplay(1);
   return {
-    data$: properties.get('data').distinctUntilChanged(),
+    data$: data$,
     newData$: makeNewDiagramData$(
-      properties.get('data').distinctUntilChanged(),
+      data$,
       intent.changeMarbleTime$,
       intent.changeEndTime$,
       properties.get('interactive')

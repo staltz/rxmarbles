@@ -21,15 +21,15 @@ module.exports = {
     }
   },
 
-  "contains": {
-    "label": "contains(22)",
+  "includes": {
+    "label": "includes(22)",
     "inputs": [
       [{t:5, d:2}, {t:15, d:30}, {t:25, d:22}, {t:35, d:5}, {t:45, d:60}, {t:55, d:1}]
     ],
     "apply": function(inputs) {
       return inputs[0]
         .map(x => (x.get('content')))
-        .contains(22);
+        .includes(22);
     }
   },
 

@@ -4,11 +4,13 @@
  */
 
 function calculateNotificationContentHash(content) {
+  const SMALL_PRIME_1 = 59;
+  const SMALL_PRIME_2 = 97;
   const SOME_PRIME_NUMBER = 877;
   if (typeof content === "string") {
     return content.split("")
-      .map(function(x) { return x.charCodeAt(0); })
-      .reduce(function(x, y) { return x + y; });
+      .map(x => x.charCodeAt(0))
+      .reduce((x, y) => (x * SMALL_PRIME_1) + (y * SMALL_PRIME_2));
   } else if (typeof content === "number") {
     return parseInt(content) * SOME_PRIME_NUMBER;
   } else if (typeof content === 'boolean') {
