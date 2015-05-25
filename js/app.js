@@ -20095,7 +20095,8 @@ module.exports={
   "main": "js/app.js",
   "dependencies": {
     "cyclejs": "0.21.1",
-    "immutable": "^3.7.2"
+    "immutable": "^3.7.2",
+    "rxtween": "0.3.3"
   },
   "devDependencies": {
     "browserify": "10.1.3",
@@ -20126,6 +20127,8 @@ module.exports={
 }
 
 },{}],116:[function(require,module,exports){
+arguments[4][63][0].apply(exports,arguments)
+},{"_process":2,"dup":63}],117:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -20149,7 +20152,7 @@ module.exports = function appModel() {
     rxVersion$: Rx.Observable.just(RxPackageJson.version)
   };
 };
-},{"cyclejs":5,"cyclejs/node_modules/rx/package.json":64,"package":115}],117:[function(require,module,exports){
+},{"cyclejs":5,"cyclejs/node_modules/rx/package.json":64,"package":115}],118:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -20230,7 +20233,7 @@ module.exports = function appView(model) {
     return h('div', [vrenderHeader(), vrenderContent(route), vrenderFooter(appVersion, rxVersion)]);
   });
 };
-},{"cyclejs":5,"rxmarbles/styles/colors":137,"rxmarbles/styles/dimens":138,"rxmarbles/styles/fonts":139,"rxmarbles/styles/utils":140}],118:[function(require,module,exports){
+},{"cyclejs":5,"rxmarbles/styles/colors":138,"rxmarbles/styles/dimens":139,"rxmarbles/styles/fonts":140,"rxmarbles/styles/utils":141}],119:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -20305,7 +20308,7 @@ function diagramCompletionComponent(interactions, properties) {
 }
 
 module.exports = diagramCompletionComponent;
-},{"cyclejs":5,"rxmarbles/styles/utils":140}],119:[function(require,module,exports){
+},{"cyclejs":5,"rxmarbles/styles/utils":141}],120:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -20379,7 +20382,7 @@ function diagramIntent(interactions) {
 }
 
 module.exports = diagramIntent;
-},{"cyclejs":5,"immutable":114}],120:[function(require,module,exports){
+},{"cyclejs":5,"immutable":114}],121:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -20469,15 +20472,16 @@ function makeNewDiagramData$(data$, changeMarbleTime$, changeEndTime$, interacti
 }
 
 function diagramModel(properties, intent) {
+  var data$ = properties.get('data').distinctUntilChanged().shareReplay(1);
   return {
-    data$: properties.get('data').distinctUntilChanged(),
-    newData$: makeNewDiagramData$(properties.get('data').distinctUntilChanged(), intent.changeMarbleTime$, intent.changeEndTime$, properties.get('interactive')),
+    data$: data$,
+    newData$: makeNewDiagramData$(data$, intent.changeMarbleTime$, intent.changeEndTime$, properties.get('interactive')),
     isInteractive$: properties.get('interactive').startWith(false)
   };
 }
 
 module.exports = diagramModel;
-},{"cyclejs":5}],121:[function(require,module,exports){
+},{"cyclejs":5}],122:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -20497,6 +20501,10 @@ var _rxmarblesStylesDimens2 = _interopRequireDefault(_rxmarblesStylesDimens);
 var _rxmarblesStylesFonts = require('rxmarbles/styles/fonts');
 
 var _rxmarblesStylesFonts2 = _interopRequireDefault(_rxmarblesStylesFonts);
+
+var _rxtween = require('rxtween');
+
+var _rxtween2 = _interopRequireDefault(_rxtween);
 
 var _rxmarblesStylesUtils = require('rxmarbles/styles/utils');
 
@@ -20594,14 +20602,59 @@ function renderDiagram(data, isInteractive) {
   return h('div', { style: diagramStyle }, [renderDiagramArrow(), renderDiagramArrowHead(), h('div', { style: diagramBodyStyle }, [completionVTree].concat(marblesVTree))]);
 }
 
+function sanitizeDiagramItem(x) {
+  return Math.max(0, Math.min(100, x));
+}
+
+function interpolate(from, to, x) {
+  return from * (1 - x) + to * x;
+}
+
+function animateData$(data$) {
+  var animConf = {
+    from: 0,
+    to: 1,
+    ease: _rxtween2['default'].Power3.easeOut,
+    duration: 600
+  };
+  return data$.flatMapLatest(function (data) {
+    if (!data.get('isFirst')) {
+      return Rx.Observable.just(data);
+    } else {
+      var _ret = (function () {
+        var randomizedNotifs = data.get('notifications').map(function (notif) {
+          return notif.update('time', function (time) {
+            return time - 10 + 20 * Math.random();
+          });
+        });
+
+        return {
+          v: _rxtween2['default'](animConf).map(function (x) {
+            return data.update('notifications', function (notifications) {
+              return notifications.zipWith(function (n1, n2) {
+                return n1.update('time', function (t1) {
+                  var t2 = n2.get('time');
+                  return interpolate(t2, t1, x);
+                });
+              }, randomizedNotifs);
+            });
+          })
+        };
+      })();
+
+      if (typeof _ret === 'object') return _ret.v;
+    }
+  });
+}
+
 function diagramView(model) {
   return {
-    vtree$: Rx.Observable.combineLatest(model.data$.merge(model.newData$), model.isInteractive$, renderDiagram)
+    vtree$: Rx.Observable.combineLatest(animateData$(model.data$).merge(model.newData$), model.isInteractive$, renderDiagram)
   };
 }
 
 module.exports = diagramView;
-},{"cyclejs":5,"rxmarbles/styles/colors":137,"rxmarbles/styles/dimens":138,"rxmarbles/styles/fonts":139,"rxmarbles/styles/utils":140}],122:[function(require,module,exports){
+},{"cyclejs":5,"rxmarbles/styles/colors":138,"rxmarbles/styles/dimens":139,"rxmarbles/styles/fonts":140,"rxmarbles/styles/utils":141,"rxtween":150}],123:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -20634,7 +20687,7 @@ function DiagramComponent(interactions, properties) {
 }
 
 module.exports = DiagramComponent;
-},{"cyclejs":5,"rxmarbles/components/diagram/diagram-intent":119,"rxmarbles/components/diagram/diagram-model":120,"rxmarbles/components/diagram/diagram-view":121}],123:[function(require,module,exports){
+},{"cyclejs":5,"rxmarbles/components/diagram/diagram-intent":120,"rxmarbles/components/diagram/diagram-model":121,"rxmarbles/components/diagram/diagram-view":122}],124:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -20731,7 +20784,7 @@ function marbleComponent(interactions, properties) {
 }
 
 module.exports = marbleComponent;
-},{"cyclejs":5,"cyclejs/node_modules/virtual-dom/virtual-hyperscript/svg":101,"rxmarbles/styles/colors":137,"rxmarbles/styles/utils":140}],124:[function(require,module,exports){
+},{"cyclejs":5,"cyclejs/node_modules/virtual-dom/virtual-hyperscript/svg":101,"rxmarbles/styles/colors":138,"rxmarbles/styles/utils":141}],125:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -20786,7 +20839,7 @@ function operatorsMenuLink(interactions, properties) {
 }
 
 module.exports = operatorsMenuLink;
-},{"cyclejs":5,"rxmarbles/styles/colors":137,"rxmarbles/styles/dimens":138,"rxmarbles/styles/utils":140}],125:[function(require,module,exports){
+},{"cyclejs":5,"rxmarbles/styles/colors":138,"rxmarbles/styles/dimens":139,"rxmarbles/styles/utils":141}],126:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -20899,7 +20952,7 @@ function operatorsMenuComponent() {
 }
 
 module.exports = operatorsMenuComponent;
-},{"cyclejs":5,"rxmarbles/data/examples":133,"rxmarbles/styles/colors":137,"rxmarbles/styles/dimens":138,"rxmarbles/styles/utils":140}],126:[function(require,module,exports){
+},{"cyclejs":5,"rxmarbles/data/examples":134,"rxmarbles/styles/colors":138,"rxmarbles/styles/dimens":139,"rxmarbles/styles/utils":141}],127:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -20982,7 +21035,7 @@ module.exports = {
   augmentWithExampleKey: augmentWithExampleKey,
   makeNewInputDiagramsData$: makeNewInputDiagramsData$
 };
-},{"cyclejs":5,"immutable":114,"rxmarbles/components/sandbox/utils":129}],127:[function(require,module,exports){
+},{"cyclejs":5,"immutable":114,"rxmarbles/components/sandbox/utils":130}],128:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -21096,7 +21149,7 @@ function getOutputDiagram$(example$, inputDiagrams$) {
 module.exports = {
   getOutputDiagram$: getOutputDiagram$
 };
-},{"cyclejs":5,"immutable":114,"rxmarbles/components/sandbox/utils":129}],128:[function(require,module,exports){
+},{"cyclejs":5,"immutable":114,"rxmarbles/components/sandbox/utils":130}],129:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -21104,6 +21157,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 var _cyclejs = require('cyclejs');
 
 var _cyclejs2 = _interopRequireDefault(_cyclejs);
+
+var _rxtween = require('rxtween');
+
+var _rxtween2 = _interopRequireDefault(_rxtween);
 
 var _rxmarblesDataExamples = require('rxmarbles/data/examples');
 
@@ -21181,9 +21238,42 @@ function makeInputDiagrams(example) {
   });
 }
 
+function markAsFirstDiagram(diagram) {
+  return diagram.set('isFirst', true);
+}
+
+function markAllDiagramsAsFirst(diagramsData) {
+  return diagramsData.update('diagrams', function (diagrams) {
+    return diagrams.map(markAsFirstDiagram);
+  });
+}
+
 var isTruthy = function isTruthy(x) {
   return !!x;
 };
+
+//function animateData$(inputDiagrams$) {
+//  //return diagrams$.doOnNext(diagrams => console.log(diagrams.toJS()));
+//  const animConf = {
+//    from: 10,
+//    to: 0,
+//    ease: RxTween.Power3.easeOut,
+//    duration: 1000
+//  };
+//  return inputDiagrams$.flatMapLatest(inputDiagrams => {
+//    return RxTween(animConf).map(x =>
+//      inputDiagrams.update('diagrams', diagrams =>
+//        diagrams.map(diagram =>
+//          diagram.update('notifications', notifications =>
+//            notifications.map(notif =>
+//              notif.update('time', time => time + x)
+//            )
+//          )
+//        )
+//      )
+//    );
+//  })
+//}
 
 function sandboxComponent(interactions, properties) {
   var changeInputDiagram$ = interactions.get('.sandboxInputDiagram', 'newdata').map(function (ev) {
@@ -21193,13 +21283,16 @@ function sandboxComponent(interactions, properties) {
   var example$ = properties.get('route').filter(isTruthy).map(function (key) {
     return _immutable2['default'].Map(_rxmarblesDataExamples2['default'][key]).set('key', key);
   }).shareReplay(1);
-  var inputDiagrams$ = example$.map(makeInputDiagrams).shareReplay(1);
+  var inputDiagrams$ = example$.map(makeInputDiagrams).map(markAllDiagramsAsFirst).shareReplay(1);
+  //inputDiagrams$ = animateData$(inputDiagrams$);
   var newInputDiagrams$ = _rxmarblesComponentsSandboxSandboxInput.makeNewInputDiagramsData$(changeInputDiagram$, inputDiagrams$);
-  var allInputDiagrams$ = inputDiagrams$.merge(newInputDiagrams$);
+  //let allInputDiagrams$ = inputDiagrams$.merge(newInputDiagrams$);
   var operatorLabel$ = example$.map(function (example) {
     return example.get('label');
   });
-  var outputDiagram$ = _rxmarblesComponentsSandboxSandboxOutput.getOutputDiagram$(example$, allInputDiagrams$);
+  var firstOutputDiagram$ = _rxmarblesComponentsSandboxSandboxOutput.getOutputDiagram$(example$, inputDiagrams$).map(markAsFirstDiagram);
+  var newOutputDiagram$ = _rxmarblesComponentsSandboxSandboxOutput.getOutputDiagram$(example$, newInputDiagrams$);
+  var outputDiagram$ = firstOutputDiagram$.merge(newOutputDiagram$);
 
   return {
     vtree$: Rx.Observable.combineLatest(inputDiagrams$, operatorLabel$, outputDiagram$, width$, renderSandbox)
@@ -21207,7 +21300,7 @@ function sandboxComponent(interactions, properties) {
 }
 
 module.exports = sandboxComponent;
-},{"cyclejs":5,"immutable":114,"rxmarbles/components/sandbox/sandbox-input":126,"rxmarbles/components/sandbox/sandbox-output":127,"rxmarbles/data/examples":133,"rxmarbles/styles/colors":137,"rxmarbles/styles/dimens":138,"rxmarbles/styles/fonts":139,"rxmarbles/styles/utils":140}],129:[function(require,module,exports){
+},{"cyclejs":5,"immutable":114,"rxmarbles/components/sandbox/sandbox-input":127,"rxmarbles/components/sandbox/sandbox-output":128,"rxmarbles/data/examples":134,"rxmarbles/styles/colors":138,"rxmarbles/styles/dimens":139,"rxmarbles/styles/fonts":140,"rxmarbles/styles/utils":141,"rxtween":150}],130:[function(require,module,exports){
 /*
  * Conversion from virtual time streams out to diagram data, and
  * vice-versa, and related functions.
@@ -21216,12 +21309,14 @@ module.exports = sandboxComponent;
 "use strict";
 
 function calculateNotificationContentHash(content) {
+  var SMALL_PRIME_1 = 59;
+  var SMALL_PRIME_2 = 97;
   var SOME_PRIME_NUMBER = 877;
   if (typeof content === "string") {
     return content.split("").map(function (x) {
       return x.charCodeAt(0);
     }).reduce(function (x, y) {
-      return x + y;
+      return x * SMALL_PRIME_1 + y * SMALL_PRIME_2;
     });
   } else if (typeof content === "number") {
     return parseInt(content) * SOME_PRIME_NUMBER;
@@ -21242,7 +21337,7 @@ module.exports = {
   calculateNotificationHash: calculateNotificationHash,
   calculateNotificationContentHash: calculateNotificationContentHash
 };
-},{}],130:[function(require,module,exports){
+},{}],131:[function(require,module,exports){
 "use strict";
 
 var Rx = require("cyclejs").Rx;
@@ -21268,13 +21363,13 @@ module.exports = {
     }
   },
 
-  "contains": {
-    "label": "contains(22)",
+  "includes": {
+    "label": "includes(22)",
     "inputs": [[{ t: 5, d: 2 }, { t: 15, d: 30 }, { t: 25, d: 22 }, { t: 35, d: 5 }, { t: 45, d: 60 }, { t: 55, d: 1 }]],
     "apply": function apply(inputs) {
       return inputs[0].map(function (x) {
         return x.get("content");
-      }).contains(22);
+      }).includes(22);
     }
   },
 
@@ -21288,7 +21383,7 @@ module.exports = {
     }
   }
 };
-},{"cyclejs":5}],131:[function(require,module,exports){
+},{"cyclejs":5}],132:[function(require,module,exports){
 "use strict";
 
 var Rx = require("cyclejs").Rx;
@@ -21356,7 +21451,7 @@ module.exports = {
     }
   }
 };
-},{"cyclejs":5}],132:[function(require,module,exports){
+},{"cyclejs":5}],133:[function(require,module,exports){
 "use strict";
 
 var Rx = require("cyclejs").Rx;
@@ -21370,7 +21465,7 @@ module.exports = {
     }
   }
 };
-},{"cyclejs":5}],133:[function(require,module,exports){
+},{"cyclejs":5}],134:[function(require,module,exports){
 /*
  * The database of all predefined examples in the app.
  */
@@ -21405,7 +21500,7 @@ function applyCategory(examples, categoryName) {
 };
 
 module.exports = merge(applyCategory(transformExamples, 'Transforming Operators'), applyCategory(combineExamples, 'Combining Operators'), applyCategory(filterExamples, 'Filtering Operators'), applyCategory(mathExamples, 'Mathematical Operators'), applyCategory(booleanExamples, 'Boolean Operators'), applyCategory(conditionalExamples, 'Conditional Operators'));
-},{"rxmarbles/data/boolean-examples":130,"rxmarbles/data/combine-examples":131,"rxmarbles/data/conditional-examples":132,"rxmarbles/data/filter-examples":134,"rxmarbles/data/math-examples":135,"rxmarbles/data/transform-examples":136}],134:[function(require,module,exports){
+},{"rxmarbles/data/boolean-examples":131,"rxmarbles/data/combine-examples":132,"rxmarbles/data/conditional-examples":133,"rxmarbles/data/filter-examples":135,"rxmarbles/data/math-examples":136,"rxmarbles/data/transform-examples":137}],135:[function(require,module,exports){
 "use strict";
 
 var Rx = require("cyclejs").Rx;
@@ -21553,7 +21648,7 @@ module.exports = {
     }
   }
 };
-},{"cyclejs":5}],135:[function(require,module,exports){
+},{"cyclejs":5}],136:[function(require,module,exports){
 "use strict";
 
 var Rx = require("cyclejs").Rx;
@@ -21642,7 +21737,7 @@ module.exports = {
     }
   }
 };
-},{"cyclejs":5}],136:[function(require,module,exports){
+},{"cyclejs":5}],137:[function(require,module,exports){
 "use strict";
 
 var Rx = require("cyclejs").Rx;
@@ -21714,7 +21809,7 @@ module.exports = {
     }
   }
 };
-},{"cyclejs":5}],137:[function(require,module,exports){
+},{"cyclejs":5}],138:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -21733,7 +21828,7 @@ exports['default'] = {
   green: '#82D736'
 };
 module.exports = exports['default'];
-},{}],138:[function(require,module,exports){
+},{}],139:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -21750,7 +21845,7 @@ exports['default'] = {
   animationDurationSlow: '400ms'
 };
 module.exports = exports['default'];
-},{}],139:[function(require,module,exports){
+},{}],140:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21762,7 +21857,7 @@ exports["default"] = {
   fontCode: "'Source Code Pro', monospace"
 };
 module.exports = exports["default"];
-},{}],140:[function(require,module,exports){
+},{}],141:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -21853,7 +21948,304 @@ exports['default'] = {
   textUnselectable: textUnselectable
 };
 module.exports = exports['default'];
-},{"cyclejs":5,"immutable":114}],141:[function(require,module,exports){
+},{"cyclejs":5,"immutable":114}],142:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+'use strict';
+
+var _require = require('./ease-common');
+
+var createEasing = _require.createEasing;
+
+var OVERSHOOT = 1.70158;
+
+exports['default'] = {
+  EasingBack: createEasing(function (x) {
+    return x * x * ((OVERSHOOT + 1) * x - OVERSHOOT);
+  })
+};
+module.exports = exports['default'];
+},{"./ease-common":145}],143:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+'use strict';
+
+var _require = require('./ease-common');
+
+var createEasing = _require.createEasing;
+
+var PARAM1 = 7.5625;
+var PARAM2 = 2.75;
+function easeOutFn(x) {
+  var z = x;
+  if (z < 1 / PARAM2) {
+    return PARAM1 * z * z;
+  } else if (z < 2 / PARAM2) {
+    return PARAM1 * (z -= 1.5 / PARAM2) * z + 0.75;
+  } else if (z < 2.5 / PARAM2) {
+    return PARAM1 * (z -= 2.25 / PARAM2) * z + 0.9375;
+  } else {
+    return PARAM1 * (z -= 2.625 / PARAM2) * z + 0.984375;
+  }
+}
+
+exports['default'] = {
+  EasingBounce: createEasing(function (x) {
+    return 1 - easeOutFn(1 - x);
+  })
+};
+module.exports = exports['default'];
+},{"./ease-common":145}],144:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+'use strict';
+
+var _require = require('./ease-common');
+
+var createEasing = _require.createEasing;
+exports['default'] = {
+  EasingCirc: createEasing(function (x) {
+    return -(Math.sqrt(1 - x * x) - 1);
+  })
+};
+module.exports = exports['default'];
+},{"./ease-common":145}],145:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+'use strict';
+
+function interpolate(y, from, to) {
+  return from * (1 - y) + to * y;
+}
+
+function flip(fn) {
+  return function (x) {
+    return 1 - fn(1 - x);
+  };
+}
+
+exports['default'] = {
+  interpolate: interpolate,
+
+  flip: flip,
+
+  createEasing: function createEasing(fn) {
+    var fnFlipped = flip(fn);
+    return {
+      easeIn: function easeIn(x, from, to) {
+        return interpolate(fn(x), from, to);
+      },
+      easeOut: function easeOut(x, from, to) {
+        return interpolate(fnFlipped(x), from, to);
+      },
+      easeInOut: function easeInOut(x, from, to) {
+        var y = x < 0.5 ? fn(2 * x) * 0.5 : 0.5 + fnFlipped(2 * (x - 0.5)) * 0.5;
+        return interpolate(y, from, to);
+      }
+    };
+  }
+};
+module.exports = exports['default'];
+},{}],146:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+'use strict';
+
+var _require = require('./ease-common');
+
+var createEasing = _require.createEasing;
+
+var PERIOD = 0.3;
+var OVERSHOOT = PERIOD / 4;
+var AMPLITUDE = 1;
+function elasticIn(x) {
+  var z = x;
+  if (z <= 0) {
+    return 0;
+  } else if (z >= 1) {
+    return 1;
+  } else {
+    z -= 1;
+    return -(AMPLITUDE * Math.pow(2, 10 * z)) * Math.sin((z - OVERSHOOT) * (2 * Math.PI) / PERIOD);
+  }
+}
+
+exports['default'] = {
+  EasingElastic: createEasing(elasticIn)
+};
+module.exports = exports['default'];
+},{"./ease-common":145}],147:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+'use strict';
+
+var _require = require('./ease-common');
+
+var createEasing = _require.createEasing;
+
+var EXP_WEIGHT = 6;
+var EXP_MAX = Math.exp(EXP_WEIGHT) - 1;
+function expFn(x) {
+  return (Math.exp(x * EXP_WEIGHT) - 1) / EXP_MAX;
+}
+
+var EasingExponential = createEasing(expFn);
+
+exports['default'] = {
+  EasingExponential: EasingExponential
+};
+module.exports = exports['default'];
+},{"./ease-common":145}],148:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+'use strict';
+
+var _require = require('./ease-common');
+
+var createEasing = _require.createEasing;
+
+var EasingPower2 = createEasing(function (x) {
+  return x * x;
+});
+var EasingPower3 = createEasing(function (x) {
+  return x * x * x;
+});
+var EasingPower4 = createEasing(function (x) {
+  var xx = x * x;
+  return xx * xx;
+});
+
+exports['default'] = {
+  EasingPower2: EasingPower2,
+  EasingPower3: EasingPower3,
+  EasingPower4: EasingPower4
+};
+module.exports = exports['default'];
+},{"./ease-common":145}],149:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+'use strict';
+
+var _require = require('./ease-common');
+
+var createEasing = _require.createEasing;
+
+var HALF_PI = Math.PI * 0.5;
+
+exports['default'] = {
+  EasingSine: createEasing(function (x) {
+    return 1 - Math.cos(x * HALF_PI);
+  })
+};
+module.exports = exports['default'];
+},{"./ease-common":145}],150:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+'use strict';
+var Rx = require('rx');
+
+var _require = require('./ease-common');
+
+var interpolate = _require.interpolate;
+
+var _require2 = require('./ease-powers');
+
+var EasingPower2 = _require2.EasingPower2;
+var EasingPower3 = _require2.EasingPower3;
+var EasingPower4 = _require2.EasingPower4;
+
+var _require3 = require('./ease-exponential');
+
+var EasingExponential = _require3.EasingExponential;
+
+var _require4 = require('./ease-back');
+
+var EasingBack = _require4.EasingBack;
+
+var _require5 = require('./ease-bounce');
+
+var EasingBounce = _require5.EasingBounce;
+
+var _require6 = require('./ease-circ');
+
+var EasingCirc = _require6.EasingCirc;
+
+var _require7 = require('./ease-elastic');
+
+var EasingElastic = _require7.EasingElastic;
+
+var _require8 = require('./ease-sine');
+
+var EasingSine = _require8.EasingSine;
+
+var DEFAULT_INTERVAL = 15;
+function sanitizeInterval(interval) {
+  if (interval === 'auto') {
+    return DEFAULT_INTERVAL;
+  } else if (typeof interval !== 'number' || interval <= 0) {
+    console.warn('RxTween cannot use invalid given interval: ' + interval);
+    return DEFAULT_INTERVAL;
+  }
+  return interval;
+}
+
+function RxTween(_ref) {
+  var from = _ref.from;
+  var to = _ref.to;
+  var duration = _ref.duration;
+  var _ref$ease = _ref.ease;
+  var ease = _ref$ease === undefined ? RxTween.Linear.ease : _ref$ease;
+  var _ref$interval = _ref.interval;
+  var interval = _ref$interval === undefined ? 'auto' : _ref$interval;
+
+  var sanitizedInterval = sanitizeInterval(interval);
+  var totalTicks = Math.round(duration / sanitizedInterval);
+  return Rx.Observable.interval(sanitizedInterval).take(totalTicks).map(function (tick) {
+    return ease(tick / totalTicks, from, to);
+  }).concat(Rx.Observable.just(to));
+}
+
+RxTween.Linear = { ease: interpolate };
+RxTween.Power2 = EasingPower2;
+RxTween.Power3 = EasingPower3;
+RxTween.Power4 = EasingPower4;
+RxTween.Exp = EasingExponential;
+RxTween.Back = EasingBack;
+RxTween.Bounce = EasingBounce;
+RxTween.Circ = EasingCirc;
+RxTween.Elastic = EasingElastic;
+RxTween.Sine = EasingSine;
+
+exports['default'] = RxTween;
+module.exports = exports['default'];
+},{"./ease-back":142,"./ease-bounce":143,"./ease-circ":144,"./ease-common":145,"./ease-elastic":146,"./ease-exponential":147,"./ease-powers":148,"./ease-sine":149,"rx":116}],151:[function(require,module,exports){
 'use strict';
 
 var Cycle = require('cyclejs');
@@ -21876,4 +22268,4 @@ Cycle.registerCustomElement('x-diagram', diagramComponent);
 Cycle.applyToDOM('.js-appContainer', function app() {
   return appView(appModel());
 });
-},{"cyclejs":5,"rxmarbles/app-model":116,"rxmarbles/app-view":117,"rxmarbles/components/diagram-completion":118,"rxmarbles/components/diagram/diagram":122,"rxmarbles/components/marble":123,"rxmarbles/components/operators-menu":125,"rxmarbles/components/operators-menu-link":124,"rxmarbles/components/sandbox/sandbox":128}]},{},[141]);
+},{"cyclejs":5,"rxmarbles/app-model":117,"rxmarbles/app-view":118,"rxmarbles/components/diagram-completion":119,"rxmarbles/components/diagram/diagram":123,"rxmarbles/components/marble":124,"rxmarbles/components/operators-menu":126,"rxmarbles/components/operators-menu-link":125,"rxmarbles/components/sandbox/sandbox":129}]},{},[151]);
