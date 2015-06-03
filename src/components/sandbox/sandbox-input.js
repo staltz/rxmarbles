@@ -28,11 +28,13 @@ function prepareNotification(input, diagramId) {
 
 function prepareInputDiagram(diagram, indexInDiagramArray = 0) {
   let last = diagram[diagram.length - 1];
-  return Immutable.Map({})
+  let end = (typeof last === 'number') ? last : 100;
+  return Immutable.Map({ start: 0 })
     .set('notifications', getNotifications(diagram)
       .map(notification => prepareNotification(notification, indexInDiagramArray))
     )
-    .set('end', (typeof last === 'number') ? last : 100)
+    .set('end', end)
+    .set('eventualEnd', end)
     .set('id', indexInDiagramArray);
 }
 

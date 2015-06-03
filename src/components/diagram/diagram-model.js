@@ -26,8 +26,10 @@ function applyChangeMarbleTime(diagramData, marbleDelta) {
 }
 
 function applyChangeEndTime(diagramData, endDelta) {
+  var newEnd = diagramData.get('end') + endDelta;
   return diagramData
-    .set('end', diagramData.get('end') + endDelta);
+    .set('end', newEnd)
+    .set('eventualEnd', newEnd);
 }
 
 function applyMarbleDataConstraints(marbleData) {
@@ -45,7 +47,7 @@ function applyEndTimeConstraint(diagramData) {
   newEndTime = Math.round(newEndTime);
   newEndTime = Math.min(newEndTime, 100);
   newEndTime = Math.max(0, newEndTime);
-  return diagramData.set('end', newEndTime);
+  return diagramData.set('end', newEndTime).set('eventualEnd', newEndTime);
 }
 
 function applyDiagramDataConstraints(diagramData) {
@@ -76,7 +78,8 @@ function diagramModel(props, intent) {
       intent.changeEndTime$,
       props.get('interactive')
     ),
-    isInteractive$: props.get('interactive').startWith(false)
+    isInteractive$: props.get('interactive').startWith(false),
+    isCompact$: props.get('compact').startWith(false)
   };
 }
 

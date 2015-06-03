@@ -12,8 +12,11 @@ import Fonts from 'rxmarbles/styles/fonts';
 import {mergeStyles, elevation1Style, elevation2Style, elevation2Before, elevation2After}
   from 'rxmarbles/styles/utils';
 
-function renderOperatorLabel(label) {
+function renderOperatorLabel(label, small = false) {
   let fontSize = (label.length >= 45) ? 1.3 : (label.length >= 30) ? 1.5 : 2;
+  if (small) {
+    fontSize *= 0.5;
+  }
   let style = {
     fontFamily: Fonts.fontCode,
     fontWeight: '400',
@@ -22,18 +25,27 @@ function renderOperatorLabel(label) {
   return h('span.operatorLabel', {style}, label);
 }
 
-function renderOperator(label) {
+function renderOperator(label, small = false) {
   let style = mergeStyles({
       border: '1px solid rgba(0,0,0,0.06)',
-      padding: Dimens.spaceMedium,
+      padding: small ? Dimens.spaceTiny : Dimens.spaceMedium,
       textAlign: 'center'},
     elevation2Style
   );
   return h('div.operatorBox', {style}, [
     elevation2Before,
-    renderOperatorLabel(label),
+    renderOperatorLabel(label, small),
     elevation2After
   ]);
+}
+
+function renderObservedInputs(inputs) {
+  return inputs.map((input, i) => h('x-diagram.sandboxObservedInput', {
+    key: "observedInput" + i,
+    data: input,
+    interactive: false,
+    compact: true
+  }));
 }
 
 function getSandboxStyle(width) {
@@ -45,8 +57,8 @@ function getSandboxStyle(width) {
   );
 }
 
-function renderSandbox(inputDiagrams, operatorLabel, outputDiagram, width) {
-  return h('div.sandboxRoot', {style: getSandboxStyle(width)}, [
+function renderSandbox(inputDiagrams, operatorLabel, outputDiagramData, width, showSubscriptions) {
+  let children = [
     inputDiagrams.get('diagrams').map((diagram, index) =>
         h('x-diagram.sandboxInputDiagram', {
           key: `inputDiagram${index}`,
@@ -57,10 +69,17 @@ function renderSandbox(inputDiagrams, operatorLabel, outputDiagram, width) {
     renderOperator(operatorLabel),
     h('x-diagram.sandboxOutputDiagram', {
       key: 'outputDiagram',
-      data: outputDiagram,
+      data: outputDiagramData.outputDiagram,
       interactive: false
-    })
-  ]);
+    })];
+
+  if (showSubscriptions) {
+    children.push(
+      renderOperator("subscription details", true),
+      renderObservedInputs(outputDiagramData.observedInputDiagrams));
+  }
+
+  return h('div.sandboxRoot', {style: getSandboxStyle(width)}, children);
 }
 
 function makeInputDiagrams(example) {
@@ -87,6 +106,7 @@ function sandboxComponent({DOM, props}) {
   let changeInputDiagram$ = DOM.get('.sandboxInputDiagram', 'newdata')
     .map(ev => ev.detail);
   let width$ = props.get('width').startWith('100%');
+  let showSubscriptions$ = props.get('showSubscriptions').startWith(true);
   let example$ = props.get('route')
     .filter(isTruthy)
     .map(key => Immutable.Map(Examples[key]).set('key', key))
@@ -100,11 +120,17 @@ function sandboxComponent({DOM, props}) {
   );
   let operatorLabel$ = example$.map(example => example.get('label'));
   let firstOutputDiagram$ = getOutputDiagram$(example$, inputDiagrams$)
-    .map(markAsFirstDiagram);
+    .map(d => {
+      return {
+        outputDiagram: markAsFirstDiagram(d.outputDiagram),
+        observedInputDiagrams: d.observedInputDiagrams.map(markAsFirstDiagram)
+      };
+  })
   let newOutputDiagram$ = getOutputDiagram$(example$, newInputDiagrams$);
   let outputDiagram$ = firstOutputDiagram$.merge(newOutputDiagram$);
   let vtree$ = Rx.Observable.combineLatest(
     inputDiagrams$, operatorLabel$, outputDiagram$, width$,
+    showSubscriptions$,
     renderSandbox
   );
 

@@ -57,7 +57,7 @@ function renderContent(route) {
           position: 'absolute',
           top: '0'},
           pageRowLastChildStyle)}
-        ,h('x-sandbox', {key: 'sandbox', route: route, width: '820px'})
+        ,h('x-sandbox', {key: 'sandbox', route: route, width: '820px', showSubscriptions: true})
       )
     ])
   );
