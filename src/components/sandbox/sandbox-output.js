@@ -20,25 +20,20 @@ function makeScheduler() {
   return scheduler;
 }
 
-function justIncomplete(item, scheduler) {
-  return new Rx.AnonymousObservable(observer =>
-    scheduler.schedule(() => { observer.onNext(item); })
-  );
-}
-
 /**
  * Creates an (virtual time) Rx.Observable from diagram
  * data (array of data items).
  */
 function toVTStream(diagramData, scheduler) {
-  let singleMarbleStreams = diagramData.get('notifications').map(item =>
-    justIncomplete(item, scheduler).delay(item.get('time'), scheduler)
-  ).toArray();
-  // Necessary correction to include marbles at time exactly diagramData.end:
-  let correctedEndTime = diagramData.get('end') + 0.01;
-  return Rx.Observable.merge(singleMarbleStreams)
-    .takeUntilWithTime(correctedEndTime, scheduler)
-    .publish().refCount();
+  return Rx.Observable.create(observer => {
+    let notifications = diagramData.get('notifications')
+      .map(item => scheduler.scheduleWithRelative(item.get('time'), () => observer.onNext(item)))
+      .toArray();
+    let completion = scheduler.scheduleWithRelative(diagramData.get('end') + 0.01, () => observer.onCompleted());
+    let s = new Rx.CompositeDisposable(notifications);
+    s.add(completion);
+    return s;
+  }).publish().refCount();
 }
 
 function getDiagramPromise(stream, scheduler) {
