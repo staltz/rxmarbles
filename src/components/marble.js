@@ -18,9 +18,9 @@ function createContainerStyle(inputStyle) {
   };
 }
 
-function renderSvg(data, isDraggable, inputStyle, isHighlighted) {
+function renderSvg(data, isDraggable, inputStyle, isHighlighted, isGhost) {
   let POSSIBLE_COLORS = [Colors.blue, Colors.green, Colors.yellow, Colors.red];
-  let color = POSSIBLE_COLORS[data.get('id') % POSSIBLE_COLORS.length];
+  let color = isGhost ? Colors.almostWhite : POSSIBLE_COLORS[data.get('id') % POSSIBLE_COLORS.length];
   return svg('svg.marbleShape', {
       style: mergeStyles({
           overflow: 'visible',
@@ -31,7 +31,7 @@ function renderSvg(data, isDraggable, inputStyle, isHighlighted) {
     [
       svg('circle', {
         style: {
-          stroke: Colors.black,
+          stroke: isGhost ? Colors.greyLight : Colors.black,
           fill: color
         },
         attributes: {
@@ -43,21 +43,27 @@ function renderSvg(data, isDraggable, inputStyle, isHighlighted) {
   );
 }
 
-function renderInnerContent(data, inputStyle) {
+function renderInnerContent(data, inputStyle, isGhost) {
+  var style = {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    top: '0',
+    margin: '0',
+    textAlign: 'center',
+    lineHeight: inputStyle.size
+  };
+
+  if (isGhost) {
+    style['color'] = Colors.greyLight;
+  }
+
   return h('p.marbleContent', {
-    style: mergeStyles({
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        top: '0',
-        margin: '0',
-        textAlign: 'center',
-        lineHeight: inputStyle.size},
-      textUnselectable)
+    style: mergeStyles(style, textUnselectable)
   }, `${data.get('content')}`);
 }
 
-function render(data, isDraggable, inputStyle, isHighlighted) {
+function render(data, isDraggable, inputStyle, isHighlighted, isGhost) {
   let draggableContainerStyle = {
     cursor: 'ew-resize'
   };
@@ -69,8 +75,8 @@ function render(data, isDraggable, inputStyle, isHighlighted) {
       isDraggable ? draggableContainerStyle : null),
     attributes: {'data-marble-id': data.get('id')}
   },[
-    renderSvg(data, isDraggable, inputStyle, isHighlighted),
-    renderInnerContent(data, inputStyle)
+    renderSvg(data, isDraggable, inputStyle, isHighlighted, isGhost),
+    renderInnerContent(data, inputStyle, isGhost)
   ]);
 }
 
@@ -79,6 +85,7 @@ function marbleComponent(interactions, properties) {
   let stopHighlight$ = interactions.get('.marbleRoot', 'mouseleave');
   let data$ = properties.get('data');
   let isDraggable$ = properties.get('isDraggable').startWith(false);
+  let isGhost$ = properties.get('isGhost').startWith(false);
   let style$ = properties.get('style').startWith({});
   let isHighlighted$ = Rx.Observable.merge(
     startHighlight$.map(() => true),
@@ -87,7 +94,7 @@ function marbleComponent(interactions, properties) {
 
   return {
     vtree$: Rx.Observable.combineLatest(
-      data$, isDraggable$, style$, isHighlighted$, render
+      data$, isDraggable$, style$, isHighlighted$, isGhost$, render
     )
   };
 }
