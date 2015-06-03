@@ -33,7 +33,7 @@ function toVTStream(diagramData, scheduler) {
     let s = new Rx.CompositeDisposable(notifications);
     s.add(completion);
     return s;
-  }).publish().refCount();
+  });
 }
 
 function getDiagramPromise(stream, scheduler) {
