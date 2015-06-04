@@ -15,7 +15,7 @@ module.exports = {
   },
 
   "concat": {
-    "label": "concat",
+    "label": "concat(a, b)",
     "inputs": [
       [{t:0, d:1}, {t:15, d:1}, {t:50, d:1}, 57],
       [{t:0, d:2}, {t:8, d:2}, 12]
@@ -26,7 +26,7 @@ module.exports = {
   },
 
   "merge": {
-    "label": "merge",
+    "label": "merge(a, b)",
     "inputs": [
       [{t:0, d:20}, {t:15, d:40}, {t:30, d:60}, {t:45, d:80}, {t:60, d:100}],
       [{t:37, d:1}, {t:68, d:1}]
@@ -37,7 +37,7 @@ module.exports = {
   },
 
   "sample": {
-    "label": "sample",
+    "label": "a.sample(b)",
     "inputs": [
       [{t:0, d:1}, {t:20, d:2}, {t:40, d:3}, {t:60, d:4}, {t:80, d:5}],
       [{t:10, d:"A"}, {t:25, d:"B"}, {t:33, d:"C"}, {t:70, d:"D"}, 90]
@@ -58,7 +58,7 @@ module.exports = {
   },
 
   "withLatestFrom": {
-    "label": "withLatestFrom((x, y) => \"\" + x + y)",
+    "label": "xs.withLatestFrom(ys, (x, y) => \"\" + x + y)",
     "inputs": [
       [{t:0, d:1}, {t:20, d:2}, {t:65, d:3}, {t:75, d:4}, {t:92, d:5}],
       [{t:10, d:"A"}, {t:25, d:"B"}, {t:50, d:"C"}, {t:57, d:"D"}]
@@ -71,10 +71,10 @@ module.exports = {
   },
 
   "zip": {
-    "label": "zip",
+    "label": "zip(xs, ys, (x, y) => \"\" + x + y)",
     "inputs": [
       [{t:0, d:1}, {t:20, d:2}, {t:65, d:3}, {t:75, d:4}, {t:92, d:5}],
-      [{t:10, d:"A"}, {t:25, d:"B"}, {t:50, d:"C"}, {t:57, d:"D"}]
+      [{t:10, d:"A"}, {t:25, d:"B"}, {t:50, d:"C"}, {t:57, d:"D"}, 70]
     ],
     "apply": function(inputs) {
       return Rx.Observable.zip(inputs[0], inputs[1],
