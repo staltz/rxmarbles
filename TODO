@@ -72,6 +72,7 @@ DONE Embeddable rxmarbles
 >>> v1.3.0
 
 DONE Initial affordance animation in diagram
+TODO Fix affordance animation stuck for combineLatest
 TODO Disambiguate simultaneous marbles
   Vertically spread them
   Change example takeLast(1) to takeLast(2)
