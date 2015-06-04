@@ -72,30 +72,50 @@ module.exports = {
   },
 
   "pausable": {
-    "label": "pausable",
+    "label": "a.publish(p => p.pausable(signal))",
     "inputs": [
-      [{t:0, d:1}, {t:10, d:2}, {t:20, d:3}, {t:30, d:4}, {t:40, d:5}, {t:50, d:6}, {t:60, d:7}, {t:70, d:8}, {t:80, d:9}],
-      [{t:15, d:true}, {t:35, d:false}, {t:55, d:true}]
+      [{t:0, d:1}, {t:10, d:2}, {t:20, d:3}, {t:30, d:4}, {t:40, d:5}, {t:50, d:6}, {t:60, d:7}, {t:70, d:8}, {t:80, d:9}, 85],
+      [{t:15, d:true}, {t:35, d:false}, {t:55, d:true}, 70]
     ],
     "apply": function(inputs) {
-      inputs[0].subscribe(() => 0);
-      var subject = new Rx.Subject();
-      inputs[1].subscribe(x => subject.onNext(x.get('content')));
-      return inputs[0].pausable(subject);
+      let signal = inputs[1].map(x => x.get('content'));
+      return inputs[0].publish(p => p.pausable(signal));
+    }
+  },
+
+  "pausable(cold)": {
+    "label": "a.pausable(signal)",
+    "inputs": [
+      [{t:0, d:1}, {t:10, d:2}, {t:20, d:3}, {t:30, d:4}, {t:40, d:5}, {t:50, d:6}, {t:60, d:7}, {t:70, d:8}, {t:80, d:9}, 85],
+      [{t:15, d:true}, {t:35, d:false}, {t:55, d:true}, 70]
+    ],
+    "apply": function(inputs) {
+      let signal = inputs[1].map(x => x.get('content'));
+      return inputs[0].pausable(signal);
     }
   },
 
   "pausableBuffered": {
-    "label": "pausableBuffered",
+    "label": "a.publish(p => p.pausableBuffered(signal))",
     "inputs": [
-      [{t:0, d:1}, {t:10, d:2}, {t:20, d:3}, {t:30, d:4}, {t:40, d:5}, {t:50, d:6}, {t:60, d:7}, {t:70, d:8}, {t:80, d:9}],
-      [{t:15, d:true}, {t:35, d:false}, {t:55, d:true}]
+      [{t:0, d:1}, {t:10, d:2}, {t:20, d:3}, {t:30, d:4}, {t:40, d:5}, {t:50, d:6}, {t:60, d:7}, {t:70, d:8}, {t:80, d:9}, 85],
+      [{t:15, d:true}, {t:35, d:false}, {t:55, d:true}, 70]
     ],
     "apply": function(inputs) {
-      inputs[0].subscribe(() => 0);
-      var subject = new Rx.Subject();
-      inputs[1].subscribe(x => subject.onNext(x.get('content')));
-      return inputs[0].pausableBuffered(subject);
+      let signal = inputs[1].map(x => x.get('content'));
+      return inputs[0].publish(p => p.pausableBuffered(signal));
+    }
+  },
+
+  "pausableBuffered(cold)": {
+    "label": "a.pausableBuffered(signal)",
+    "inputs": [
+      [{t:0, d:1}, {t:10, d:2}, {t:20, d:3}, {t:30, d:4}, {t:40, d:5}, {t:50, d:6}, {t:60, d:7}, {t:70, d:8}, {t:80, d:9}, 85],
+      [{t:15, d:true}, {t:35, d:false}, {t:55, d:true}, 70]
+    ],
+    "apply": function(inputs) {
+      let signal = inputs[1].map(x => x.get('content'));
+      return inputs[0].pausableBuffered(signal);
     }
   },
 
@@ -112,7 +132,7 @@ module.exports = {
   "skipLast": {
     "label": "skipLast(2)",
     "inputs": [
-      [{t:30, d:1}, {t:40, d:2}, {t:65, d:3}, {t:75, d:4}]
+      [{t:30, d:1}, {t:40, d:2}, {t:65, d:3}, {t:75, d:4}, 80 ]
     ],
     "apply": function(inputs) {
       return inputs[0].skipLast(2);
@@ -123,7 +143,7 @@ module.exports = {
     "label": "skipUntil",
     "inputs": [
       [{t:0, d:1}, {t:10, d:2}, {t:20, d:3}, {t:30, d:4}, {t:40, d:5}, {t:50, d:6}, {t:60, d:7}, {t:70, d:8}, {t:80, d:9}],
-      [{t:45, d:0}, {t:73, d:0}]
+      [{t:45, d:0}, {t:73, d:0}, 80]
     ],
     "apply": function(inputs) {
       return inputs[0].skipUntil(inputs[1]);
