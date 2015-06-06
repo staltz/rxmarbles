@@ -47,15 +47,14 @@ const elevation3After = h('div', {style:
   getElevationPseudoElementStyle('6px', '17px', '0.2')
 }, '');
 
-const svgElevation1Style = {
-  '-webkit-filter': 'drop-shadow(0px 3px 2px rgba(0,0,0,0.26))',
-          'filter': 'drop-shadow(0px 3px 2px rgba(0,0,0,0.26))'
+const marbleElevation1Style = {
+  filter: 'url(#dropshadow)'
 };
 
 const textUnselectable = {
   '-webkit-user-select': 'none',
    '-khtml-user-select': 'none',
-     '-moz-user-select': '-moz-none',
+     '-moz-user-select': 'none',
        '-o-user-select': 'none',
           'user-select': 'none'
 };
@@ -68,6 +67,6 @@ export default {
   elevation2After,
   elevation3Before,
   elevation3After,
-  svgElevation1Style,
+  marbleElevation1Style,
   textUnselectable
 };
