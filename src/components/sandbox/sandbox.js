@@ -45,7 +45,8 @@ function renderObservedInputs(inputs) {
     key: "observedInput" + i,
     data: input,
     interactive: false,
-    compact: true
+    compact: true,
+    ghost: true
   }));
 }
 
@@ -64,7 +65,8 @@ function renderSandbox(inputDiagrams, operatorLabel, outputDiagramData, width, s
         h('x-diagram.sandboxInputDiagram', {
           key: `inputDiagram${index}`,
           data: diagram,
-          interactive: true
+          interactive: true,
+          ghost: false
         })
     ),
     renderOperator(operatorLabel),

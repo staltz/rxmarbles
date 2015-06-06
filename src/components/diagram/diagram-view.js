@@ -54,25 +54,27 @@ function diagramBodyStyle(isCompact) {
   };
 }
 
-function renderMarble(marbleData, isDraggable = false, isGhost = false) {
-  return h('x-marble.diagramMarble', {
-    key: `marble${marbleData.get('id')}`,
-    data: marbleData,
-    isDraggable,
-    style: {size: diagramMarbleSize},
-    isGhost
-  });
+function renderMarble(marbleData, isDraggable, showGhost, isGhost) {
+  if (!isGhost || showGhost) {
+    return h('x-marble.diagramMarble', {
+      key: `marble${marbleData.get('id')}`,
+      data: marbleData,
+      isDraggable,
+      style: {size: diagramMarbleSize},
+      isGhost
+    });
+  }
 }
 
-function renderEndpoints(diagramData, isDraggable = false) {
+function renderEndpoints(diagramData, isDraggable, showGhost) {
   var endpoints = [
     renderEndpoint(diagramData, 'start', 'diagramStart', false, false),
     renderEndpoint(diagramData, 'end', 'diagramCompletion', isDraggable, false)
     ];
 
-  // add the eventualEndpoint if it is past the actyal end
+  // add the eventualEndpoint if it is past the actual end
   if (diagramData.get('eventualEnd') > diagramData.get('end')) {
-    endpoints.push(renderEndpoint(diagramData, 'eventualEnd', 'diagramEventualEnd', false, true));
+    endpoints.push(renderEndpoint(diagramData, 'eventualEnd', 'diagramEventualEnd', false, showGhost));
   }
 
   return endpoints;
@@ -80,8 +82,8 @@ function renderEndpoints(diagramData, isDraggable = false) {
 
 function renderEndpoint(diagramData, timeName, endpointType, isDraggable, isGhost) {
   let endTime = diagramData.get(timeName);
-  // do not render if the time is not defined, or it was at the end of our simulation
-  if (endTime === undefined || endTime >= 100) {
+  // do not render if the time is not defined, or it was at the end of our simulation (and is not draggable)
+  if (endTime === undefined || endTime > 100 || (!isDraggable && endTime === 100)) {
     return undefined;
   }
 
@@ -104,7 +106,7 @@ function renderEndpoint(diagramData, timeName, endpointType, isDraggable, isGhos
 }
 
 
-function renderDiagramArrow(data, isCompact) {
+function renderDiagramArrow(data, isCompact, showGhost) {
   /* render the line in 3 segments:
    *  - to the left of 'start' render ghosted
    *  - render between start & end normal
@@ -121,27 +123,29 @@ function renderDiagramArrow(data, isCompact) {
   let middleStart = diagramSidePadding;
   let middleEnd = diagramSidePadding;
 
-  sections.push(h('div.diagramArrow', {
-    style: mergeStyles(arrowStyle, {
-      backgroundColor: diagramArrowColorGhost,
-      left: middleStart,
-      right: `calc(${timeRightPosition(start)})`
-    })
-  }));
-  middleStart = `calc(${timeLeftPosition(start)})`;
-
-  if (end < 100) {
+  if (showGhost) {
     sections.push(h('div.diagramArrow', {
       style: mergeStyles(arrowStyle, {
         backgroundColor: diagramArrowColorGhost,
-        left: `calc(${timeLeftPosition(end)})`,
-        right: middleEnd
+        left: middleStart,
+        right: `calc(${timeRightPosition(start)})`
       })
     }));
-    middleEnd = `calc(${timeRightPosition(end)})`;
+    middleStart = `calc(${timeLeftPosition(start)})`;
+
+    if (end < 100) {
+      sections.push(h('div.diagramArrow', {
+        style: mergeStyles(arrowStyle, {
+          backgroundColor: diagramArrowColorGhost,
+          left: `calc(${timeLeftPosition(end)})`,
+          right: middleEnd
+        })
+      }));
+      middleEnd = `calc(${timeRightPosition(end)})`;
+    }
   }
 
-  if (start < end) {
+  if (!showGhost || (start < end)) {
     sections.push(h('div.diagramArrow', {
       style: mergeStyles(arrowStyle, {
         backgroundColor: diagramArrowColor,
@@ -154,10 +158,10 @@ function renderDiagramArrow(data, isCompact) {
   return sections;
 }
 
-function renderDiagramArrowHead(data, isCompact) {
+function renderDiagramArrowHead(data, isCompact, showGhost) {
   let end = data.get('end');
   let isGhost = end < 100;
-  let color = isGhost ? diagramArrowColorGhost : diagramArrowColor;
+  let color = (showGhost && isGhost) ? diagramArrowColorGhost : diagramArrowColor;
   return h('div.diagramArrowHead', {style: {
     width: 0,
     height: 0,
@@ -172,14 +176,14 @@ function renderDiagramArrowHead(data, isCompact) {
   }});
 }
 
-function renderDiagram(data, isInteractive, isCompact) {
+function renderDiagram(data, isInteractive, isCompact, showGhost) {
   let marblesVTree = data.get('notifications')
-    .map(notification => renderMarble(notification, isInteractive, notification.get('time') > (data.get('end') + 0.01)))
+    .map(notification => renderMarble(notification, isInteractive, showGhost, notification.get('time') > (data.get('end') + 0.01)))
     .toArray(); // from Immutable.List
   return h('div', {style: diagramStyle(isCompact)}, [
-    renderDiagramArrow(data, isCompact),
-    renderDiagramArrowHead(data, isCompact),
-    h('div', {style: diagramBodyStyle(isCompact)}, renderEndpoints(data, isInteractive).concat(marblesVTree))
+    renderDiagramArrow(data, isCompact, showGhost),
+    renderDiagramArrowHead(data, isCompact, showGhost),
+    h('div', {style: diagramBodyStyle(isCompact)}, renderEndpoints(data, isInteractive, showGhost).concat(marblesVTree))
   ])
 }
 
@@ -229,6 +233,7 @@ function diagramView(model) {
       animateData$(model.data$).merge(model.newData$),
       model.isInteractive$,
       model.isCompact$,
+      model.showGhost$,
       renderDiagram
     )
   };

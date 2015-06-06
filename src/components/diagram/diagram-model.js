@@ -99,7 +99,8 @@ function diagramModel(properties, intent) {
       properties.get('interactive')
     ),
     isInteractive$: properties.get('interactive').startWith(false),
-    isCompact$: properties.get('compact').startWith(false)
+    isCompact$: properties.get('compact').startWith(false),
+    showGhost$: properties.get('ghost').startWith(false)
   };
 }
 
