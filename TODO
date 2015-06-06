@@ -72,6 +72,7 @@ DONE Embeddable rxmarbles
 >>> v1.3.0
 
 DONE Initial affordance animation in diagram
+TODO Fix affordance animation stuck for combineLatest
 DONE Track and show individual subscriptions to input streams
 TODO Disambiguate simultaneous marbles
   Vertically spread them
