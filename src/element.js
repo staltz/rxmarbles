@@ -13,11 +13,16 @@ SandboxPrototype.createdCallback = function createdCallback() {
   Cycle.registerCustomElement('x-diagram-completion', DiagramCompletionComponent);
   Cycle.registerCustomElement('x-diagram', DiagramComponent);
   Cycle.registerCustomElement('x-sandbox', SandboxComponent);
+
+  let View = () => Cycle.Rx.Observable.just(h('div', {}, [h('x-sandbox', {route: key, key: 1})]));
+  Cycle.applyToDOM(this, View);
+  /*
   let User = Cycle.createDOMUser(this);
   let View = Cycle.createView(() =>
-    ({ vtree$: Cycle.Rx.Observable.just(h('x-sandbox', {route: key})) })
+      ({ vtree$: Cycle.Rx.Observable.just(h('x-sandbox', {route: key})) })
   );
   User.inject(View);
+  */
 };
 
 var XRxMarbles = document.registerElement('rx-marbles', {
