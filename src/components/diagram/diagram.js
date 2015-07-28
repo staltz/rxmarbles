@@ -1,16 +1,17 @@
-import Cycle from 'cyclejs';
 import diagramModel from 'rxmarbles/components/diagram/diagram-model';
 import diagramView from 'rxmarbles/components/diagram/diagram-view';
 import diagramIntent from 'rxmarbles/components/diagram/diagram-intent';
 
-function DiagramComponent(interactions, properties) {
-  let intent = diagramIntent(interactions);
-  let model = diagramModel(properties, intent);
+function DiagramComponent({DOM, props}) {
+  let intent = diagramIntent(DOM);
+  let model = diagramModel(props, intent);
   let view = diagramView(model);
 
   return {
-    vtree$: view.vtree$,
-    newdata$: model.newData$
+    DOM: view.vtree$,
+    events: {
+      newdata: model.newData$
+    }
   };
 }
 

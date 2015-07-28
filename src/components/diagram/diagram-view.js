@@ -1,11 +1,10 @@
-import Cycle from 'cyclejs';
+import {Rx} from '@cycle/core';
+import {h} from '@cycle/dom';
 import Colors from 'rxmarbles/styles/colors';
 import Dimens from 'rxmarbles/styles/dimens';
 import Fonts from 'rxmarbles/styles/fonts';
 import RxTween from 'rxtween';
 import {mergeStyles, textUnselectable} from 'rxmarbles/styles/utils';
-let Rx = Cycle.Rx;
-let h = Cycle.h;
 
 const MARBLE_WIDTH = 5; // estimate of a marble width, in percentages
 const diagramSidePadding = Dimens.spaceMedium;
@@ -64,7 +63,6 @@ function renderCompletion(diagramData, isDraggable = false) {
     }
   });
 }
-
 
 function renderDiagramArrow() {
   return h('div.diagramArrow', {style: {

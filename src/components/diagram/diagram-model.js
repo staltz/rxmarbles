@@ -1,5 +1,4 @@
-import Cycle from 'cyclejs';
-let Rx = Cycle.Rx;
+import {Rx} from '@cycle/core';
 
 function findLargestMarbleTime(diagramData) {
   return diagramData.get('notifications')
@@ -86,17 +85,17 @@ function makeNewDiagramData$(data$, changeMarbleTime$, changeEndTime$, interacti
     .pausable(interactive$);
 }
 
-function diagramModel(properties, intent) {
-  let data$ = properties.get('data').distinctUntilChanged().shareReplay(1);
+function diagramModel(props, intent) {
+  let data$ = props.get('data').distinctUntilChanged().shareReplay(1);
   return {
     data$: data$,
     newData$: makeNewDiagramData$(
       data$,
       intent.changeMarbleTime$,
       intent.changeEndTime$,
-      properties.get('interactive')
+      props.get('interactive')
     ),
-    isInteractive$: properties.get('interactive').startWith(false)
+    isInteractive$: props.get('interactive').startWith(false)
   };
 }
 

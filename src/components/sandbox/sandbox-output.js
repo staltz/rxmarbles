@@ -2,7 +2,7 @@
  * Functions to handle data of the output diagram in the example shown in the
  * sandbox.
  */
-import {Rx} from 'cyclejs';
+import {Rx} from '@cycle/core';
 import Utils from 'rxmarbles/components/sandbox/utils';
 import Immutable from 'immutable';
 

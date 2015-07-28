@@ -1,8 +1,7 @@
-import Cycle from 'cyclejs';
+import {Rx} from '@cycle/core';
+import {h} from '@cycle/dom';
 import {mergeStyles, textUnselectable, elevation1Style}
   from 'rxmarbles/styles/utils';
-let Rx = Cycle.Rx;
-let h = Cycle.h;
 
 function createContainerStyle(inputStyle) {
   return {
@@ -49,13 +48,13 @@ function render(time, isDraggable, isTall, inputStyle, isHighlighted) {
   ]);
 }
 
-function diagramCompletionComponent(interactions, properties) {
-  let startHighlight$ = interactions.get('.completionRoot', 'mouseenter');
-  let stopHighlight$ = interactions.get('.completionRoot', 'mouseleave');
-  let time$ = properties.get('time').startWith(100);
-  let isDraggable$ = properties.get('isDraggable').startWith(false);
-  let isTall$ = properties.get('isTall').startWith(false);
-  let style$ = properties.get('style').startWith({
+function diagramCompletionComponent({DOM, props}) {
+  let startHighlight$ = DOM.get('.completionRoot', 'mouseenter');
+  let stopHighlight$ = DOM.get('.completionRoot', 'mouseleave');
+  let time$ = props.get('time').startWith(100);
+  let isDraggable$ = props.get('isDraggable').startWith(false);
+  let isTall$ = props.get('isTall').startWith(false);
+  let style$ = props.get('style').startWith({
     thickness: '2px',
     height: '10px',
     color: 'black'
@@ -64,11 +63,12 @@ function diagramCompletionComponent(interactions, properties) {
     startHighlight$.map(() => true),
     stopHighlight$.map(() => false)
   ).startWith(false);
+  let vtree$ = Rx.Observable.combineLatest(
+    time$, isDraggable$, isTall$, style$, isHighlighted$, render
+  );
 
   return {
-    vtree$: Rx.Observable.combineLatest(
-      time$, isDraggable$, isTall$, style$, isHighlighted$, render
-    )
+    DOM: vtree$
   };
 }
 

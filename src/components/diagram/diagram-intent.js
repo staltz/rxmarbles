@@ -1,6 +1,5 @@
-import Cycle from 'cyclejs';
+import {Rx} from '@cycle/core';
 import Immutable from 'immutable';
-let Rx = Cycle.Rx;
 
 const mouseMove$ = Rx.Observable.fromEvent(document, 'mousemove');
 const mouseUp$ = Rx.Observable.fromEvent(document, 'mouseup');
@@ -41,9 +40,9 @@ function makeDeltaTime$(mouseDown$, resultFn) {
     .concatAll();
 }
 
-function diagramIntent(interactions) {
-  let marbleMouseDown$ = interactions.get('.diagramMarble', 'mousedown');
-  let completionMouseDown$ = interactions.get('.diagramCompletion', 'mousedown');
+function diagramIntent(DOM) {
+  let marbleMouseDown$ = DOM.get('.diagramMarble', 'mousedown');
+  let completionMouseDown$ = DOM.get('.diagramCompletion', 'mousedown');
 
   return {
     changeMarbleTime$: makeDeltaTime$(marbleMouseDown$,

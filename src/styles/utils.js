@@ -1,9 +1,7 @@
 import Immutable from 'immutable';
-import Cycle from 'cyclejs';
-import svg from 'cyclejs/node_modules/virtual-dom/virtual-hyperscript/svg';
-let h = Cycle.h;
+import {h, svg} from '@cycle/dom';
 
-let isTruthy = (style) => (!!style);
+let isTruthy = x => !!x;
 
 function mergeStyles(...styleObjects) {
   return styleObjects.filter(isTruthy).reduce((styleA, styleB) => {

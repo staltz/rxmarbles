@@ -10,7 +10,8 @@
   "private": true,
   "main": "js/app.js",
   "dependencies": {
-    "cyclejs": "0.21.1",
+    "@cycle/core": "1.0.x",
+    "@cycle/dom": "3.0.x",
     "immutable": "^3.7.2",
     "rxtween": "0.3.3"
   },

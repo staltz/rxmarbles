@@ -1,15 +1,14 @@
-import Cycle from 'cyclejs';
+import {Rx} from '@cycle/core';
+import {h} from '@cycle/dom';
 import Colors from 'rxmarbles/styles/colors';
 import Dimens from 'rxmarbles/styles/dimens';
 import {mergeStyles} from 'rxmarbles/styles/utils';
-let Rx = Cycle.Rx;
-let h = Cycle.h;
 
-function operatorsMenuLink(interactions, properties) {
-  let startHighlight$ = interactions.get('.link', 'mouseenter').map(() => 1);
-  let stopHighlight$ = interactions.get('.link', 'mouseleave').map(() => 1);
-  let href$ = properties.get('href');
-  let content$ = properties.get('content').startWith('');
+function operatorsMenuLink({DOM, props}) {
+  let startHighlight$ = DOM.get('.link', 'mouseenter').map(() => 1);
+  let stopHighlight$ = DOM.get('.link', 'mouseleave').map(() => 1);
+  let href$ = props.get('href');
+  let content$ = props.get('content').startWith('');
   let isHighlighted$ = Rx.Observable.merge(
     startHighlight$.map(() => true),
     stopHighlight$.map(() => false)
@@ -37,7 +36,7 @@ function operatorsMenuLink(interactions, properties) {
       )
   );
 
-  return {vtree$};
+  return {DOM: vtree$};
 }
 
 module.exports = operatorsMenuLink;

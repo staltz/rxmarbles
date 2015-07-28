@@ -1,10 +1,8 @@
-import Cycle from 'cyclejs';
+import {h} from '@cycle/dom';
 import Colors from 'rxmarbles/styles/colors';
 import Dimens from 'rxmarbles/styles/dimens';
 import Fonts from 'rxmarbles/styles/fonts';
 import {mergeStyles, renderSvgDropshadow} from 'rxmarbles/styles/utils';
-let Rx = Cycle.Rx;
-let h = Cycle.h;
 
 const rxmarblesGithubUrl = 'https://github.com/staltz/rxmarbles';
 const rxjsGithubUrl = 'https://github.com/Reactive-Extensions/RxJS';
@@ -32,7 +30,7 @@ const pageRowLastChildStyle = mergeStyles(pageRowChildStyle, {
   width: sandboxWidth
 });
 
-function vrenderHeader() {
+function renderHeader() {
   return h('div', {style: pageRowStyle}, [
     h('h1',
       {style: mergeStyles({
@@ -48,7 +46,7 @@ function vrenderHeader() {
   ]);
 }
 
-function vrenderContent(route) {
+function renderContent(route) {
   return h('div',
     {style: mergeStyles(pageRowStyle, {marginTop: Dimens.spaceSmall})},
     [
@@ -67,7 +65,7 @@ function vrenderContent(route) {
   );
 }
 
-function vrenderFooter(appVersion, rxVersion) {
+function renderFooter(appVersion, rxVersion) {
   return h('section', {
     style: {
       position: 'fixed',
@@ -84,17 +82,13 @@ function vrenderFooter(appVersion, rxVersion) {
   ]);
 }
 
-module.exports = function appView(model) {
-  return Rx.Observable.combineLatest(
-    model.route$,
-    model.appVersion$,
-    model.rxVersion$,
-    (route, appVersion, rxVersion) =>
-      h('div', [
-        renderSvgDropshadow(),
-        vrenderHeader(),
-        vrenderContent(route),
-        vrenderFooter(appVersion, rxVersion)
-      ])
-  )
+module.exports = function appView(state$) {
+  return state$.map(({route, appVersion, rxVersion}) =>
+    h('div', [
+      renderSvgDropshadow(),
+      renderHeader(),
+      renderContent(route),
+      renderFooter(appVersion, rxVersion)
+    ])
+  );
 };

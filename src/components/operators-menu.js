@@ -1,10 +1,9 @@
-import Cycle from 'cyclejs';
+import {Rx} from '@cycle/core';
+import {h} from '@cycle/dom';
 import Colors from 'rxmarbles/styles/colors';
 import Dimens from 'rxmarbles/styles/dimens';
 import Examples from 'rxmarbles/data/examples';
 import {mergeStyles} from 'rxmarbles/styles/utils';
-let Rx = Cycle.Rx;
-let h = Cycle.h;
 
 /**
  * Returns a hashmap of category headers to lists of examples in that category.
@@ -83,7 +82,7 @@ function operatorsMenuComponent() {
   let categoryMap$ = Rx.Observable.just(organizeExamplesByCategory(Examples));
 
   return {
-    vtree$: categoryMap$.map(categoryMap =>
+    DOM: categoryMap$.map(categoryMap =>
       h('div',
         {style: {
           paddingRight: '36px',

@@ -1,10 +1,8 @@
-import Cycle from 'cyclejs';
-import svg from 'cyclejs/node_modules/virtual-dom/virtual-hyperscript/svg';
+import {Rx} from '@cycle/core';
+import {h, svg} from '@cycle/dom';
 import Colors from 'rxmarbles/styles/colors';
 import {mergeStyles, marbleElevation1Style, textUnselectable}
   from 'rxmarbles/styles/utils';
-let Rx = Cycle.Rx;
-let h = Cycle.h;
 
 function createContainerStyle(inputStyle) {
   return {
@@ -75,21 +73,22 @@ function render(data, isDraggable, inputStyle, isHighlighted) {
   ]);
 }
 
-function marbleComponent(interactions, properties) {
-  let startHighlight$ = interactions.get('.marbleRoot', 'mouseenter');
-  let stopHighlight$ = interactions.get('.marbleRoot', 'mouseleave');
-  let data$ = properties.get('data');
-  let isDraggable$ = properties.get('isDraggable').startWith(false);
-  let style$ = properties.get('style').startWith({});
+function marbleComponent({DOM, props}) {
+  let startHighlight$ = DOM.get('.marbleRoot', 'mouseenter');
+  let stopHighlight$ = DOM.get('.marbleRoot', 'mouseleave');
+  let data$ = props.get('data');
+  let isDraggable$ = props.get('isDraggable').startWith(false);
+  let style$ = props.get('style').startWith({});
   let isHighlighted$ = Rx.Observable.merge(
     startHighlight$.map(() => true),
     stopHighlight$.map(() => false)
   ).startWith(false);
+  let vtree$ = Rx.Observable.combineLatest(
+    data$, isDraggable$, style$, isHighlighted$, render
+  );
 
   return {
-    vtree$: Rx.Observable.combineLatest(
-      data$, isDraggable$, style$, isHighlighted$, render
-    )
+    DOM: vtree$
   };
 }
 

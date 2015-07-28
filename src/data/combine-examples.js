@@ -1,4 +1,4 @@
-var Rx = require('cyclejs').Rx;
+import {Rx} from '@cycle/core';
 
 module.exports = {
   "combineLatest": {

@@ -1,4 +1,5 @@
-import Cycle from 'cyclejs';
+import {Rx} from '@cycle/core';
+import {h} from '@cycle/dom';
 import RxTween from 'rxtween';
 import Examples from 'rxmarbles/data/examples';
 import {prepareInputDiagram, augmentWithExampleKey, makeNewInputDiagramsData$}
@@ -10,8 +11,6 @@ import Dimens from 'rxmarbles/styles/dimens';
 import Fonts from 'rxmarbles/styles/fonts';
 import {mergeStyles, elevation1Style, elevation2Style, elevation2Before, elevation2After}
   from 'rxmarbles/styles/utils';
-let Rx = Cycle.Rx;
-let h = Cycle.h;
 
 function renderOperatorLabel(label) {
   let fontSize = (label.length >= 45) ? 1.3 : (label.length >= 30) ? 1.5 : 2;
@@ -107,11 +106,11 @@ let isTruthy = (x => !!x);
 //  })
 //}
 
-function sandboxComponent(interactions, properties) {
-  let changeInputDiagram$ = interactions.get('.sandboxInputDiagram', 'newdata')
-    .map(ev => ev.data);
-  let width$ = properties.get('width').startWith('100%');
-  let example$ = properties.get('route')
+function sandboxComponent({DOM, props}) {
+  let changeInputDiagram$ = DOM.get('.sandboxInputDiagram', 'newdata')
+    .map(ev => ev.detail);
+  let width$ = props.get('width').startWith('100%');
+  let example$ = props.get('route')
     .filter(isTruthy)
     .map(key => Immutable.Map(Examples[key]).set('key', key))
     .shareReplay(1);
@@ -129,11 +128,13 @@ function sandboxComponent(interactions, properties) {
     .map(markAsFirstDiagram);
   let newOutputDiagram$ = getOutputDiagram$(example$, newInputDiagrams$);
   let outputDiagram$ = firstOutputDiagram$.merge(newOutputDiagram$);
+  let vtree$ = Rx.Observable.combineLatest(
+    inputDiagrams$, operatorLabel$, outputDiagram$, width$,
+    renderSandbox
+  );
 
   return {
-    vtree$: Rx.Observable.combineLatest(
-      inputDiagrams$, operatorLabel$, outputDiagram$, width$, renderSandbox
-    )
+    DOM: vtree$
   };
 }
 
