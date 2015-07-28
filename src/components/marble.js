@@ -1,7 +1,7 @@
 import Cycle from 'cyclejs';
 import svg from 'cyclejs/node_modules/virtual-dom/virtual-hyperscript/svg';
 import Colors from 'rxmarbles/styles/colors';
-import {mergeStyles, svgElevation1Style, textUnselectable}
+import {mergeStyles, marbleElevation1Style, textUnselectable}
   from 'rxmarbles/styles/utils';
 let Rx = Cycle.Rx;
 let h = Cycle.h;
@@ -22,18 +22,19 @@ function renderSvg(data, isDraggable, inputStyle, isHighlighted) {
   let POSSIBLE_COLORS = [Colors.blue, Colors.green, Colors.yellow, Colors.red];
   let color = POSSIBLE_COLORS[data.get('id') % POSSIBLE_COLORS.length];
   return svg('svg.marbleShape', {
-      style: mergeStyles({
-          overflow: 'visible',
-          width: inputStyle.size,
-          height: inputStyle.size},
-        isDraggable && isHighlighted ? svgElevation1Style : {}),
+      style: {
+        overflow: 'visible',
+        width: inputStyle.size,
+        height: inputStyle.size
+      },
       attributes: {viewBox: '0 0 1 1'}},
     [
       svg('circle', {
-        style: {
-          stroke: Colors.black,
-          fill: color
-        },
+        style: mergeStyles({
+            stroke: Colors.black,
+            fill: color
+          },
+          isDraggable && isHighlighted ? marbleElevation1Style : {}),
         attributes: {
           cx: 0.5, cy: 0.5, r: 0.47,
           'stroke-width': '0.06px'
