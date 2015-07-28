@@ -1,5 +1,6 @@
 import Immutable from 'immutable';
 import Cycle from 'cyclejs';
+import svg from 'cyclejs/node_modules/virtual-dom/virtual-hyperscript/svg';
 let h = Cycle.h;
 
 let isTruthy = (style) => (!!style);
@@ -11,6 +12,30 @@ function mergeStyles(...styleObjects) {
     return mapA.merge(mapB).toObject(); // notice B first
   }, {});
 }
+
+const DROPSHADOW_FILTER_ID = 'dropshadow';
+
+// Cross-browser SVG filter for drop shadows
+function renderSvgDropshadow() {
+  return svg('svg', {attributes: {height: '0'}}, [
+    svg('filter#' + DROPSHADOW_FILTER_ID, {attributes: {height: '130%'}}, [
+      // stdDeviation is blur:
+      svg('feGaussianBlur', {attributes: {in: 'SourceAlpha', stdDeviation: '0.05'}}),
+      // position relative to marble viewBox:
+      svg('feOffset', {attributes: {dx: '0', dy: '0.05', result: 'offsetblur'}}),
+      svg('feFlood', {attributes: {'flood-color': 'rgba(0,0,0,0.4)'}}),
+      svg('feComposite', {attributes: {in2: 'offsetblur', operator: 'in'}}),
+      svg('feMerge', [
+        svg('feMergeNode'),
+        svg('feMergeNode', {attributes: {in: 'SourceGraphic'}})
+      ])
+    ])
+  ]);
+}
+
+const marbleElevation1Style = {
+  filter: 'url(#' + DROPSHADOW_FILTER_ID + ')'
+};
 
 const elevation1Style = {
   '-webkit-box-shadow': '0px 1px 2px 1px rgba(0,0,0,0.17)',
@@ -47,10 +72,6 @@ const elevation3After = h('div', {style:
   getElevationPseudoElementStyle('6px', '17px', '0.2')
 }, '');
 
-const marbleElevation1Style = {
-  filter: 'url(#dropshadow)'
-};
-
 const textUnselectable = {
   '-webkit-user-select': 'none',
    '-khtml-user-select': 'none',
@@ -68,5 +89,6 @@ export default {
   elevation3Before,
   elevation3After,
   marbleElevation1Style,
+  renderSvgDropshadow,
   textUnselectable
 };

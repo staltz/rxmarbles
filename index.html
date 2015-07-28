@@ -11,19 +11,6 @@
     <script src="dist/js/vendor/modernizr-2.6.2.min.js"></script>
   </head>
   <body>
-    <!-- Cross-browser SVG filter for drop-shadows -->
-    <svg height="0" xmlns="http://www.w3.org/2000/svg">
-      <filter id="dropshadow" height="130%">
-        <feGaussianBlur in="SourceAlpha" stdDeviation="0.05"/> <!-- stdDeviation == blur -->
-        <feOffset dx="0" dy="0.05" result="offsetblur"/> <!-- position relative to marble viewBox -->
-        <feFlood flood-color="rgba(0,0,0,0.4)"/>
-        <feComposite in2="offsetblur" operator="in"/>
-        <feMerge>
-          <feMergeNode/>
-          <feMergeNode in="SourceGraphic"/>
-        </feMerge>
-      </filter>
-      </svg>
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->

@@ -2,7 +2,7 @@ import Cycle from 'cyclejs';
 import Colors from 'rxmarbles/styles/colors';
 import Dimens from 'rxmarbles/styles/dimens';
 import Fonts from 'rxmarbles/styles/fonts';
-import {mergeStyles} from 'rxmarbles/styles/utils';
+import {mergeStyles, renderSvgDropshadow} from 'rxmarbles/styles/utils';
 let Rx = Cycle.Rx;
 let h = Cycle.h;
 
@@ -91,6 +91,7 @@ module.exports = function appView(model) {
     model.rxVersion$,
     (route, appVersion, rxVersion) =>
       h('div', [
+        renderSvgDropshadow(),
         vrenderHeader(),
         vrenderContent(route),
         vrenderFooter(appVersion, rxVersion)
