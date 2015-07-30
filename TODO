@@ -95,8 +95,6 @@ TODO Add examples related to errors
 TODO Short text description of each operator, and link to official docs
 >>>
 
-TODO Animation for sandbox appearing when example selected
-  Also animation for clicking on operator box http://publicis-indonesia.github.io/Waves/
 TODO Render metastreams in 'window' example
 TODO Add examples groupBy, flatMap, concatMap, switch
 >>>
