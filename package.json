@@ -37,8 +37,8 @@
     "uglify-element": "uglifyjs dist/js/element.js -o dist/js/element.js",
     "update-gh-pages": "git checkout gh-pages && git merge --no-ff -X theirs master && git push origin gh-pages && git checkout master",
     "release": "npm run release-patch",
-    "release-patch": "git checkout master && npm run build-production && npm run build-element-production && git commit -a -m 'Build dist/' && npm version patch && git push origin master --tags && npm run update-gh-pages",
-    "release-minor": "git checkout master && npm run build-production && npm run build-element-production && git commit -a -m 'Build dist/' && npm version minor && git push origin master --tags && npm run update-gh-pages",
-    "release-major": "git checkout master && npm run build-production && npm run build-element-production && git commit -a -m 'Build dist/' && npm version major && git push origin master --tags && npm run update-gh-pages"
+    "release-patch": "git checkout master && npm version patch && npm run build-production && npm run build-element-production && git commit -a -m 'Build dist/' && git push origin master --tags && npm run update-gh-pages",
+    "release-minor": "git checkout master && npm version minor && npm run build-production && npm run build-element-production && git commit -a -m 'Build dist/' && git push origin master --tags && npm run update-gh-pages",
+    "release-major": "git checkout master && npm version major && npm run build-production && npm run build-element-production && git commit -a -m 'Build dist/' && git push origin master --tags && npm run update-gh-pages"
   }
 }

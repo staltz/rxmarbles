@@ -74,6 +74,7 @@ DONE Embeddable rxmarbles
 DONE Initial affordance animation in diagram
 DONE Fix marble hover and dragging styles for Firefox
 DONE Fix affordance animation stuck for combineLatest
+>>> v1.4.0
 
 TODO Fix visual semantics of concat diagram
 >>>
