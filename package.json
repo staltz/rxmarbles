@@ -35,10 +35,10 @@
     "build-element-production": "npm run less && npm run babel && npm run browserify-element && npm run uglify-element",
     "uglify": "uglifyjs dist/js/app.js -o dist/js/app.js",
     "uglify-element": "uglifyjs dist/js/element.js -o dist/js/element.js",
-    "update-gh-pages": "git checkout gh-pages && git merge master && rm dist/js/app.js && gulp build && git add dist/js/app.js && git commit --amend --no-edit && git push origin gh-pages && git checkout master",
+    "update-gh-pages": "git checkout gh-pages && git merge --no-ff -X theirs master && git push origin gh-pages && git checkout master",
     "release": "npm run release-patch",
-    "release-patch": "git checkout master && npm run build && git commit -a -m 'Compiled' && npm version patch && git push origin master --tags",
-    "release-minor": "git checkout master && npm run build && git commit -a -m 'Compiled' && npm version minor && git push origin master --tags",
-    "release-major": "git checkout master && npm run build && git commit -a -m 'Compiled' && npm version major && git push origin master --tags"
+    "release-patch": "git checkout master && npm run build-production && npm run build-element-production && git commit -a -m 'Build dist/' && npm version patch && git push origin master --tags && npm run update-gh-pages",
+    "release-minor": "git checkout master && npm run build-production && npm run build-element-production && git commit -a -m 'Build dist/' && npm version minor && git push origin master --tags && npm run update-gh-pages",
+    "release-major": "git checkout master && npm run build-production && npm run build-element-production && git commit -a -m 'Build dist/' && npm version major && git push origin master --tags && npm run update-gh-pages"
   }
 }
