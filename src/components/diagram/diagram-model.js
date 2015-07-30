@@ -56,33 +56,14 @@ function applyDiagramDataConstraints(diagramData) {
   return newDiagramData;
 }
 
-function newDiagramDataScanner(prev, curr) {
-  let currentIsDiagramData = !!curr && !!curr.get && !!curr.get('notifications');
-  if (!currentIsDiagramData) {
-    let previousIsDiagramData = !!prev && !!prev.get('notifications');
-    if (!previousIsDiagramData) {
-      console.warn('Inconsistency in DiagramComponent.makeNewDiagramData$()');
-    }
-    let diagramData = prev;
-    let changeInstructions = curr;
-    let newDiagramData;
-    if (typeof changeInstructions === 'number') {
-      newDiagramData = applyChangeEndTime(diagramData, changeInstructions);
-    } else {
-      newDiagramData = applyChangeMarbleTime(diagramData, changeInstructions);
-    }
-    return newDiagramData.set('isInitialData', false);
-  } else {
-    return curr.set('isInitialData', true);
-  }
-}
-
 function makeNewDiagramData$(data$, changeMarbleTime$, changeEndTime$, interactive$) {
+  let mod$ = Rx.Observable.merge(
+    changeMarbleTime$.map(x => data => applyChangeMarbleTime(data, x)),
+    changeEndTime$.map(x => data => applyChangeEndTime(data, x))
+  ).pausable(interactive$);
   return data$
-    .merge(changeMarbleTime$).merge(changeEndTime$).scan(newDiagramDataScanner)
-    .filter(diagramData => !diagramData.get('isInitialData'))
+    .flatMapLatest(data => mod$.scan(data, (acc, mod) => mod(acc)))
     .map(applyDiagramDataConstraints)
-    .pausable(interactive$);
 }
 
 function diagramModel(props, intent) {

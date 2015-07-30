@@ -83,29 +83,6 @@ function markAllDiagramsAsFirst(diagramsData) {
 
 let isTruthy = (x => !!x);
 
-//function animateData$(inputDiagrams$) {
-//  //return diagrams$.doOnNext(diagrams => console.log(diagrams.toJS()));
-//  const animConf = {
-//    from: 10,
-//    to: 0,
-//    ease: RxTween.Power3.easeOut,
-//    duration: 1000
-//  };
-//  return inputDiagrams$.flatMapLatest(inputDiagrams => {
-//    return RxTween(animConf).map(x =>
-//      inputDiagrams.update('diagrams', diagrams =>
-//        diagrams.map(diagram =>
-//          diagram.update('notifications', notifications =>
-//            notifications.map(notif =>
-//              notif.update('time', time => time + x)
-//            )
-//          )
-//        )
-//      )
-//    );
-//  })
-//}
-
 function sandboxComponent({DOM, props}) {
   let changeInputDiagram$ = DOM.get('.sandboxInputDiagram', 'newdata')
     .map(ev => ev.detail);
@@ -118,11 +95,9 @@ function sandboxComponent({DOM, props}) {
     .map(makeInputDiagrams)
     .map(markAllDiagramsAsFirst)
     .shareReplay(1);
-  //inputDiagrams$ = animateData$(inputDiagrams$);
   let newInputDiagrams$ = makeNewInputDiagramsData$(
     changeInputDiagram$, inputDiagrams$
   );
-  //let allInputDiagrams$ = inputDiagrams$.merge(newInputDiagrams$);
   let operatorLabel$ = example$.map(example => example.get('label'));
   let firstOutputDiagram$ = getOutputDiagram$(example$, inputDiagrams$)
     .map(markAsFirstDiagram);

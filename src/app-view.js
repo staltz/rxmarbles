@@ -47,9 +47,9 @@ function renderHeader() {
 }
 
 function renderContent(route) {
-  return h('div',
-    {style: mergeStyles(pageRowStyle, {marginTop: Dimens.spaceSmall})},
-    [
+  const style = mergeStyles(pageRowStyle, {marginTop: Dimens.spaceSmall});
+  return (
+    h('div', {style}, [
       h('div',
         {style: pageRowFirstChildStyle},
         h('x-operators-menu', {key: 'operatorsMenu'})
@@ -61,19 +61,18 @@ function renderContent(route) {
           pageRowLastChildStyle)}
         ,h('x-sandbox', {key: 'sandbox', route: route, width: '820px'})
       )
-    ]
+    ])
   );
 }
 
 function renderFooter(appVersion, rxVersion) {
-  return h('section', {
-    style: {
-      position: 'fixed',
-      bottom: '2px',
-      right: Dimens.spaceMedium,
-      color: Colors.greyDark
-    }
-  }, [
+  const style = {
+    position: 'fixed',
+    bottom: '2px',
+    right: Dimens.spaceMedium,
+    color: Colors.greyDark
+  };
+  return h('section', {style}, [
     h('a', {href: `${rxmarblesGithubUrl}/releases/tag/v${appVersion}`}, `v${appVersion}`),
     ' built on ',
     h('a', {href: `${rxjsGithubUrl}/tree/v${rxVersion}`}, `RxJS v${rxVersion}`),

@@ -55,22 +55,14 @@ function replaceDiagramDataIn(diagrams, newDiagramData) {
 }
 
 function makeNewInputDiagramsData$(changeInputDiagram$, inputs$) {
-  return Rx.Observable.merge(changeInputDiagram$, inputs$)
-    .scan((prev, curr) => {
-      let currentIsDiagramData = !!curr && curr.get && !!curr.get('notifications');
-      if (!currentIsDiagramData) {
-        return curr.set('isInitialData', true);
-      }
-      if (!prev || !prev.get || !Array.isArray(prev.get('diagrams'))) {
-        console.warn('Inconsistency in SandboxComponent.makeNewInputDiagramsData$()');
-      }
-      let inputs = prev;
-      let newDiagramData = curr;
-      return inputs
-        .set('diagrams', replaceDiagramDataIn(inputs.get('diagrams'), newDiagramData))
-        .set('isInitialData', false);
-    })
-    .filter(x => !x.get('isInitialData')); // only allow new diagram data
+  return inputs$
+    .flatMapLatest(inputs =>
+      changeInputDiagram$.scan(inputs, (acc, newDiagramData) =>
+        acc.set('diagrams',
+          replaceDiagramDataIn(acc.get('diagrams'), newDiagramData)
+        )
+      )
+    );
 }
 
 module.exports = {
