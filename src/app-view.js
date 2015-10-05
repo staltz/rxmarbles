@@ -18,12 +18,10 @@ const pageRowStyle = {
 
 const pageRowChildStyle = {
   display: 'inline-block',
-  marginLeft: `-${Dimens.spaceMedium}`
 };
 
 const pageRowFirstChildStyle = mergeStyles(pageRowChildStyle, {
   width: `calc(${pageRowWidth} - ${sandboxWidth} - ${Dimens.spaceMedium})`,
-  marginRight: Dimens.spaceMedium
 });
 
 const pageRowLastChildStyle = mergeStyles(pageRowChildStyle, {
@@ -82,8 +80,12 @@ function renderFooter(appVersion, rxVersion) {
 }
 
 module.exports = function appView(state$) {
+  const wrapperStyle = {
+    paddingLeft:  Dimens.spaceSmall,
+    paddingRight: `calc(${Dimens.spaceHuge} + ${Dimens.spaceSmall})`,
+  }
   return state$.map(({route, appVersion, rxVersion}) =>
-    h('div', [
+    h('div', {style: wrapperStyle}, [
       renderSvgDropshadow(),
       renderHeader(),
       renderContent(route),
