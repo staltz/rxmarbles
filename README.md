@@ -1,7 +1,7 @@
 RxMarbles
 =========
 
-A webapp for experimenting with diagrams of [Rx](http://reactive-extensions.github.io/RxJS/) Observables, for learning purposes.
+A webapp for experimenting with diagrams of [Rx](http://reactivex.io/) Observables, for learning purposes.
 
 ![Example merge](https://raw.githubusercontent.com/staltz/rxmarbles/master/dist/img/example_merge.png)
 
