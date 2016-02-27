@@ -19,7 +19,14 @@ function renderOperatorLabel(label) {
     fontWeight: '400',
     fontSize: `${fontSize}rem`
   };
-  return h('span.operatorLabel', {style}, label);
+  let docLinkStyle = {
+    fontSize: `0.8rem`,
+    display: 'block',
+    marginTop: '5px'
+  };
+  let operatorName = label.split('(')[0].toLowerCase();
+  let href = `https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/${operatorName}.md`;
+  return [h('span.operatorLabel', {style}, label), h('a', {style: docLinkStyle, href}, `See Documentation`)];
 }
 
 function renderOperator(label) {
