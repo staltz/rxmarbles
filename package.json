@@ -13,6 +13,7 @@
     "@cycle/core": "1.0.x",
     "@cycle/dom": "3.1.x",
     "immutable": "^3.7.2",
+    "lodash": "4.6.1",
     "rxtween": "0.3.3"
   },
   "devDependencies": {

@@ -1,5 +1,6 @@
 import Immutable from 'immutable';
 import {h, svg} from '@cycle/dom';
+import {Rx} from '@cycle/core';
 
 let isTruthy = x => !!x;
 
@@ -29,6 +30,16 @@ function renderSvgDropshadow() {
       ])
     ])
   ]);
+}
+
+function makeIsHighlighted$(DOM, cssSelector) {
+  let startHighlight$ = DOM.get(cssSelector, 'mouseenter').map(() => 1);
+  let stopHighlight$ = DOM.get(cssSelector, 'mouseleave').map(() => 1);
+  
+  return Rx.Observable.merge(
+    startHighlight$.map(() => true),
+    stopHighlight$.map(() => false)
+  ).startWith(false);
 }
 
 const marbleElevation1Style = {
@@ -80,6 +91,7 @@ const textUnselectable = {
 
 export default {
   mergeStyles,
+  makeIsHighlighted$,
   elevation1Style,
   elevation2Style,
   elevation2Before,

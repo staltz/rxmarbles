@@ -76,6 +76,8 @@ DONE Fix marble hover and dragging styles for Firefox
 DONE Fix affordance animation stuck for combineLatest
 >>> v1.4.0
 
+DONE Added an alphabetical operators presentation and a switch to select one
+
 TODO Fix visual semantics of concat diagram
 >>>
 
