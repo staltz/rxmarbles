@@ -3,25 +3,7 @@ import {h} from '@cycle/dom';
 import Colors from 'rxmarbles/styles/colors';
 import Dimens from 'rxmarbles/styles/dimens';
 import Examples from 'rxmarbles/data/examples';
-import {mergeStyles} from 'rxmarbles/styles/utils';
-
-/**
- * Returns a hashmap of category headers to lists of examples in that category.
- */
-function organizeExamplesByCategory(examples) {
-  let categoryMap = {};
-  for (let key in examples) {
-    if (!examples.hasOwnProperty(key)) continue;
-    let value = examples[key];
-    value.key = key;
-    if (categoryMap.hasOwnProperty(value.category)) {
-      categoryMap[value.category].push(value);
-    } else {
-      categoryMap[value.category] = [value];
-    }
-  }
-  return categoryMap;
-}
+import {mergeStyles, makeIsHighlighted$} from 'rxmarbles/styles/utils';
 
 const operatorsMenuCategoryStyle = {
   textTransform: 'uppercase',
@@ -64,7 +46,7 @@ function renderExampleCategory(categoryName, isFirstCategory) {
   );
 }
 
-function renderMenuContent(categoryMap) {
+function renderMenuByCategory(categoryMap) {
   let listItems = [];
   let isFirstCategory = true;
   for (let categoryName in categoryMap) {
@@ -78,26 +60,53 @@ function renderMenuContent(categoryMap) {
   return listItems;
 }
 
-function operatorsMenuComponent() {
-  let categoryMap$ = Rx.Observable.just(organizeExamplesByCategory(Examples));
+function renderSwitchItem(key, label, isActive, isHighlighted) {
+  return h('div.switch.' + key, {
+    style: {
+      cursor: 'pointer',
+      float: 'left',
+      'padding-right': '10px',
+      'box-sizing': 'border-box',
+      'text-align': 'left',
+      color: isHighlighted ? Colors.greyDark : Colors.grey,
+      'text-decoration': 'underline'
+  }}, label);
+}
+
+function renderMenu(byCategory, byCategoryIsHighlighted, byAlphabetIsHighlighted) {
+  let menuItemsByCategory = renderMenuByCategory(Examples.byCategory);
+  let menuItemsByAlphabet = renderExampleItems(Examples.byAlphabet);
+  return h('div', {}, [
+    h('div',
+      {style: {
+        paddingRight: '36px',
+        boxSizing: 'border-box',
+        // 100px is the estimated header page row height
+        height: 'calc(100vh - 100px)'}},
+      [h('div', {},
+        [ renderSwitchItem('byAlphabet', 'by Name', !byCategory, byAlphabetIsHighlighted),
+          renderSwitchItem('byCategory', 'by Category', byCategory, byCategoryIsHighlighted)]),
+       h('div', {style: {clear: 'both'}}),
+       h('ul',
+        {style: {
+          margin: '0',
+          'margin-top': Dimens.spaceSmall,
+          padding: '0',
+          listStyleType: 'none',
+          overflowY: 'scroll',
+          height: '100%'}}, byCategory ? menuItemsByCategory : menuItemsByAlphabet)])
+    ]);
+}
+
+function operatorsMenuComponent({DOM, props}) {
+
+  let switchMouseDown$ = DOM.get('.switch', 'mousedown');
+  let showItemsByCategory$ = switchMouseDown$.map((ev) => ev.currentTarget.className.indexOf('byCategory') >= 0).startWith(true);
+  let byCategoryIsHighlighted$ = makeIsHighlighted$(DOM, '.byCategory');
+  let byAlphabetIsHighlighted$ = makeIsHighlighted$(DOM, '.byAlphabet');
 
   return {
-    DOM: categoryMap$.map(categoryMap =>
-      h('div',
-        {style: {
-          paddingRight: '36px',
-          boxSizing: 'border-box',
-          // 100px is the estimated header page row height
-          height: 'calc(100vh - 100px)'}},
-        [h('ul',
-          {style: {
-            margin: '0',
-            padding: '0',
-            listStyleType: 'none',
-            overflowY: 'scroll',
-            height: '100%'}},
-          renderMenuContent(categoryMap))])
-    )
+    DOM: Rx.Observable.combineLatest(showItemsByCategory$, byCategoryIsHighlighted$, byAlphabetIsHighlighted$, renderMenu)
   };
 }
 
