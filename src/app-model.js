@@ -1,6 +1,6 @@
 import {Rx} from '@cycle/core';
 let packageJson = require('package');
-let RxPackageJson = require('@cycle/core/node_modules/rx/package.json');
+let RxPackageJson = require('rx/package.json');
 
 const DEFAULT_EXAMPLE = 'merge';
 
