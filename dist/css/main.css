@@ -101,12 +101,12 @@
 }
 body {
   position: relative;
-  background: #ececec;
+  background: #ECECEC;
   font-family: 'Source Sans Pro', sans-serif;
   color: #323232;
 }
 a {
-  color: #3ea1cb;
+  color: #3EA1CB;
 }
 p.marbleContent {
   -webkit-user-select: none;
