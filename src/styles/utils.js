@@ -78,7 +78,7 @@ const textUnselectable = {
           'user-select': 'none'
 };
 
-export default {
+export {
   mergeStyles,
   elevation1Style,
   elevation2Style,
