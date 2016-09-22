@@ -15,6 +15,15 @@ function main() {
   };
 }
 
+export {
+  main,
+  diagramComponent, 
+  diagramCompletionComponent,
+  marbleComponent,
+  sandboxComponent
+};
+
+require.main === module &&
 Cycle.run(main, {
   DOM: makeDOMDriver('.js-appContainer', {
     'x-operators-menu-link': operatorsMenuLinkComponent,
