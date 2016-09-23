@@ -1,7 +1,7 @@
-import {Rx} from '@cycle/core';
+import Rx from 'rx';
 import {h} from '@cycle/dom';
 import {mergeStyles, textUnselectable, elevation1Style}
-  from 'rxmarbles/styles/utils';
+  from '~styles/utils';
 
 function createContainerStyle(inputStyle) {
   return {

@@ -1,16 +1,16 @@
-import {Rx} from '@cycle/core';
+import Rx from 'rx';
 import {h} from '@cycle/dom';
 import RxTween from 'rxtween';
-import Examples from 'rxmarbles/data/examples';
+import Examples from '~data/examples';
 import {prepareInputDiagram, augmentWithExampleKey, makeNewInputDiagramsData$}
-  from 'rxmarbles/components/sandbox/sandbox-input';
-import {getOutputDiagram$} from 'rxmarbles/components/sandbox/sandbox-output';
+  from './sandbox-input';
+import {getOutputDiagram$} from './sandbox-output';
 import Immutable from 'immutable';
-import Colors from 'rxmarbles/styles/colors';
-import Dimens from 'rxmarbles/styles/dimens';
-import Fonts from 'rxmarbles/styles/fonts';
+import Colors from '~styles/colors';
+import Dimens from '~styles/dimens';
+import Fonts from '~styles/fonts';
 import {mergeStyles, elevation1Style, elevation2Style, elevation2Before, elevation2After}
-  from 'rxmarbles/styles/utils';
+  from '~styles/utils';
 
 function renderOperatorLabel(label) {
   let fontSize = (label.length >= 45) ? 1.3 : (label.length >= 30) ? 1.5 : 2;

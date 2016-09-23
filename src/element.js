@@ -1,9 +1,9 @@
-import Cycle from '@cycle/core';
+import Cycle from '@cycle/run-rx';
 import {makeDOMDriver, h} from '@cycle/dom';
-import DiagramComponent from 'rxmarbles/components/diagram/diagram';
-import SandboxComponent from 'rxmarbles/components/sandbox/sandbox';
-import MarbleComponent from 'rxmarbles/components/marble';
-import DiagramCompletionComponent from 'rxmarbles/components/diagram-completion';
+import DiagramComponent from '~components/diagram/diagram';
+import SandboxComponent from '~components/sandbox/sandbox';
+import MarbleComponent from '~components/marble';
+import DiagramCompletionComponent from '~components/diagram-completion';
 
 let SandboxPrototype = Object.create(HTMLElement.prototype);
 

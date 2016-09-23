@@ -1,4 +1,4 @@
-import {Rx} from '@cycle/core';
+import Rx from 'rx';
 let packageJson = require('package');
 let RxPackageJson = require('rx/package.json');
 

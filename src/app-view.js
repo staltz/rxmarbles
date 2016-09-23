@@ -1,8 +1,8 @@
 import {h} from '@cycle/dom';
-import Colors from 'rxmarbles/styles/colors';
-import Dimens from 'rxmarbles/styles/dimens';
-import Fonts from 'rxmarbles/styles/fonts';
-import {mergeStyles, renderSvgDropshadow} from 'rxmarbles/styles/utils';
+import Colors from '~styles/colors';
+import Dimens from '~styles/dimens';
+import Fonts from '~styles/fonts';
+import {mergeStyles, renderSvgDropshadow} from '~styles/utils';
 
 const rxmarblesGithubUrl = 'https://github.com/staltz/rxmarbles';
 const rxjsGithubUrl = 'https://github.com/Reactive-Extensions/RxJS';

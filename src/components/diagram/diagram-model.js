@@ -1,4 +1,4 @@
-import {Rx} from '@cycle/core';
+import Rx from 'rx';
 
 function findLargestMarbleTime(diagramData) {
   return diagramData.get('notifications')

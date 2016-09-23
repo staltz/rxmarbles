@@ -1,9 +1,9 @@
-import {Rx} from '@cycle/core';
+import Rx from 'rx';
 import {h} from '@cycle/dom';
-import Colors from 'rxmarbles/styles/colors';
-import Dimens from 'rxmarbles/styles/dimens';
-import Examples from 'rxmarbles/data/examples';
-import {mergeStyles} from 'rxmarbles/styles/utils';
+import Colors from '~styles/colors';
+import Dimens from '~styles/dimens';
+import Examples from '~data/examples';
+import {mergeStyles} from '~styles/utils';
 
 /**
  * Returns a hashmap of category headers to lists of examples in that category.

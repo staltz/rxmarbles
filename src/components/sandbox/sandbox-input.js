@@ -2,8 +2,8 @@
  * Functions to handle data of input diagrams in the example shown in the
  * sandbox.
  */
-import {Rx} from '@cycle/core';
-import Utils from 'rxmarbles/components/sandbox/utils';
+import Rx from 'Rx';
+import Utils from '~components/sandbox/utils';
 import Immutable from 'immutable';
 
 function getNotifications(diagram) {

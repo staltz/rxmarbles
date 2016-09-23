@@ -1,8 +1,8 @@
-import {Rx} from '@cycle/core';
+import Rx from 'rx';
 import {h} from '@cycle/dom';
-import Colors from 'rxmarbles/styles/colors';
-import Dimens from 'rxmarbles/styles/dimens';
-import {mergeStyles} from 'rxmarbles/styles/utils';
+import Colors from '~styles/colors';
+import Dimens from '~styles/dimens';
+import {mergeStyles} from '~styles/utils';
 
 function operatorsMenuLink({DOM, props}) {
   let startHighlight$ = DOM.get('.link', 'mouseenter').map(() => 1);

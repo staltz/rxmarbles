@@ -1,4 +1,4 @@
-import {Rx} from '@cycle/core';
+import Rx from 'rx';
 import Immutable from 'immutable';
 
 const mouseMove$ = Rx.Observable.fromEvent(document, 'mousemove');

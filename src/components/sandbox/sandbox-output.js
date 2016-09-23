@@ -2,8 +2,8 @@
  * Functions to handle data of the output diagram in the example shown in the
  * sandbox.
  */
-import {Rx} from '@cycle/core';
-import Utils from 'rxmarbles/components/sandbox/utils';
+import Rx from 'Rx';
+import Utils from '~components/sandbox/utils';
 import Immutable from 'immutable';
 
 const MAX_VT_TIME = 100; // Time of completion

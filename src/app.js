@@ -1,13 +1,13 @@
-import Cycle from '@cycle/core';
+import Cycle from '@cycle/rx-run'
 import {makeDOMDriver} from '@cycle/dom';
-import appModel from 'rxmarbles/app-model';
-import appView from 'rxmarbles/app-view';
-import operatorsMenuLinkComponent from 'rxmarbles/components/operators-menu-link';
-import operatorsMenuComponent from 'rxmarbles/components/operators-menu';
-import sandboxComponent from 'rxmarbles/components/sandbox/sandbox';
-import diagramComponent from 'rxmarbles/components/diagram/diagram';
-import marbleComponent from 'rxmarbles/components/marble';
-import diagramCompletionComponent from 'rxmarbles/components/diagram-completion';
+import appModel from './app-model';
+import appView from './app-view';
+import operatorsMenuLinkComponent from '~components/operators-menu-link';
+import operatorsMenuComponent from '~components/operators-menu';
+import sandboxComponent from '~components/sandbox/sandbox';
+import diagramComponent from '~components/diagram/diagram';
+import marbleComponent from '~components/marble';
+import diagramCompletionComponent from '~components/diagram-completion';
 
 function main() {
   return {

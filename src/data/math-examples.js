@@ -1,4 +1,4 @@
-import {Rx} from '@cycle/core';
+import Rx from 'Rx';
 
 module.exports = {
   // A clone of scan?

@@ -1,3 +1,9 @@
 {
-  "presets": ["es2015"]
+  "sourceMaps": true,
+  "presets": [
+    "es2015"
+  ],
+  "plugins": [
+    "./plugins/babel-plugin-module-relative-import.js"
+  ]
 }

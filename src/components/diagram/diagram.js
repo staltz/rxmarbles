@@ -1,6 +1,6 @@
-import diagramModel from 'rxmarbles/components/diagram/diagram-model';
-import diagramView from 'rxmarbles/components/diagram/diagram-view';
-import diagramIntent from 'rxmarbles/components/diagram/diagram-intent';
+import diagramModel from './diagram-model';
+import diagramView from './diagram-view';
+import diagramIntent from './diagram-intent';
 
 function DiagramComponent({DOM, props}) {
   let intent = diagramIntent(DOM);

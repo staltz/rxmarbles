@@ -1,12 +1,12 @@
 /*
  * The database of all predefined examples in the app.
  */
-var transformExamples = require('rxmarbles/data/transform-examples');
-var combineExamples = require('rxmarbles/data/combine-examples');
-var filterExamples = require('rxmarbles/data/filter-examples');
-var mathExamples = require('rxmarbles/data/math-examples');
-var booleanExamples = require('rxmarbles/data/boolean-examples');
-var conditionalExamples = require('rxmarbles/data/conditional-examples');
+var transformExamples = require('./transform-examples');
+var combineExamples = require('./combine-examples');
+var filterExamples = require('./filter-examples');
+var mathExamples = require('./math-examples');
+var booleanExamples = require('./boolean-examples');
+var conditionalExamples = require('./conditional-examples');
 
 function merge() {
   var args = (1 <= arguments.length) ? Array.prototype.slice.call(arguments) : [];

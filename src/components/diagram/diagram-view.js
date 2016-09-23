@@ -1,10 +1,10 @@
-import {Rx} from '@cycle/core';
+import Rx from 'rx';
 import {h} from '@cycle/dom';
-import Colors from 'rxmarbles/styles/colors';
-import Dimens from 'rxmarbles/styles/dimens';
-import Fonts from 'rxmarbles/styles/fonts';
+import Colors from '~styles/colors';
+import Dimens from '~styles/dimens';
+import Fonts from '~styles/fonts';
 import RxTween from 'rxtween';
-import {mergeStyles, textUnselectable} from 'rxmarbles/styles/utils';
+import {mergeStyles, textUnselectable} from '~styles/utils';
 
 const MARBLE_WIDTH = 5; // estimate of a marble width, in percentages
 const diagramSidePadding = Dimens.spaceMedium;
