@@ -8,7 +8,7 @@
   },
   "license": "BSD 3-Clause",
   "private": true,
-  "main": "dist/js/app.js",
+  "main": "dist/js/lib.js",
   "dependencies": {
     "@cycle/dom": "12.2.5",
     "@cycle/isolate": "1.4.0",

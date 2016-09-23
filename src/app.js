@@ -4,10 +4,12 @@ import appModel from './app-model';
 import appView from './app-view';
 import operatorsMenuLinkComponent from '~components/operators-menu-link';
 import operatorsMenuComponent from '~components/operators-menu';
-import sandboxComponent from '~components/sandbox/sandbox';
-import diagramComponent from '~components/diagram/diagram';
-import marbleComponent from '~components/marble';
-import diagramCompletionComponent from '~components/diagram-completion';
+import {
+  sandboxComponent,
+  diagramComponent,
+  marbleComponent,
+  diagramCompletionComponent 
+} from './lib';
 
 function main() {
   return {
@@ -15,15 +17,6 @@ function main() {
   };
 }
 
-export {
-  main,
-  diagramComponent, 
-  diagramCompletionComponent,
-  marbleComponent,
-  sandboxComponent
-};
-
-require.main === module &&
 Cycle.run(main, {
   DOM: makeDOMDriver('.js-appContainer', {
     'x-operators-menu-link': operatorsMenuLinkComponent,
