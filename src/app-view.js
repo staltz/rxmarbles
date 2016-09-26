@@ -3,6 +3,8 @@ import Colors from '~styles/colors';
 import Dimens from '~styles/dimens';
 import Fonts from '~styles/fonts';
 import {mergeStyles, renderSvgDropshadow} from '~styles/utils';
+import debugHook from '~rx-debug';
+debugHook();
 
 const rxmarblesGithubUrl = 'https://github.com/staltz/rxmarbles';
 const rxjsGithubUrl = 'https://github.com/Reactive-Extensions/RxJS';
@@ -50,14 +52,14 @@ function renderContent(route) {
     h('div', {style}, [
       h('div',
         {style: pageRowFirstChildStyle},
-        h('x-operators-menu', {key: 'operatorsMenu'})
+        [h('x-operators-menu', {key: 'operatorsMenu'})]
       ),
       h('div',
         {style: mergeStyles({
           position: 'absolute',
           top: '0'},
-          pageRowLastChildStyle)}
-        ,h('x-sandbox', {key: 'sandbox', route: route, width: '820px'})
+          pageRowLastChildStyle)},
+        [h('x-sandbox', {key: 'sandbox', route: route, width: '820px'})]
       )
     ])
   );
@@ -91,5 +93,5 @@ module.exports = function appView(state$) {
       renderContent(route),
       renderFooter(appVersion, rxVersion)
     ])
-  );
+  ).debug("render");
 };

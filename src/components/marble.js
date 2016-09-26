@@ -19,21 +19,21 @@ function createContainerStyle(inputStyle) {
 function renderSvg(data, isDraggable, inputStyle, isHighlighted) {
   let POSSIBLE_COLORS = [Colors.blue, Colors.green, Colors.yellow, Colors.red];
   let color = POSSIBLE_COLORS[data.get('id') % POSSIBLE_COLORS.length];
-  return svg('svg.marbleShape', {
+  return h('svg', {
       style: {
         overflow: 'visible',
         width: inputStyle.size,
         height: inputStyle.size
       },
-      attributes: {viewBox: '0 0 1 1'}},
+      attrs: {viewBox: '0 0 1 1'}, class: "marbleShape" },
     [
-      svg('circle', {
+      h('circle', {
         style: mergeStyles({
             stroke: Colors.black,
             fill: color
           },
           isDraggable && isHighlighted ? marbleElevation1Style : {}),
-        attributes: {
+        attrs: {
           cx: 0.5, cy: 0.5, r: 0.47,
           'stroke-width': '0.06px'
         }
