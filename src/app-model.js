@@ -1,6 +1,6 @@
 import Rx from 'rx';
-import RxMarblesVersion from '~version';
-import RxVersion from '~rx-version';
+import appVersion from '~version';
+import rxVersion from '~rx-version';
 
 const DEFAULT_EXAMPLE = 'merge';
 
@@ -9,5 +9,5 @@ module.exports = function appModel() {
     .map(hashEvent => hashEvent.target.location.hash.replace('#', ''))
     .startWith(window.location.hash.replace('#', '') || DEFAULT_EXAMPLE);
   return route$
-    .map(route => (route, RxMarblesVersion, RxVersion));
+    .map(route => ({ route, appVersion, rxVersion }));
 };

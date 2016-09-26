@@ -15,20 +15,21 @@ const DROPSHADOW_FILTER_ID = 'dropshadow';
 
 // Cross-browser SVG filter for drop shadows
 function renderSvgDropshadow() {
-  return svg('svg', {attributes: {height: '0'}}, [
-    svg('filter#' + DROPSHADOW_FILTER_ID, {attributes: {height: '130%'}}, [
+  return null;
+  // svg('svg', {attributes: {height: '0'}}, [
+    // svg('filter#' + DROPSHADOW_FILTER_ID, {attributes: {height: '130%'}}, [
       // stdDeviation is blur:
-      svg('feGaussianBlur', {attributes: {in: 'SourceAlpha', stdDeviation: '0.05'}}),
+      // svg('feGaussianBlur', {attributes: {in: 'SourceAlpha', stdDeviation: '0.05'}}),
       // position relative to marble viewBox:
-      svg('feOffset', {attributes: {dx: '0', dy: '0.05', result: 'offsetblur'}}),
-      svg('feFlood', {attributes: {'flood-color': 'rgba(0,0,0,0.4)'}}),
-      svg('feComposite', {attributes: {in2: 'offsetblur', operator: 'in'}}),
-      svg('feMerge', [
-        svg('feMergeNode'),
-        svg('feMergeNode', {attributes: {in: 'SourceGraphic'}})
-      ])
-    ])
-  ]);
+      // svg('feOffset', {attributes: {dx: '0', dy: '0.05', result: 'offsetblur'}}),
+      // svg('feFlood', {attributes: {'flood-color': 'rgba(0,0,0,0.4)'}}),
+      // svg('feComposite', {attributes: {in2: 'offsetblur', operator: 'in'}}),
+      // svg('feMerge', [
+      //   svg('feMergeNode'),
+      //   svg('feMergeNode', {attributes: {in: 'SourceGraphic'}})
+      // ])
+    // ])
+  // ]);
 }
 
 const marbleElevation1Style = {
