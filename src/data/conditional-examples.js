@@ -1,6 +1,6 @@
 import Rx from 'Rx';
 
-module.exports = {
+export default {
   "amb": {
     "label": "amb",
     "inputs": [

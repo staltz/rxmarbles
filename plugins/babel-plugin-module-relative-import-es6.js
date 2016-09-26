@@ -1,14 +1,15 @@
 // WebPack would offer the same functionality, but to not 
 // add a dependency, simply use this Babel plugin.
 
+import path from 'path'
+const debug = false;
+
 // http://stackoverflow.com/questions/31068698/importing-node-modules-from-root-directory-using-es6-and-babel-node
 export default function ({types:t}) {
-  // get the working directory
-  var cwd = process.cwd();
   return {
     visitor: {
-      ImportDeclaration (path) {
-        var node = path.node;
+      ImportDeclaration (nodePath, state) {
+        var node = nodePath.node;
         // probably always true, but let's be safe
         if (!t.isLiteral(node.source)) {
           return;
@@ -21,7 +22,17 @@ export default function ({types:t}) {
           return;
         }
 
-        node.source.value = cwd + '/' + node.source.value.slice(1);
+        // create relative ref
+        const importsrc = node.source.value.slice(1)
+        const source = path.dirname(state.file.opts.filename);
+        const dest = path.join('./src', importsrc)
+        var relative = path.relative(source, dest)
+        if (relative.indexOf(".") != 0) {
+          relative = "./" + relative
+        }
+
+        debug && console.log("rewriting", source, "->", dest, "=", relative)
+        node.source.value = relative
       }
     }
   };

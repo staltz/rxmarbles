@@ -1,6 +1,6 @@
 node_modules
-build
-ignore
+src/rx-version.js
+src/version.js
 
 *.sublime-project
 *.sublime-workspace

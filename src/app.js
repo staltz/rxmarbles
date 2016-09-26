@@ -2,13 +2,13 @@ import Cycle from '@cycle/rx-run'
 import {makeDOMDriver} from '@cycle/dom';
 import appModel from './app-model';
 import appView from './app-view';
-import operatorsMenuLinkComponent from '~components/operators-menu-link';
-import operatorsMenuComponent from '~components/operators-menu';
+import OperatorsMenuLinkComponent from '~components/operators-menu-link';
+import OperatorsMenuComponent from '~components/operators-menu';
 import {
-  sandboxComponent,
-  diagramComponent,
-  marbleComponent,
-  diagramCompletionComponent 
+  SandboxComponent,
+  DiagramComponent,
+  MarbleComponent,
+  DiagramCompletionComponent 
 } from './lib';
 
 function main() {
@@ -19,11 +19,11 @@ function main() {
 
 Cycle.run(main, {
   DOM: makeDOMDriver('.js-appContainer', {
-    'x-operators-menu-link': operatorsMenuLinkComponent,
-    'x-operators-menu': operatorsMenuComponent,
-    'x-sandbox': sandboxComponent,
-    'x-marble': marbleComponent,
-    'x-diagram-completion': diagramCompletionComponent,
-    'x-diagram': diagramComponent
+    'x-operators-menu-link': OperatorsMenuLinkComponent,
+    'x-operators-menu': OperatorsMenuComponent,
+    'x-sandbox': SandboxComponent,
+    'x-marble': MarbleComponent,
+    'x-diagram-completion': DiagramCompletionComponent,
+    'x-diagram': DiagramComponent
   })
 });

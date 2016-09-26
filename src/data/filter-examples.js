@@ -1,6 +1,6 @@
 import Rx from 'Rx';
 
-module.exports = {
+export default {
   "distinct": {
     "label": "distinct",
     "inputs": [

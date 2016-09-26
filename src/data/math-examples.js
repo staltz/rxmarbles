@@ -1,6 +1,6 @@
 import Rx from 'Rx';
 
-module.exports = {
+export default {
   // A clone of scan?
   // "aggregate": {
   //   "label": "aggregate((x, y) => x + y)"

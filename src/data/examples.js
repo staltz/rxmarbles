@@ -1,12 +1,12 @@
 /*
  * The database of all predefined examples in the app.
  */
-var transformExamples = require('./transform-examples');
-var combineExamples = require('./combine-examples');
-var filterExamples = require('./filter-examples');
-var mathExamples = require('./math-examples');
-var booleanExamples = require('./boolean-examples');
-var conditionalExamples = require('./conditional-examples');
+import transformExamples from './transform-examples';
+import combineExamples from './combine-examples';
+import filterExamples from './filter-examples';
+import mathExamples from './math-examples';
+import booleanExamples from './boolean-examples';
+import conditionalExamples from './conditional-examples';
 
 function merge() {
   var args = (1 <= arguments.length) ? Array.prototype.slice.call(arguments) : [];
@@ -29,7 +29,7 @@ function applyCategory(examples, categoryName) {
   return examples;
 };
 
-module.exports = merge(
+export default merge(
   applyCategory(transformExamples, "Transforming Operators"),
   applyCategory(combineExamples, "Combining Operators"),
   applyCategory(filterExamples, "Filtering Operators"),

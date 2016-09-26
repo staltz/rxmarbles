@@ -1,9 +1,12 @@
-import Cycle from '@cycle/run-rx';
+import Cycle from '@cycle/rx-run';
+import Rx from 'rx';
 import {makeDOMDriver, h} from '@cycle/dom';
-import DiagramComponent from '~components/diagram/diagram';
-import SandboxComponent from '~components/sandbox/sandbox';
-import MarbleComponent from '~components/marble';
-import DiagramCompletionComponent from '~components/diagram-completion';
+import {
+  SandboxComponent,
+  DiagramComponent,
+  MarbleComponent,
+  DiagramCompletionComponent 
+} from './lib';
 
 let SandboxPrototype = Object.create(HTMLElement.prototype);
 
@@ -12,7 +15,7 @@ SandboxPrototype.createdCallback = function createdCallback() {
 
   function main() {
     return {
-      DOM: Cycle.Rx.Observable.just(
+      DOM: Rx.Observable.just(
         h('div', {}, [h('x-sandbox', {route: key, key: 1})])
       )
     };

@@ -1,6 +1,6 @@
 import Rx from 'Rx';
 
-module.exports = {
+export default {
   "every": {
     "label": "every(x => x < 10)",
     "inputs": [

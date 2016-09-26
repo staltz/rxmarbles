@@ -1,6 +1,6 @@
 import Rx from 'Rx';
 
-module.exports = {
+export default {
   "combineLatest": {
     "label": "combineLatest((x, y) => \"\" + x + y)",
     "inputs": [
