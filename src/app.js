@@ -10,13 +10,10 @@ import {
   MarbleComponent,
   DiagramCompletionComponent 
 } from './lib';
-import debugHook from './rx-debug';
-
-debugHook();
 
 function main() {
   return {
-    DOM: appView(appModel().debug("appModel"))
+    DOM: appView(appModel())
   };
 }
 
