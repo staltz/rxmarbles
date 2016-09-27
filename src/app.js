@@ -1,4 +1,4 @@
-import Cycle from '@cycle/rx-run'
+import { run } from '@cycle/rx-run'
 import {makeDOMDriver} from '@cycle/dom';
 import appModel from './app-model';
 import appView from './app-view';
@@ -10,20 +10,13 @@ import {
   MarbleComponent,
   DiagramCompletionComponent 
 } from './lib';
+import hook from '~rx-debug';
+hook()
 
-function main() {
+function main(sources) {
   return {
-    DOM: appView(appModel())
+    DOM: appView(sources, appModel()).doOnNext(_ => console.log("app dom"))
   };
 }
 
-Cycle.run(main, {
-  DOM: makeDOMDriver('.js-appContainer', {
-    'x-operators-menu-link': OperatorsMenuLinkComponent,
-    'x-operators-menu': OperatorsMenuComponent,
-    'x-sandbox': SandboxComponent,
-    'x-marble': MarbleComponent,
-    'x-diagram-completion': DiagramCompletionComponent,
-    'x-diagram': DiagramComponent
-  })
-});
+run(main, { DOM: makeDOMDriver('.js-appContainer') })

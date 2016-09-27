@@ -2,7 +2,16 @@ import {h} from '@cycle/dom';
 import Colors from '~styles/colors';
 import Dimens from '~styles/dimens';
 import Fonts from '~styles/fonts';
+import Rx from 'rx';
+import Immutable from 'immutable';
 import {mergeStyles, renderSvgDropshadow} from '~styles/utils';
+import {
+  SandboxComponent,
+  DiagramComponent,
+  MarbleComponent,
+  DiagramCompletionComponent 
+} from './lib';
+
 import debugHook from '~rx-debug';
 debugHook();
 
@@ -46,20 +55,20 @@ function renderHeader() {
   ]);
 }
 
-function renderContent(route) {
+function renderContent(sandboxVTree) {
   const style = mergeStyles(pageRowStyle, {marginTop: Dimens.spaceSmall});
   return (
     h('div', {style}, [
       h('div',
         {style: pageRowFirstChildStyle},
-        [h('x-operators-menu', {key: 'operatorsMenu'})]
+        []//h('x-operators-menu', {key: 'operatorsMenu'})]
       ),
       h('div',
         {style: mergeStyles({
           position: 'absolute',
           top: '0'},
           pageRowLastChildStyle)},
-        [h('x-sandbox', {key: 'sandbox', route: route, width: '820px'})]
+        [sandboxVTree]
       )
     ])
   );
@@ -81,17 +90,29 @@ function renderFooter(appVersion, rxVersion) {
   ]);
 }
 
-module.exports = function appView(state$) {
+module.exports = function appView(sources, state$) {
   const wrapperStyle = {
     paddingLeft:  Dimens.spaceSmall,
     paddingRight: `calc(${Dimens.spaceHuge} + ${Dimens.spaceSmall})`,
   }
-  return state$.map(({route, appVersion, rxVersion}) =>
-    h('div', {style: wrapperStyle}, [
+
+  const sandbox = SandboxComponent({ 
+      DOM: sources.DOM,
+      props$: state$
+        .flatMap(({route}) => Rx.Observable.of({
+          key: 'sandbox', route: route, width: '820px'
+        }))
+    })
+    
+  return Rx.Observable
+  .combineLatest(state$, sandbox.DOM, (state, sandbox) => ({state, sandbox}))
+  .map(({state, sandbox}) => {
+    let {route, appVersion, rxVersion} = state
+    return h('div', {style: wrapperStyle}, [
       renderSvgDropshadow(),
       renderHeader(),
-      renderContent(route),
+      renderContent(sandbox),
       renderFooter(appVersion, rxVersion)
     ])
-  ).debug("render");
+  });
 };

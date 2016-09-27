@@ -67,16 +67,18 @@ function makeNewDiagramData$(data$, changeMarbleTime$, changeEndTime$, interacti
 }
 
 function diagramModel(props, intent) {
-  let data$ = props.get('data').distinctUntilChanged().shareReplay(1);
-  return {
-    data$: data$,
-    newData$: makeNewDiagramData$(
+  let data$ = props.data.distinctUntilChanged().shareReplay(1)
+  let isInteractive$ = props.interactive.startWith(false)
+  let newData$ = makeNewDiagramData$(
       data$,
       intent.changeMarbleTime$,
       intent.changeEndTime$,
-      props.get('interactive')
-    ),
-    isInteractive$: props.get('interactive').startWith(false)
+      props.interactive
+    )
+  return {
+    data$,
+    newData$,
+    isInteractive$
   };
 }
 

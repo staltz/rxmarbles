@@ -5,13 +5,11 @@ import diagramIntent from './diagram-intent';
 function DiagramComponent({DOM, props}) {
   let intent = diagramIntent(DOM);
   let model = diagramModel(props, intent);
-  let view = diagramView(model);
+  let view = diagramView({ DOM, model, props });
 
   return {
     DOM: view.vtree$,
-    events: {
-      newdata: model.newData$
-    }
+    data$: model.newData$,
   };
 }
 

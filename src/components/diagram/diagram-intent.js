@@ -41,8 +41,8 @@ function makeDeltaTime$(mouseDown$, resultFn) {
 }
 
 function diagramIntent(DOM) {
-  let marbleMouseDown$ = DOM.get('.diagramMarble', 'mousedown');
-  let completionMouseDown$ = DOM.get('.diagramCompletion', 'mousedown');
+  let marbleMouseDown$ = DOM.select('.diagramMarble').events('mousedown');
+  let completionMouseDown$ = DOM.select('.diagramCompletion').events('mousedown');
 
   return {
     changeMarbleTime$: makeDeltaTime$(marbleMouseDown$,

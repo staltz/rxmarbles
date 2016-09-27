@@ -5,6 +5,7 @@ import Dimens from '~styles/dimens';
 import Fonts from '~styles/fonts';
 import RxTween from 'rxtween';
 import {mergeStyles, textUnselectable} from '~styles/utils';
+import Marble from '~components/marble';
 
 const MARBLE_WIDTH = 5; // estimate of a marble width, in percentages
 const diagramSidePadding = Dimens.spaceMedium;
@@ -37,6 +38,16 @@ const diagramBodyStyle = {
   marginTop: `calc(0px - (${diagramCompletionHeight} / 2))`
 };
 
+function renderMarble$(DOM, marbleData$, isDraggable$) {
+  const props = Rx.Observable.combineLatest(marbleData$, isDraggable$, ({data,isDraggable}) => ({
+    key: `marble${data.id}`,
+    data: data,
+    isDraggable,
+    style: {size: diagramMarbleSize}
+  })).doOnError(e=>console.warn(e))
+  return Marble({ DOM, props })
+}
+
 function renderMarble(marbleData, isDraggable = false) {
   return h('x-marble.diagramMarble', {
     key: `marble${marbleData.get('id')}`,
@@ -44,6 +55,27 @@ function renderMarble(marbleData, isDraggable = false) {
     isDraggable,
     style: {size: diagramMarbleSize}
   });
+}
+
+function renderCompletion$(DOM, diagramData$, isDraggable$) {
+  return diagramData$.combineLatest(isDraggable$, (data, isDraggable) => { 
+    let isTall = data.get('notifications').some(marbleData =>
+      Math.abs(marbleData.get('time') - data.get('end')) <= MARBLE_WIDTH*0.5
+    );
+    return h('div', {
+      props: {
+        key: 'completion',
+        time: data.get('endTime'),
+        isDraggable,
+        isTall,
+      },
+      style: {
+        thickness: diagramArrowThickness,
+        color: diagramArrowColor,
+        height: diagramCompletionHeight
+      }
+    })
+  }).doOnError(e=>console.warn(e))
 }
 
 function renderCompletion(diagramData, isDraggable = false) {
@@ -88,6 +120,30 @@ function renderDiagramArrowHead() {
     top: `calc(${diagramVerticalMargin} + (${diagramMarbleSize} / 2)
       - ${diagramArrowHeadSize} + (${diagramArrowThickness} / 2))`
   }});
+}
+
+function renderDiagram$(DOM, data$, isInteractive$, props) {
+  // TODO optimize here to create a single Marble and maintain it, updating state,
+  // just like D3 has Enter, Leave and Change events. Build it using GroupBy?
+  const marbles$ = data$
+    .map(d => d.get('notifications'))
+    .map(ns => 
+      // Non-reactive list of marbles for now
+      ns.map(n => renderMarble$(DOM, Rx.Observable.of(n), isInteractive$))
+    )
+  const completions$ = renderCompletion$(DOM, data$, isInteractive$)
+  const elements$ = Rx.Observable
+    .combineLatest(completions$, marbles$, (c, ms) => { 
+      return ms.concat([c]) })
+
+  return elements$.map(es => h('div', { 
+      style: diagramStyle,
+      attrs: {class: props.class }
+    }, [
+      renderDiagramArrow(),
+      renderDiagramArrowHead(),
+      h('div', {style: diagramBodyStyle}, es)
+    ]))
 }
 
 function renderDiagram(data, isInteractive) {
@@ -142,14 +198,12 @@ function animateData$(data$) {
   })
 }
 
-function diagramView(model) {
+function diagramView({ DOM, model, props }) {
+  const data$ = animateData$(model.data$).merge(model.newData$)
+  const isInteractive$ = model.isInteractive$
   return {
-    vtree$: Rx.Observable.combineLatest(
-      animateData$(model.data$).merge(model.newData$),
-      model.isInteractive$,
-      renderDiagram
-    )
-  };
+    vtree$: renderDiagram$(DOM, data$, isInteractive$, props)
+  }
 }
 
 module.exports = diagramView;

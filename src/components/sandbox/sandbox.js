@@ -11,6 +11,7 @@ import Dimens from '~styles/dimens';
 import Fonts from '~styles/fonts';
 import {mergeStyles, elevation1Style, elevation2Style, elevation2Before, elevation2After}
   from '~styles/utils';
+import Diagram from '~components/diagram/diagram';
 
 function renderOperatorLabel(label) {
   let fontSize = (label.length >= 45) ? 1.3 : (label.length >= 30) ? 1.5 : 2;
@@ -43,6 +44,41 @@ function getSandboxStyle(width) {
       borderRadius: '2px'},
     elevation1Style
   );
+}
+
+function renderSandbox$(DOM, inputDiagrams$, operatorLabel$, outputDiagram$, width$) {
+  const inputs$ = inputDiagrams$.map(data => data.get('diagrams').map((diagram, index) =>
+    Diagram({ DOM, props: {
+      class: 'sandboxInputDiagram',
+      key: `inputDiagram${index}`,
+      data: Rx.Observable.of(diagram),
+      interactive: Rx.Observable.of(true)
+    }})
+  ))
+  const output = Diagram({ DOM, props: {
+    class: 'sandboxOutputDiagram',
+    key: `outputDiagram`,
+    data: outputDiagram$,
+    interactive: Rx.Observable.of(true)
+  }})
+
+  const inputsVTrees$ = inputs$
+    .map(Rx.Observable.fromArray)
+    .flatMap(o => {
+      return o
+          .pluck("DOM")
+          //.map(a => a.startWith(false))
+          .toArray()
+          .flatMap(array => Rx.Observable.combineLatest(array, (...args) => args))
+    })
+
+  return Rx.Observable.combineLatest(inputsVTrees$, operatorLabel$, width$, output.DOM, (inputs, label, width, output) => {
+    let children = inputs.concat([
+      renderOperator(label),
+      output
+    ])
+    return h('div', {attrs: { class: 'sandboxRoot', style: getSandboxStyle(width)} }, children)
+  })
 }
 
 function renderSandbox(inputDiagrams, operatorLabel, outputDiagram, width) {
@@ -83,11 +119,15 @@ function markAllDiagramsAsFirst(diagramsData) {
 
 let isTruthy = (x => !!x);
 
-function sandboxComponent({DOM, props}) {
-  let changeInputDiagram$ = DOM.get('.sandboxInputDiagram', 'newdata')
+function sandboxComponent({DOM, props$}) {
+  const changeInputDiagram$ = DOM
+    .select('.sandboxInputDiagram')
+    .events('newdata')
     .map(ev => ev.detail);
-  let width$ = props.get('width').startWith('100%');
-  let example$ = props.get('route')
+
+  const width$ = props$.map(p => p.width)
+    .startWith('100%');
+  const example$ = props$.map(p => p.route)
     .filter(isTruthy)
     .map(key => Immutable.Map(Examples[key]).set('key', key))
     .shareReplay(1);
@@ -103,13 +143,11 @@ function sandboxComponent({DOM, props}) {
     .map(markAsFirstDiagram);
   let newOutputDiagram$ = getOutputDiagram$(example$, newInputDiagrams$);
   let outputDiagram$ = firstOutputDiagram$.merge(newOutputDiagram$);
-  let vtree$ = Rx.Observable.combineLatest(
-    inputDiagrams$, operatorLabel$, outputDiagram$, width$,
-    renderSandbox
-  );
+  
+  let vtree$ = renderSandbox$(DOM, inputDiagrams$, operatorLabel$, outputDiagram$, width$)
 
   return {
-    DOM: vtree$
+    DOM: vtree$.debounce(20)
   };
 }
 

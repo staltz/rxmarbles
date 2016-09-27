@@ -74,11 +74,11 @@ function render(data, isDraggable, inputStyle, isHighlighted) {
 }
 
 function marbleComponent({DOM, props}) {
-  let startHighlight$ = DOM.get('.marbleRoot', 'mouseenter');
-  let stopHighlight$ = DOM.get('.marbleRoot', 'mouseleave');
-  let data$ = props.get('data');
-  let isDraggable$ = props.get('isDraggable').startWith(false);
-  let style$ = props.get('style').startWith({});
+  let startHighlight$ = DOM.select('.marbleRoot').events('mouseenter');
+  let stopHighlight$ = DOM.select('.marbleRoot').events('mouseleave');
+  let data$ = props.pluck('data');
+  let isDraggable$ = props.pluck('isDraggable').startWith(false);
+  let style$ = props.pluck('style').startWith({});
   let isHighlighted$ = Rx.Observable.merge(
     startHighlight$.map(() => true),
     stopHighlight$.map(() => false)
