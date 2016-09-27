@@ -77,7 +77,7 @@ function renderSandbox$(DOM, inputDiagrams$, operatorLabel$, outputDiagram$, wid
       renderOperator(label),
       output
     ])
-    return h('div', {attrs: { class: 'sandboxRoot', style: getSandboxStyle(width)} }, children)
+    return h('div', { style: getSandboxStyle(width), attrs: { class: 'sandboxRoot' } }, children)
   })
 }
 
@@ -147,7 +147,7 @@ function sandboxComponent({DOM, props$}) {
   let vtree$ = renderSandbox$(DOM, inputDiagrams$, operatorLabel$, outputDiagram$, width$)
 
   return {
-    DOM: vtree$.debounce(20)
+    DOM: vtree$
   };
 }
 

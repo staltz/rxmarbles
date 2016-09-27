@@ -18,7 +18,7 @@ function createContainerStyle(inputStyle) {
 
 function renderSvg(data, isDraggable, inputStyle, isHighlighted) {
   let POSSIBLE_COLORS = [Colors.blue, Colors.green, Colors.yellow, Colors.red];
-  let color = POSSIBLE_COLORS[data.get('id') % POSSIBLE_COLORS.length];
+  let color = POSSIBLE_COLORS[data.id % POSSIBLE_COLORS.length];
   return h('svg', {
       style: {
         overflow: 'visible',
@@ -53,7 +53,7 @@ function renderInnerContent(data, inputStyle) {
         textAlign: 'center',
         lineHeight: inputStyle.size},
       textUnselectable)
-  }, `${data.get('content')}`);
+  }, `${data.content}`);
 }
 
 function render(data, isDraggable, inputStyle, isHighlighted) {
@@ -62,11 +62,11 @@ function render(data, isDraggable, inputStyle, isHighlighted) {
   };
   return h('div.marbleRoot', {
     style: mergeStyles({
-        left: `${data.get('time')}%`,
-        zIndex: data.get('time')},
+        left: `${data.time}%`,
+        zIndex: data.time},
       createContainerStyle(inputStyle),
       isDraggable ? draggableContainerStyle : null),
-    attributes: {'data-marble-id': data.get('id')}
+    attrs: {'data-marble-id': data.id}
   },[
     renderSvg(data, isDraggable, inputStyle, isHighlighted),
     renderInnerContent(data, inputStyle)
@@ -74,6 +74,7 @@ function render(data, isDraggable, inputStyle, isHighlighted) {
 }
 
 function marbleComponent({DOM, props}) {
+  console.log("marbleComponent")
   let startHighlight$ = DOM.select('.marbleRoot').events('mouseenter');
   let stopHighlight$ = DOM.select('.marbleRoot').events('mouseleave');
   let data$ = props.pluck('data');

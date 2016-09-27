@@ -39,22 +39,13 @@ const diagramBodyStyle = {
 };
 
 function renderMarble$(DOM, marbleData$, isDraggable$) {
-  const props = Rx.Observable.combineLatest(marbleData$, isDraggable$, ({data,isDraggable}) => ({
+  const props = Rx.Observable.combineLatest(marbleData$, isDraggable$, (data, isDraggable) => ({
     key: `marble${data.id}`,
     data: data,
     isDraggable,
     style: {size: diagramMarbleSize}
-  })).doOnError(e=>console.warn(e))
+  }))
   return Marble({ DOM, props })
-}
-
-function renderMarble(marbleData, isDraggable = false) {
-  return h('x-marble.diagramMarble', {
-    key: `marble${marbleData.get('id')}`,
-    data: marbleData,
-    isDraggable,
-    style: {size: diagramMarbleSize}
-  });
 }
 
 function renderCompletion$(DOM, diagramData$, isDraggable$) {
@@ -75,25 +66,7 @@ function renderCompletion$(DOM, diagramData$, isDraggable$) {
         height: diagramCompletionHeight
       }
     })
-  }).doOnError(e=>console.warn(e))
-}
-
-function renderCompletion(diagramData, isDraggable = false) {
-  let endTime = diagramData.get('end');
-  let isTall = diagramData.get('notifications').some(marbleData =>
-    Math.abs(marbleData.get('time') - diagramData.get('end')) <= MARBLE_WIDTH*0.5
-  );
-  return h('x-diagram-completion.diagramCompletion', {
-    key: 'completion',
-    time: endTime,
-    isDraggable,
-    isTall,
-    style: {
-      thickness: diagramArrowThickness,
-      color: diagramArrowColor,
-      height: diagramCompletionHeight
-    }
-  });
+  })
 }
 
 function renderDiagramArrow() {
@@ -126,16 +99,20 @@ function renderDiagram$(DOM, data$, isInteractive$, props) {
   // TODO optimize here to create a single Marble and maintain it, updating state,
   // just like D3 has Enter, Leave and Change events. Build it using GroupBy?
   const marbles$ = data$
-    .map(d => d.get('notifications'))
-    .map(ns => 
+    .map(d => d.get('notifications').toJS())
+    .map(d => d
       // Non-reactive list of marbles for now
-      ns.map(n => renderMarble$(DOM, Rx.Observable.of(n), isInteractive$))
+      .map(n => renderMarble$(DOM, Rx.Observable.of(n), isInteractive$))
     )
   const completions$ = renderCompletion$(DOM, data$, isInteractive$)
   const elements$ = Rx.Observable
-    .combineLatest(completions$, marbles$, (c, ms) => { 
-      return ms.concat([c]) })
-
+    .combineLatest(
+      completions$,
+      marbles$.map(c => c.map(_ => _.DOM)),
+      (c, ms) => ms.concat([Rx.Observable.just(c)])
+    )
+    .flatMap(es => Rx.Observable.combineLatest(es, (...args) => args))
+  
   return elements$.map(es => h('div', { 
       style: diagramStyle,
       attrs: {class: props.class }
@@ -144,18 +121,6 @@ function renderDiagram$(DOM, data$, isInteractive$, props) {
       renderDiagramArrowHead(),
       h('div', {style: diagramBodyStyle}, es)
     ]))
-}
-
-function renderDiagram(data, isInteractive) {
-  let marblesVTree = data.get('notifications')
-    .map(notification => renderMarble(notification, isInteractive))
-    .toArray(); // from Immutable.List
-  let completionVTree = renderCompletion(data, isInteractive);
-  return h('div', {style: diagramStyle}, [
-    renderDiagramArrow(),
-    renderDiagramArrowHead(),
-    h('div', {style: diagramBodyStyle}, [completionVTree].concat(marblesVTree))
-  ])
 }
 
 function sanitizeDiagramItem(x) {

@@ -15,7 +15,7 @@ hook()
 
 function main(sources) {
   return {
-    DOM: appView(sources, appModel()).doOnNext(_ => console.log("app dom"))
+    DOM: appView(sources, appModel()).debounce(20)
   };
 }
 

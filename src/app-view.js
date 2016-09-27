@@ -3,7 +3,6 @@ import Colors from '~styles/colors';
 import Dimens from '~styles/dimens';
 import Fonts from '~styles/fonts';
 import Rx from 'rx';
-import Immutable from 'immutable';
 import {mergeStyles, renderSvgDropshadow} from '~styles/utils';
 import {
   SandboxComponent,
