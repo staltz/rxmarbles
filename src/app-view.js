@@ -10,6 +10,7 @@ import {
   MarbleComponent,
   DiagramCompletionComponent 
 } from './lib';
+import MenuComponent from '~components/operators-menu';
 
 import debugHook from '~rx-debug';
 debugHook();
@@ -54,13 +55,13 @@ function renderHeader() {
   ]);
 }
 
-function renderContent(sandboxVTree) {
+function renderContent(sandboxVTree, menuVTree) {
   const style = mergeStyles(pageRowStyle, {marginTop: Dimens.spaceSmall});
   return (
     h('div', {style}, [
       h('div',
         {style: pageRowFirstChildStyle},
-        []//h('x-operators-menu', {key: 'operatorsMenu'})]
+        [menuVTree]
       ),
       h('div',
         {style: mergeStyles({
@@ -102,15 +103,19 @@ module.exports = function appView(sources, state$) {
           key: 'sandbox', route: route, width: '820px'
         }))
     })
+  
+  const menu = MenuComponent({
+    DOM: sources.DOM
+  })
     
   return Rx.Observable
-  .combineLatest(state$, sandbox.DOM, (state, sandbox) => ({state, sandbox}))
-  .map(({state, sandbox}) => {
+  .combineLatest(state$, sandbox.DOM, menu.DOM, (state, sandbox, menu) => ({state, sandbox, menu}))
+  .map(({state, sandbox, menu}) => {
     let {route, appVersion, rxVersion} = state
     return h('div', {style: wrapperStyle}, [
       renderSvgDropshadow(),
       renderHeader(),
-      renderContent(sandbox),
+      renderContent(sandbox, menu),
       renderFooter(appVersion, rxVersion)
     ])
   });

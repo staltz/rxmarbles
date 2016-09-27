@@ -1,5 +1,6 @@
 import Rx from 'rx';
-import {h, svg} from '@cycle/dom';
+import {h, svg, thunk} from '@cycle/dom';
+import isolate from '@cycle/isolate';
 import Colors from '~styles/colors';
 import {mergeStyles, marbleElevation1Style, textUnselectable}
   from '~styles/utils';
@@ -58,6 +59,7 @@ function renderInnerContent(data, inputStyle) {
 }
 
 function render(data, isDraggable, inputStyle, isHighlighted) {
+  // console.log("rendering marble", data.id);
   let draggableContainerStyle = {
     cursor: 'ew-resize'
   };
@@ -74,9 +76,16 @@ function render(data, isDraggable, inputStyle, isHighlighted) {
   return vtree;
 }
 
+function renderThunk(data, isDraggable, style, isHighlighted) {
+  // console.log('data for marble', data.id, data.time)
+  return thunk('marble', data.id, render, [data, isDraggable, style, isHighlighted]);
+}
+
 function marbleComponent({DOM, props}) {
+  let mouseDown$ = DOM.select('.marbleRoot').events('mousedown');
   let startHighlight$ = DOM.select('.marbleRoot').events('mouseenter');
   let stopHighlight$ = DOM.select('.marbleRoot').events('mouseleave');
+  
   let data$ = props.pluck('data');
   let isDraggable$ = props.pluck('isDraggable').startWith(false);
   let style$ = props.pluck('style').startWith({});
@@ -89,8 +98,9 @@ function marbleComponent({DOM, props}) {
   );
 
   return {
-    DOM: vtree$
+    DOM: vtree$,
+    click$: mouseDown$
   };
 }
 
-module.exports = marbleComponent;
+module.exports = sources => isolate(marbleComponent)(sources);

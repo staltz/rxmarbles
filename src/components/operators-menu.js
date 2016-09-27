@@ -1,9 +1,11 @@
 import Rx from 'rx';
 import {h} from '@cycle/dom';
+import isolate from '@cycle/isolate';
 import Colors from '~styles/colors';
 import Dimens from '~styles/dimens';
 import Examples from '~data/examples';
 import {mergeStyles} from '~styles/utils';
+import OperatorsMenuLinkComponent from './operators-menu-link'; 
 
 /**
  * Returns a hashmap of category headers to lists of examples in that category.
@@ -36,23 +38,23 @@ const operatorsMenuItemStyle = {
   lineHeight: '1.6rem'
 };
 
-function renderExampleItem(example) {
-  return h('li', {style: operatorsMenuItemStyle},
-    h('x-operators-menu-link', {
+function renderExampleItem$({ DOM, example }) {
+  const link = OperatorsMenuLinkComponent({
+    DOM,
+    props$: Rx.Observable.of({
       key: `operatorsMenuLink${example.key}`,
       href: '#' + example.key,
       content: example.key
     })
-  );
+  });
+  return link.DOM.map(linkVTree => h('li', {style: operatorsMenuItemStyle}, [linkVTree]));
 }
 
-function renderExampleItems(examples) {
-  let items = [];
-  for (let i = 0; i < examples.length; i++) {
-    let example = examples[i];
-    items.push(renderExampleItem(example));
-  }
-  return items;
+function renderExampleItems$({ DOM, examples }) {
+  const vtree$s = examples
+    .map(example => renderExampleItem$({ DOM, example }))
+  return Rx.Observable
+    .combineLatest(vtree$s, (...args) => [...args]);
 }
 
 function renderExampleCategory(categoryName, isFirstCategory) {
@@ -64,26 +66,24 @@ function renderExampleCategory(categoryName, isFirstCategory) {
   );
 }
 
-function renderMenuContent(categoryMap) {
-  let listItems = [];
-  let isFirstCategory = true;
-  for (let categoryName in categoryMap) {
-    if (!categoryMap.hasOwnProperty(categoryName)) continue;
-    listItems.push(renderExampleCategory(categoryName, isFirstCategory));
-    listItems = listItems.concat(renderExampleItems(categoryMap[categoryName]));
-    isFirstCategory = false;
-  }
-  listItems.push(h('li', {style: operatorsMenuCategoryStyle}, 'More'));
-  listItems.push(h('li', {style: operatorsMenuItemStyle}, 'Coming soon...'));
-  return listItems;
+function renderMenuContent$({ DOM, categoryMap} ) {
+  const li$s = Object.keys(categoryMap).map((categoryName, index) => {
+    let header = renderExampleCategory(categoryName, index == 0)
+    let examples = categoryMap[categoryName]
+    return renderExampleItems$({DOM, examples})
+      .map(list => [header].concat(list))
+  })
+
+  return Rx.Observable
+    .combineLatest(li$s, (...args) => args.reduce((p, n) => p.concat(n), []))
+    .map(list => list.concat([
+      h('li', {style: operatorsMenuCategoryStyle}, 'More'),
+      h('li', {style: operatorsMenuItemStyle}, 'Coming soon...')
+    ]))
 }
 
-function operatorsMenuComponent() {
-  let categoryMap$ = Rx.Observable.just(organizeExamplesByCategory(Examples));
-
-  return {
-    DOM: categoryMap$.map(categoryMap =>
-      h('div',
+function view(listitems) {
+  return h('div',
         {style: {
           paddingRight: '36px',
           boxSizing: 'border-box',
@@ -95,9 +95,18 @@ function operatorsMenuComponent() {
             padding: '0',
             listStyleType: 'none',
             overflowY: 'scroll',
-            height: '100%'}},
-          renderMenuContent(categoryMap))])
-    )
+            height: '100%'}
+          }, listitems)])
+}
+
+function operatorsMenuComponent({ DOM }) {
+  const categoryMap$ = Rx.Observable.just(organizeExamplesByCategory(Examples));
+  const vtree$ = categoryMap$
+      .flatMap(categoryMap => renderMenuContent$({ DOM, categoryMap }))
+      .map(view)
+
+  return {
+    DOM: vtree$
   };
 }
 

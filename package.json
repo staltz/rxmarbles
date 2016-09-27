@@ -11,7 +11,7 @@
   "main": "dist/js/lib.js",
   "dependencies": {
     "@cycle/dom": "12.2.5",
-    "@cycle/isolate": "1.4.0",
+    "@cycle/isolate": "^1.4.0",
     "@cycle/rx-adapter": "3.0.0",
     "@cycle/rx-run": "7.0.1",
     "immutable": "^3.7.2",

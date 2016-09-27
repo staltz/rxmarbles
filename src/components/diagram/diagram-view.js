@@ -58,7 +58,7 @@ function renderCompletion$(DOM, diagramData$, isDraggable$) {
     );
     const completion = DiagramCompletion({DOM, props: {
       key: 'completion',
-      time: data.get('end') || data.get('endTime'),
+      time: data.get('end'),
       isDraggable,
       isTall,
       style: {
@@ -106,6 +106,7 @@ function renderDiagram$(DOM, data$, isInteractive$, props) {
       // Non-reactive list of marbles for now
       .map(n => renderMarble$(DOM, Rx.Observable.of(n), isInteractive$))
     )
+    .shareReplay()
   const completions$ = renderCompletion$(DOM, data$, isInteractive$)
   const elements$ = Rx.Observable
     .combineLatest(
@@ -115,7 +116,7 @@ function renderDiagram$(DOM, data$, isInteractive$, props) {
     )
     .flatMap(es => Rx.Observable.combineLatest(es, (...args) => args))
   
-  return elements$.map(es => h('div', { 
+  const vtree$ = elements$.map(es => h('div', { 
       style: diagramStyle,
       attrs: {class: props.class }
     }, [
@@ -123,6 +124,13 @@ function renderDiagram$(DOM, data$, isInteractive$, props) {
       renderDiagramArrowHead(),
       h('div', {style: diagramBodyStyle}, es)
     ]))
+
+  return { 
+    vtree$,
+    click$: marbles$.flatMap(c => { 
+        return Rx.Observable.merge(c.map(_ => _.click$))
+      })
+  }
 }
 
 function sanitizeDiagramItem(x) {
@@ -170,9 +178,7 @@ function diagramView({ DOM, model, props }) {
   // const data$ = animateData$(model.data$).merge(model.newData$)
   const data$ = model.data$.merge(model.newData$).shareReplay(1)
   const isInteractive$ = model.isInteractive$
-  return {
-    vtree$: renderDiagram$(DOM, data$, isInteractive$, props)
-  }
+  return renderDiagram$(DOM, data$, isInteractive$, props)
 }
 
 module.exports = diagramView;

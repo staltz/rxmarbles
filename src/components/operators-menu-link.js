@@ -1,14 +1,15 @@
 import Rx from 'rx';
 import {h} from '@cycle/dom';
+import isolate from '@cycle/isolate';
 import Colors from '~styles/colors';
 import Dimens from '~styles/dimens';
 import {mergeStyles} from '~styles/utils';
 
-function operatorsMenuLink({DOM, props}) {
-  let startHighlight$ = DOM.get('.link', 'mouseenter').map(() => 1);
-  let stopHighlight$ = DOM.get('.link', 'mouseleave').map(() => 1);
-  let href$ = props.get('href');
-  let content$ = props.get('content').startWith('');
+function operatorsMenuLink({DOM, props$}) {
+  let startHighlight$ = DOM.select('.link').events('mouseenter').map(() => 1);
+  let stopHighlight$ = DOM.select('.link').events('mouseleave').map(() => 1);
+  let href$ = props$.pluck('href').startWith('');
+  let content$ = props$.pluck('content').startWith('');
   let isHighlighted$ = Rx.Observable.merge(
     startHighlight$.map(() => true),
     stopHighlight$.map(() => false)
@@ -28,8 +29,8 @@ function operatorsMenuLink({DOM, props}) {
               display: 'block',
               color: Colors.greyDark},
             isHighlighted ? {color: Colors.black} : null),
-          href: href},
-        [
+          props: { href } 
+        }, [
           content,
           isHighlighted ? highlightingArrow : null
         ]
@@ -39,4 +40,4 @@ function operatorsMenuLink({DOM, props}) {
   return {DOM: vtree$};
 }
 
-module.exports = operatorsMenuLink;
+module.exports = sources => isolate(operatorsMenuLink)(sources);

@@ -1,5 +1,6 @@
 import Rx from 'rx';
 import {h} from '@cycle/dom';
+import isolate from '@cycle/isolate';
 import RxTween from 'rxtween';
 import Examples from '~data/examples';
 import {prepareInputDiagram, augmentWithExampleKey, makeNewInputDiagramsData$}
@@ -155,7 +156,7 @@ function sandboxComponent({DOM, props$}) {
   let sandbox = renderSandbox$(DOM, inputDiagrams$, operatorLabel$, outputDiagram$, width$)
 
   return {
-    DOM: sandbox.vtree$.debug('sandbox.dom'),
+    DOM: sandbox.vtree$,
     data$: sandbox.data$.debug('sandbox.data')
   };
 }
