@@ -25,7 +25,8 @@ function renderSvg(data, isDraggable, inputStyle, isHighlighted) {
         width: inputStyle.size,
         height: inputStyle.size
       },
-      attrs: {viewBox: '0 0 1 1'}, class: "marbleShape" },
+      attrs: {viewBox: '0 0 1 1', class: "marbleShape"},
+    },
     [
       h('circle', {
         style: mergeStyles({
@@ -60,21 +61,20 @@ function render(data, isDraggable, inputStyle, isHighlighted) {
   let draggableContainerStyle = {
     cursor: 'ew-resize'
   };
-  return h('div.marbleRoot', {
+  const vtree = h('div.marbleRoot.diagramMarble', {
     style: mergeStyles({
-        left: `${data.time}%`,
-        zIndex: data.time},
-      createContainerStyle(inputStyle),
-      isDraggable ? draggableContainerStyle : null),
+      left: `${data.time}%`,
+      zIndex: `${Math.round(data.time)}`
+    }, createContainerStyle(inputStyle), isDraggable ? draggableContainerStyle : null),
     attrs: {'data-marble-id': data.id}
   },[
     renderSvg(data, isDraggable, inputStyle, isHighlighted),
     renderInnerContent(data, inputStyle)
   ]);
+  return vtree;
 }
 
 function marbleComponent({DOM, props}) {
-  console.log("marbleComponent")
   let startHighlight$ = DOM.select('.marbleRoot').events('mouseenter');
   let stopHighlight$ = DOM.select('.marbleRoot').events('mouseleave');
   let data$ = props.pluck('data');

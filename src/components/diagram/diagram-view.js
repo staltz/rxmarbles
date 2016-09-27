@@ -164,7 +164,9 @@ function animateData$(data$) {
 }
 
 function diagramView({ DOM, model, props }) {
-  const data$ = animateData$(model.data$).merge(model.newData$)
+  // TODO animate, animation is disabled for now as it is WAY to slow for the full DOM
+  // const data$ = animateData$(model.data$).merge(model.newData$)
+  const data$ = model.data$.merge(model.newData$).shareReplay(1)
   const isInteractive$ = model.isInteractive$
   return {
     vtree$: renderDiagram$(DOM, data$, isInteractive$, props)
