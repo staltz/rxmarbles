@@ -1,6 +1,6 @@
 var gulp = require('gulp');
 var sourcemaps = require('gulp-sourcemaps');
-var livereload = require('gulp-server-livereload');
+var server = require('gulp-server-livereload');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var browserify = require('browserify');
@@ -41,8 +41,16 @@ gulp.task('build', function() { return compile(); });
 gulp.task('watch', function() { return watch(); });
 gulp.task('default', ['watch', 'server'])
 
-gulp.task('server', function(done) {
-  http.createServer(
-    st({ path: __dirname + '/', index: 'index.html', cache: false })
-  ).listen(8080, done);
+gulp.task('server', function() {
+  gulp.src('./')
+    .pipe(server({
+      defaultFile: 'index.html',
+      livereload: {
+        enable: true,
+        filter: function (filename, cb) {
+          cb(/\/(dist\/.*\.js|index.html)$/.test(filename))
+        } 
+      },
+      log: 'debug'
+    }));
 });
