@@ -54,12 +54,15 @@ function renderSandbox$(DOM, inputDiagrams$, operatorLabel$, outputDiagram$, wid
       data: Rx.Observable.of(diagram),
       interactive: Rx.Observable.of(true)
     }})
-  ))
+  )).shareReplay()
+
+  const data$ = inputs$.debug("data")
+
   const output = Diagram({ DOM, props: {
     class: 'sandboxOutputDiagram',
     key: `outputDiagram`,
     data: outputDiagram$,
-    interactive: Rx.Observable.of(true)
+    interactive: Rx.Observable.of(false)
   }})
 
   const inputsVTrees$ = inputs$
@@ -72,13 +75,18 @@ function renderSandbox$(DOM, inputDiagrams$, operatorLabel$, outputDiagram$, wid
           .flatMap(array => Rx.Observable.combineLatest(array, (...args) => args))
     })
 
-  return Rx.Observable.combineLatest(inputsVTrees$, operatorLabel$, width$, output.DOM, (inputs, label, width, output) => {
+  const vtree$ = Rx.Observable.combineLatest(inputsVTrees$, operatorLabel$, width$, output.DOM, (inputs, label, width, output) => {
     let children = inputs.concat([
       renderOperator(label),
       output
     ])
     return h('div', { style: getSandboxStyle(width), attrs: { class: 'sandboxRoot' } }, children)
   })
+
+  return {
+    vtree$,
+    data$
+  }
 }
 
 function renderSandbox(inputDiagrams, operatorLabel, outputDiagram, width) {
@@ -144,10 +152,11 @@ function sandboxComponent({DOM, props$}) {
   let newOutputDiagram$ = getOutputDiagram$(example$, newInputDiagrams$);
   let outputDiagram$ = firstOutputDiagram$.merge(newOutputDiagram$);
   
-  let vtree$ = renderSandbox$(DOM, inputDiagrams$, operatorLabel$, outputDiagram$, width$)
+  let sandbox = renderSandbox$(DOM, inputDiagrams$, operatorLabel$, outputDiagram$, width$)
 
   return {
-    DOM: vtree$
+    DOM: sandbox.vtree$.debug('sandbox.dom'),
+    data$: sandbox.data$.debug('sandbox.data')
   };
 }
 

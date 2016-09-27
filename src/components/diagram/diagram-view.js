@@ -6,6 +6,7 @@ import Fonts from '~styles/fonts';
 import RxTween from 'rxtween';
 import {mergeStyles, textUnselectable} from '~styles/utils';
 import Marble from '~components/marble';
+import DiagramCompletion from '~components/diagram-completion';
 
 const MARBLE_WIDTH = 5; // estimate of a marble width, in percentages
 const diagramSidePadding = Dimens.spaceMedium;
@@ -49,23 +50,24 @@ function renderMarble$(DOM, marbleData$, isDraggable$) {
 }
 
 function renderCompletion$(DOM, diagramData$, isDraggable$) {
-  return diagramData$.combineLatest(isDraggable$, (data, isDraggable) => { 
+  return diagramData$
+  .combineLatest(isDraggable$, (data, isDraggable) => ({data, isDraggable}))
+  .flatMap(({data, isDraggable}) => { 
     let isTall = data.get('notifications').some(marbleData =>
       Math.abs(marbleData.get('time') - data.get('end')) <= MARBLE_WIDTH*0.5
     );
-    return h('div', {
-      props: {
-        key: 'completion',
-        time: data.get('endTime'),
-        isDraggable,
-        isTall,
-      },
+    const completion = DiagramCompletion({DOM, props: {
+      key: 'completion',
+      time: data.get('end') || data.get('endTime'),
+      isDraggable,
+      isTall,
       style: {
         thickness: diagramArrowThickness,
         color: diagramArrowColor,
         height: diagramCompletionHeight
       }
-    })
+    }})
+    return completion.DOM;
   })
 }
 

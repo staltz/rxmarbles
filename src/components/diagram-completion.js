@@ -33,7 +33,7 @@ function render(time, isDraggable, isTall, inputStyle, isHighlighted) {
   };
   let containerStyle = createContainerStyle(inputStyle);
   let innerStyle = createInnerStyle(inputStyle);
-  return h('div.completionRoot', {
+  return h('div.completionRoot.diagramCompletion', {
     style: mergeStyles({
         left: `${time}%`},
       containerStyle,
@@ -49,12 +49,12 @@ function render(time, isDraggable, isTall, inputStyle, isHighlighted) {
 }
 
 function diagramCompletionComponent({DOM, props}) {
-  let startHighlight$ = DOM.get('.completionRoot', 'mouseenter');
-  let stopHighlight$ = DOM.get('.completionRoot', 'mouseleave');
-  let time$ = props.get('time').startWith(100);
-  let isDraggable$ = props.get('isDraggable').startWith(false);
-  let isTall$ = props.get('isTall').startWith(false);
-  let style$ = props.get('style').startWith({
+  let startHighlight$ = DOM.select('.completionRoot').events('mouseenter');
+  let stopHighlight$ = DOM.select('.completionRoot').events('mouseleave');
+  let time$ = Rx.Observable.of(props.time);
+  let isDraggable$ = Rx.Observable.of(props.isDraggable).startWith(false);
+  let isTall$ = Rx.Observable.of(props.isTall).startWith(false);
+  let style$ = Rx.Observable.of(props.style).startWith({
     thickness: '2px',
     height: '10px',
     color: 'black'
