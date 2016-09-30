@@ -33,6 +33,7 @@
     "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.7",
     "less": "^2.5.0",
+    "mocha": "^3.1.0",
     "uglify-js": "~2.4.21",
     "utils-merge": "^1.0.0",
     "vinyl-buffer": "^1.0.0",
