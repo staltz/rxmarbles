@@ -1,7 +1,9 @@
 import Rx, { ReactiveTest, TestScheduler } from 'rx'
 import { collectionAssert } from './utils'
-import hook from '../src/rx-debug'
-hook()
+import addDebug from '../src/rx-debug'
+import addOperator from '../src/rx-combineOpenGroups'
+addDebug()
+addOperator()
 
 var onNext = ReactiveTest.onNext, 
   onCompleted = ReactiveTest.onCompleted,
@@ -10,8 +12,7 @@ var onNext = ReactiveTest.onNext,
 function Marble(data$) {
   return data$
     .distinctUntilChanged()
-    .map(data => [data$.key, `Marble[${data.content}] @ ${data.time}`])
-    .concat(Rx.Observable.just([data$.key, false]))
+    .map(data => `Marble[${data.content}] @ ${data.time}`)
 }
 
 describe('marble groups', function () {
@@ -54,18 +55,7 @@ describe('marble groups', function () {
               .map(list => !list.some(ad => ad.id === d.key))
               .filter(b => b)
           )
-          .flatMap(Marble)
-          .scan({}, (memo, next) => {
-            var copy = Object.keys(memo)
-              .reduce((o, k) => { o[k] = memo[k]; return o }, {});
-            if(next[1] === false) {
-              delete copy[next[0]];
-            } else {
-              copy[next[0]] = next[1];
-            }
-            return copy;
-          })
-          .map(obj => Object.keys(obj).map(k => obj[k]))
+          .combineOpenGroups(null, Marble)
           .map(l => l.join(", "))
           .debounce(10, scheduler)
       }, 0, 0, 400
