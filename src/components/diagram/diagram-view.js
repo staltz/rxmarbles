@@ -7,6 +7,10 @@ import RxTween from 'rxtween';
 import {mergeStyles, textUnselectable} from '~styles/utils';
 import Marble from '~components/marble';
 import DiagramCompletion from '~components/diagram-completion';
+import addDebug from '~rx-debug';
+import addOperator from '~rx-combineOpenGroups';
+addDebug();
+addOperator();
 
 const MARBLE_WIDTH = 5; // estimate of a marble width, in percentages
 const diagramSidePadding = Dimens.spaceMedium;
@@ -100,25 +104,30 @@ function renderDiagramArrowHead() {
 function renderDiagram$(DOM, data$, isInteractive$, props) {
   // TODO optimize here to create a single Marble and maintain it, updating state,
   // just like D3 has Enter, Leave and Change events. Build it using GroupBy?
-  const marbles$ = data$
-    .map(d => d.get('notifications').toJS())
-    .map(d => d
-      // Non-reactive list of marbles for now
-      .map(n => renderMarble$(DOM, Rx.Observable.of(n), isInteractive$))
+  const nots = data$.map(d => d.get('notifications').toJS())
+    .debug("nots")
+  const marbles$ = nots
+    .flatMap(n => n)
+    .groupByUntil(
+      d => d.id,
+      v => v,
+      d => nots
+        .map(list => !list.some(ad => ad.id === d.key))
+        .filter(b => b)
     )
+    .combineOpenGroups(null, group => renderMarble$(DOM, group, isInteractive$).DOM)
     .shareReplay()
   const completions$ = renderCompletion$(DOM, data$, isInteractive$)
   const elements$ = Rx.Observable
     .combineLatest(
       completions$,
-      marbles$.map(c => c.map(_ => _.DOM)),
-      (c, ms) => ms.concat([Rx.Observable.just(c)])
+      marbles$,
+      (c, ms) => ms && ms.concat([c])
     )
-    .flatMap(es => Rx.Observable.combineLatest(es, (...args) => args))
   
-  const vtree$ = elements$.map(es => h('div', { 
+  const vtree$ = elements$.debug("es1").debug("es2").map(es => h('div', { 
       style: diagramStyle,
-      attrs: {class: props.class }
+      attrs: { class: props.class }
     }, [
       renderDiagramArrow(),
       renderDiagramArrowHead(),
@@ -126,10 +135,8 @@ function renderDiagram$(DOM, data$, isInteractive$, props) {
     ]))
 
   return { 
-    vtree$,
-    click$: marbles$.flatMap(c => { 
-        return Rx.Observable.merge(c.map(_ => _.click$))
-      })
+    vtree$: vtree$,
+    click$: nots.flatMap(n => n.click$)
   }
 }
 
