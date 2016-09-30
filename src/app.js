@@ -1,4 +1,5 @@
 import { run } from '@cycle/rx-run'
+import Rx from 'rx-dom';
 import {makeDOMDriver} from '@cycle/dom';
 import appModel from './app-model';
 import appView from './app-view';
@@ -15,7 +16,8 @@ hook()
 
 function main(sources) {
   return {
-    DOM: appView(sources, appModel()).debounce(20)
+    DOM: appView(sources, appModel())
+      .sample(16, Rx.Scheduler.requestAnimationFrame)
   };
 }
 

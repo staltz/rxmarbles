@@ -16,6 +16,7 @@
     "@cycle/rx-run": "7.0.1",
     "immutable": "^3.7.2",
     "rx": "^2.5.3",
+    "rx-dom": "^7.0.3",
     "rxtween": "^0.3.3",
     "xstream": "^6.3.2"
   },
