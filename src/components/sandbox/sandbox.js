@@ -71,7 +71,6 @@ function renderSandbox$(DOM, inputDiagrams$, operatorLabel$, outputDiagram$, wid
     .flatMap(o => {
       return o
           .pluck("DOM")
-          //.map(a => a.startWith(false))
           .toArray()
           .flatMap(array => Rx.Observable.combineLatest(array, (...args) => args))
     })
@@ -88,24 +87,6 @@ function renderSandbox$(DOM, inputDiagrams$, operatorLabel$, outputDiagram$, wid
     vtree$,
     data$
   }
-}
-
-function renderSandbox(inputDiagrams, operatorLabel, outputDiagram, width) {
-  return h('div.sandboxRoot', {style: getSandboxStyle(width)}, [
-    inputDiagrams.get('diagrams').map((diagram, index) =>
-        h('x-diagram.sandboxInputDiagram', {
-          key: `inputDiagram${index}`,
-          data: diagram,
-          interactive: true
-        })
-    ),
-    renderOperator(operatorLabel),
-    h('x-diagram.sandboxOutputDiagram', {
-      key: 'outputDiagram',
-      data: outputDiagram,
-      interactive: false
-    })
-  ]);
 }
 
 function makeInputDiagrams(example) {
