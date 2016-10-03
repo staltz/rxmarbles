@@ -48,16 +48,16 @@ function getSandboxStyle(width) {
 }
 
 function renderSandbox$(DOM, inputDiagrams$, operatorLabel$, outputDiagram$, width$) {
-  const inputs$ = inputDiagrams$.map(data => data.get('diagrams').map((diagram, index) =>
-    Diagram({ DOM, props: {
-      class: 'sandboxInputDiagram',
-      key: `inputDiagram${index}`,
-      data: Rx.Observable.of(diagram),
-      interactive: Rx.Observable.of(true)
-    }})
-  )).shareReplay()
-
-  const data$ = inputs$.debug("data")
+  const data$ = inputDiagrams$
+    .map(data => data.get('diagrams').map((diagram, index) =>
+      Diagram({ DOM, props: {
+        class: 'sandboxInputDiagram',
+        key: `inputDiagram${index}`,
+        data: Rx.Observable.of(diagram),
+        interactive: Rx.Observable.of(true)
+      }})
+    ))
+    .shareReplay()
 
   const output = Diagram({ DOM, props: {
     class: 'sandboxOutputDiagram',
@@ -66,7 +66,7 @@ function renderSandbox$(DOM, inputDiagrams$, operatorLabel$, outputDiagram$, wid
     interactive: Rx.Observable.of(false)
   }})
 
-  const inputsVTrees$ = inputs$
+  const inputsVTrees$ = data$
     .map(Rx.Observable.fromArray)
     .flatMap(o => {
       return o
