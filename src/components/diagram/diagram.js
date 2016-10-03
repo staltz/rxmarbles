@@ -7,7 +7,7 @@ import isolate from '@cycle/isolate';
 function DiagramComponent({DOM, props}) {
   let intentSources = {
     DOM: DOM,
-    click$: Rx.Observable.defer(() => { return view.click$ })
+    click$: Rx.Observable.defer(() => view.clicks$)
   }
   let intent = diagramIntent(intentSources);
   let model = diagramModel(props, intent);

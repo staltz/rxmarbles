@@ -125,7 +125,7 @@ function renderDiagram(DOM, data$, isInteractive$, props) {
           DOM: (item) => item.DOM.shareReplay(1),
         },
         merge: {
-          clicks$: (item) => item.click$.map(item)
+          clicks$: (item) => item.click$
         }
       })
 
@@ -135,7 +135,7 @@ function renderDiagram(DOM, data$, isInteractive$, props) {
       completions$,
       marbles.DOM,
       (c, ms) => ms && ms.concat([c])
-    ).shareReplay(1)
+    )
   
   const vtree$ = elements$
     .map(es => h('div', { 
@@ -149,7 +149,7 @@ function renderDiagram(DOM, data$, isInteractive$, props) {
 
   return { 
     vtree$: vtree$,
-    clicks$: marbles.clicks$.debug("click in diagram-view")
+    clicks$: marbles.clicks$
   }
 }
 
@@ -195,9 +195,7 @@ function animateData$(data$) {
 
 function diagramView({ DOM, model, props }) {
   // TODO animate, animation is disabled for now as it is WAY to slow for the full DOM
-  // const data$ = animateData$(model.data$).merge(model.newData$)
-  model.newData$.subscribe(console.log)
-  const data$ = model.data$//.merge(model.newData$.debug('newData$')).shareReplay(1)
+  const data$ = animateData$(model.data$).merge(model.newData$)
   const isInteractive$ = model.isInteractive$
   return renderDiagram(DOM, data$, isInteractive$, props)
 }
