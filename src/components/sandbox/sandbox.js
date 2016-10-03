@@ -129,10 +129,11 @@ function markAllDiagramsAsFirst(diagramsData) {
 let isTruthy = (x => !!x);
 
 function sandboxComponent({DOM, props$}) {
-  const changeInputDiagram$ = DOM
-    .select('.sandboxInputDiagram')
-    .events('newdata')
-    .map(ev => ev.detail);
+  const changeInputDiagram$ = Rx.Observable.defer(() => {
+    return sandbox.data$
+      .flatMap(list => list.map(diagram => diagram.data$))
+      .flatMap(id => id)
+  })
 
   const width$ = props$.map(p => p.width)
     .startWith('100%');
@@ -156,8 +157,7 @@ function sandboxComponent({DOM, props$}) {
   let sandbox = renderSandbox$(DOM, inputDiagrams$, operatorLabel$, outputDiagram$, width$)
 
   return {
-    DOM: sandbox.vtree$,
-    data$: sandbox.data$.debug('sandbox.data')
+    DOM: sandbox.vtree$
   };
 }
 
