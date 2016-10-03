@@ -57,11 +57,11 @@ function replaceDiagramDataIn(diagrams, newDiagramData) {
 function makeNewInputDiagramsData$(changeInputDiagram$, inputs$) {
   return inputs$
     .flatMapLatest(inputs =>
-      changeInputDiagram$.scan(inputs, (acc, newDiagramData) =>
+      changeInputDiagram$.scan((acc, newDiagramData) =>
         acc.set('diagrams',
           replaceDiagramDataIn(acc.get('diagrams'), newDiagramData)
-        )
-      )
+        ),
+      inputs)
     );
 }
 

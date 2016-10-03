@@ -62,7 +62,7 @@ function makeNewDiagramData$(data$, changeMarbleTime$, changeEndTime$, interacti
     changeEndTime$.map(x => data => applyChangeEndTime(data, x))
   ).pausable(interactive$);
   return data$
-    .flatMapLatest(data => mod$.scan(data, (acc, mod) => mod(acc)))
+    .flatMapLatest(data => mod$.scan((acc, mod) => mod(acc), data))
     .map(applyDiagramDataConstraints)
 }
 

@@ -15,14 +15,14 @@ function makeScheduler() {
     return 0;
   });
   scheduler.add = (absolute, relative) => (absolute + relative);
-  scheduler.toDateTimeOffset = (absolute => Math.floor(absolute));
-  scheduler.toRelative = (timeSpan => timeSpan);
+  scheduler.toAbsoluteTime = (absolute => Math.floor(absolute));
+  scheduler.toRelativeTime = (timeSpan => timeSpan);
   return scheduler;
 }
 
 function justIncomplete(item, scheduler) {
   return new Rx.AnonymousObservable(observer =>
-    scheduler.schedule(() => { observer.onNext(item); })
+    scheduler.schedule(null, () => { observer.onNext(item); })
   );
 }
 

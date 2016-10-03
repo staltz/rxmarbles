@@ -18,7 +18,7 @@ export default function(){
           .map(item => [group.key, selector(item)])
           .concat(Rx.Observable.just([group.key, false]))
       })
-      .scan({}, (memo, next) => {
+      .scan((memo, next) => {
         var copy = Object.keys(memo)
           .reduce((o, k) => { o[k] = memo[k]; return o }, {});
         if(next[1] === false) {
@@ -27,7 +27,7 @@ export default function(){
           copy[next[0]] = next[1];
         }
         return copy;
-      })
+      }, {})
       .map(obj => Object.keys(obj).map(k => obj[k]))
   }
 };

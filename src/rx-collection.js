@@ -39,17 +39,17 @@ export default function(){
               .concat(Observable.of([index, undefined]))
               .startWith([index, o]))
           )
-          .scan([], (memory, [index, observable]) => {
+          .scan((memory, [index, observable]) => {
             // TODO remove undesired shareReplay: 
             // the publish above causes the original source not to replay,
             // since the subscription is kept open.
             memory[index] = observable && observable.shareReplay(1);
             return memory;
-          })
+          }, [])
           .map(list => list.filter(v => typeof v !== 'undefined'))
-          .flatMapLatest((list, c) => Observable.defer(() =>
+          .flatMapLatest((list, c) =>
             Observable.combineLatest(list, (...args) => args)
-          ))
+          )
         return [field, combined]
       })
     }

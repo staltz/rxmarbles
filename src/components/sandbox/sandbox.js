@@ -1,7 +1,6 @@
 import Rx from 'rx';
 import {h} from '@cycle/dom';
 import isolate from '@cycle/isolate';
-import RxTween from 'rxtween';
 import Examples from '~data/examples';
 import {prepareInputDiagram, augmentWithExampleKey, makeNewInputDiagramsData$}
   from './sandbox-input';

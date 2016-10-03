@@ -38,10 +38,10 @@ describe('component collections', function () {
       });
     
   it('should combine latest', function(){
-    var results = scheduler.startWithTiming(
+    var results = scheduler.startScheduler(
       function () {
         return output().DOM.debounce(10, scheduler)
-      }, 0, 0, 400
+      }, { created: 0, subscribed: 0, disposed: 400 }
     );
     collectionAssert.assertEqual(results.messages, [
        onNext(11, ["A2", "B3", "C1"])
@@ -49,10 +49,10 @@ describe('component collections', function () {
   })
 
   it('should merge streams', function(){
-    var results = scheduler.startWithTiming(
+    var results = scheduler.startScheduler(
       function () {
         return output().clicks$
-      }, 500, 500, 800
+      }, { created: 500, subscribed: 500, disposed: 800 }
     );
 
     collectionAssert.assertEqual(results.messages, [
@@ -90,7 +90,7 @@ describe('component collections', function () {
         }
       });
 
-    var results = scheduler.startWithTiming(() => output.DOM, 0, 0, 1000);
+    var results = scheduler.startScheduler(() => output.DOM, { created: 0, subscribed: 0, disposed: 1000 });
 
     collectionAssert.assertEqual(results.messages, [
       onNext(1, [1]),

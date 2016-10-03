@@ -44,7 +44,7 @@ describe('marble groups', function () {
       onNext(200, marbles.slice(1)),
     );
 
-    var results = scheduler.startWithTiming(
+    var results = scheduler.startScheduler(
       function () {
         return input
           .flatMap(n => n)
@@ -58,7 +58,7 @@ describe('marble groups', function () {
           .combineOpenGroups(null, Marble)
           .map(l => l.join(", "))
           .debounce(10, scheduler)
-      }, 0, 0, 400
+      }, { created: 0, subscribed: 0, disposed: 400 }
     );
 
     collectionAssert.assertEqual(results.messages, [

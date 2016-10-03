@@ -3,7 +3,7 @@ import {h} from '@cycle/dom';
 import Colors from '~styles/colors';
 import Dimens from '~styles/dimens';
 import Fonts from '~styles/fonts';
-import RxTween from 'rxtween';
+// import RxTween from 'rxtween';
 import {mergeStyles, textUnselectable} from '~styles/utils';
 import Marble from '~components/marble';
 import DiagramCompletion from '~components/diagram-completion';
@@ -165,35 +165,36 @@ function interpolate(from, to, x) {
 }
 
 function animateData$(data$) {
-  const animConf = {
-    from: 0,
-    to: 1,
-    ease: RxTween.Power3.easeOut,
-    duration: 600
-  };
-  return data$.flatMapLatest(data => {
-    if (!data.get('isFirst')) {
-      return Rx.Observable.just(data);
-    } else {
-      let randomizedNotifs = data.get('notifications').map(notif =>
-        notif.update('time', time =>
-          time - 10 + 20 * Math.random()
-        )
-      );
+  return data$;
+  // const animConf = {
+  //   from: 0,
+  //   to: 1,
+  //   ease: RxTween.Power3.easeOut,
+  //   duration: 600
+  // };
+  // return data$.flatMapLatest(data => {
+  //   if (!data.get('isFirst')) {
+  //     return Rx.Observable.just(data);
+  //   } else {
+  //     let randomizedNotifs = data.get('notifications').map(notif =>
+  //       notif.update('time', time =>
+  //         time - 10 + 20 * Math.random()
+  //       )
+  //     );
 
-      return RxTween(animConf).map(x =>
-        data.update('notifications', notifications =>
-          notifications.zipWith((n1, n2) =>
-            n1.update('time', t1 => {
-              let t2 = n2.get('time');
-              return interpolate(t2, t1, x);
-            }),
-            randomizedNotifs
-          )
-        )
-      );
-    }
-  })
+  //     return RxTween(animConf).map(x =>
+  //       data.update('notifications', notifications =>
+  //         notifications.zipWith((n1, n2) =>
+  //           n1.update('time', t1 => {
+  //             let t2 = n2.get('time');
+  //             return interpolate(t2, t1, x);
+  //           }),
+  //           randomizedNotifs
+  //         )
+  //       )
+  //     );
+  //   }
+  // })
 }
 
 function diagramView({ DOM, model, props }) {
