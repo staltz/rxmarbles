@@ -97,9 +97,11 @@ function marbleComponent({DOM, props}) {
     data$, isDraggable$, style$, isHighlighted$, render
   );
 
+  let end = props.takeLast(1).doOnCompleted(() => console.log('marble end'))
+
   return {
-    DOM: vtree$,
-    click$: mouseDown$
+    DOM: vtree$.takeUntil(end),
+    click$: mouseDown$.takeUntil(end)
   };
 }
 

@@ -34,17 +34,22 @@ export default function(){
               console.warn("unknown collection operation for latest-field", field)
             }
           })
+          .flatMap(([index, obs]) => obs.publish(o => o
+              .filter(_ => false)
+              .concat(Observable.of([index, undefined]))
+              .startWith([index, o]))
+          )
           .scan([], (memory, [index, observable]) => {
-            let inserted = observable.doOnCompleted(() => {
-              let index = memory.indexOf(inserted)
-              if(index >= 0) memory.splice(memory.indexOf(inserted))
-            });
-            memory[index] = inserted;
+            // TODO remove undesired shareReplay: 
+            // the publish above causes the original source not to replay,
+            // since the subscription is kept open.
+            memory[index] = observable && observable.shareReplay(1);
             return memory;
           })
-          .flatMapLatest(list => {
-            return Observable.combineLatest(list.filter(v => true), (...args) => args)
-          })
+          .map(list => list.filter(v => typeof v !== 'undefined'))
+          .flatMapLatest((list, c) => Observable.defer(() =>
+            Observable.combineLatest(list, (...args) => args)
+          ))
         return [field, combined]
       })
     }

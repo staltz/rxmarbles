@@ -54,7 +54,10 @@ function renderMarble(DOM, marbleData$, isDraggable$) {
       style: {size: diagramMarbleSize}
     })
   )
-  return Marble({ DOM, props })
+  return Marble({ 
+    DOM, 
+    props: props.takeUntil(marbleData$.last())
+  })
 }
 
 function renderCompletion$(DOM, diagramData$, isDraggable$) {
