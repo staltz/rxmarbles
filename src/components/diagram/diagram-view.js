@@ -7,8 +7,8 @@ import RxTween from 'rxtween';
 import {mergeStyles, textUnselectable} from '~styles/utils';
 import Marble from '~components/marble';
 import DiagramCompletion from '~components/diagram-completion';
-import addDebug from '~rx-debug';
-import addOperator from '~rx-combineOpenGroups';
+import addDebug from '~rx-debug'
+import addOperator from '~rx-collection'
 addDebug();
 addOperator();
 
@@ -43,13 +43,17 @@ const diagramBodyStyle = {
   marginTop: `calc(0px - (${diagramCompletionHeight} / 2))`
 };
 
-function renderMarble$(DOM, marbleData$, isDraggable$) {
-  const props = Rx.Observable.combineLatest(marbleData$, isDraggable$, (data, isDraggable) => ({
-    key: `marble${data.id}`,
-    data: data,
-    isDraggable,
-    style: {size: diagramMarbleSize}
-  }))
+function renderMarble(DOM, marbleData$, isDraggable$) {
+  const props = Rx.Observable.combineLatest(
+    marbleData$.distinctUntilChanged(), 
+    isDraggable$,
+    (data, isDraggable) => ({
+      key: `marble${data.id}`,
+      data: data,
+      isDraggable,
+      style: {size: diagramMarbleSize}
+    })
+  )
   return Marble({ DOM, props })
 }
 
@@ -101,12 +105,12 @@ function renderDiagramArrowHead() {
   }});
 }
 
-function renderDiagram$(DOM, data$, isInteractive$, props) {
+function renderDiagram(DOM, data$, isInteractive$, props) {
   // TODO optimize here to create a single Marble and maintain it, updating state,
   // just like D3 has Enter, Leave and Change events. Build it using GroupBy?
   const nots = data$.map(d => d.get('notifications').toJS())
-    .debug("nots")
-  const marbles$ = nots
+  
+  const marbles = nots
     .flatMap(n => n)
     .groupByUntil(
       d => d.id,
@@ -115,17 +119,26 @@ function renderDiagram$(DOM, data$, isInteractive$, props) {
         .map(list => !list.some(ad => ad.id === d.key))
         .filter(b => b)
     )
-    .combineOpenGroups(null, group => renderMarble$(DOM, group, isInteractive$).DOM)
-    .shareReplay()
+    .map(group => renderMarble(DOM, group, isInteractive$))
+    .collection({
+        latest: {
+          DOM: (item) => item.DOM.shareReplay(1),
+        },
+        merge: {
+          clicks$: (item) => item.click$.map(item)
+        }
+      })
+
   const completions$ = renderCompletion$(DOM, data$, isInteractive$)
   const elements$ = Rx.Observable
     .combineLatest(
       completions$,
-      marbles$,
+      marbles.DOM,
       (c, ms) => ms && ms.concat([c])
-    )
+    ).shareReplay(1)
   
-  const vtree$ = elements$.debug("es1").debug("es2").map(es => h('div', { 
+  const vtree$ = elements$
+    .map(es => h('div', { 
       style: diagramStyle,
       attrs: { class: props.class }
     }, [
@@ -136,7 +149,7 @@ function renderDiagram$(DOM, data$, isInteractive$, props) {
 
   return { 
     vtree$: vtree$,
-    click$: nots.flatMap(n => n.click$)
+    clicks$: marbles.clicks$.debug("click in diagram-view")
   }
 }
 
@@ -183,9 +196,10 @@ function animateData$(data$) {
 function diagramView({ DOM, model, props }) {
   // TODO animate, animation is disabled for now as it is WAY to slow for the full DOM
   // const data$ = animateData$(model.data$).merge(model.newData$)
-  const data$ = model.data$.merge(model.newData$).shareReplay(1)
+  model.newData$.subscribe(console.log)
+  const data$ = model.data$//.merge(model.newData$.debug('newData$')).shareReplay(1)
   const isInteractive$ = model.isInteractive$
-  return renderDiagram$(DOM, data$, isInteractive$, props)
+  return renderDiagram(DOM, data$, isInteractive$, props)
 }
 
 module.exports = diagramView;
