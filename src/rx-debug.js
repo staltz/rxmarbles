@@ -3,6 +3,7 @@ import Rx from 'rx';
 var Observable = Rx.Observable,
   inherits = Rx.internals.inherits,
   ObservableBase = Rx.ObservableBase,
+  Disposable = Rx.Disposable,
   AbstractObserver = Rx.internals.AbstractObserver,
   observableProto = Observable.prototype;
 
@@ -15,7 +16,11 @@ var DebugObservable = (function (__super__) {
   }
 
   DebugObservable.prototype.subscribeCore = function (o) {
-    return this.source.subscribe(new DebugObserver(o, this._key));
+    var parent = this.source.subscribe(new DebugObserver(o, this._key));
+    return Disposable.create(() => {
+      console.log('rx.debug', 'dispose', this._key);
+      parent.dispose();
+    })
   };
 
   return DebugObservable;
