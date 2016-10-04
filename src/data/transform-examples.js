@@ -2,7 +2,7 @@ import Rx from 'rx';
 
 export default {
   "delay": {
-    "label": "delay",
+    "label": "delay(20)",
     "inputs": [
       [{t:0, d:1}, {t:10, d:2}, {t:20, d:1}]
     ],
@@ -11,13 +11,13 @@ export default {
     }
   },
 
-  "delayWithSelector": {
-    "label": "delayWithSelector(x => Rx.Observable.timer(20 * x))",
+  "delay with selector": {
+    "label": "delay(x => Rx.Observable.timer(20 * x))",
     "inputs": [
       [{t:0, d:1}, {t:10, d:2}, {t:20, d:1}]
     ],
     "apply": function(inputs, scheduler) {
-      return inputs[0].delayWithSelector(x =>
+      return inputs[0].delay(x =>
         Rx.Observable.timer(Number(x.get('content')) * 20, 1000, scheduler)
       );
     }
@@ -66,13 +66,13 @@ export default {
     }
   },
 
-  "debounceWithSelector": {
-    "label": "debounceWithSelector(x => Rx.Observable.timer(10 * x))",
+  "debounce with selector": {
+    "label": "debounce(x => Rx.Observable.timer(10 * x))",
     "inputs": [
       [{t:0, d:1}, {t:26, d:2}, {t:34, d:1}, {t:40, d:1}, {t:45, d:2}, {t:79, d:1}]
     ],
     "apply": function(inputs, scheduler) {
-      return inputs[0].debounceWithSelector(x =>
+      return inputs[0].debounce(x =>
         Rx.Observable.timer(Number(x.get('content')) * 10, 1000, scheduler)
       );
     }
