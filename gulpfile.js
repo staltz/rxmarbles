@@ -7,17 +7,20 @@ var browserify = require('browserify');
 var watchify = require('watchify');
 var babel = require('babelify');
 
-var bundler = watchify(browserify('./src/app.js', { debug: true }).transform(babel));
+var bundler = watchify(browserify(Object.assign({}, watchify.args, {
+  entries: ['./src/app.js'],
+  debug: true
+})).transform(babel));
 
 function rebundle() {
   console.log('-> bundling...');
   return bundler.bundle()
     .on('error', function(err) { console.error(err); this.emit('end'); })
-    .pipe(source('dist/js/app.js'))
+    .pipe(source('app.js'))
     .pipe(buffer())
     .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest('./'))
+    .pipe(gulp.dest('./dist/js'))
     .on('end', function() { console.log("-> bundling done"); });
 }
 
