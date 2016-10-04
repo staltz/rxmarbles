@@ -59,7 +59,6 @@ function renderInnerContent(data, inputStyle) {
 }
 
 function render(data, isDraggable, inputStyle, isHighlighted) {
-  // console.log("rendering marble", data.diagramId, data.time);
   let draggableContainerStyle = {
     cursor: 'ew-resize'
   };
@@ -77,7 +76,6 @@ function render(data, isDraggable, inputStyle, isHighlighted) {
 }
 
 function renderThunk(data, isDraggable, style, isHighlighted) {
-  // console.log('data for marble', data.id, data.time)
   return thunk('marble', data.id, render, [data, isDraggable, style, isHighlighted]);
 }
 
