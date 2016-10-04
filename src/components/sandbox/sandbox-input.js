@@ -2,7 +2,7 @@
  * Functions to handle data of input diagrams in the example shown in the
  * sandbox.
  */
-import Rx from 'Rx';
+import Rx from 'rx';
 import Utils from '~components/sandbox/utils';
 import Immutable from 'immutable';
 
