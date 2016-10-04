@@ -50,7 +50,7 @@ function diagramIntent({ DOM, click$ }) {
         deltaTime: deltaTime,
         id: target.attributes['data-marble-id'].value
       })
-    ),
+    ).share(),
     changeEndTime$: makeDeltaTime$(completionMouseDown$)
   };
 }
