@@ -59,7 +59,7 @@ function renderInnerContent(data, inputStyle) {
 }
 
 function render(data, isDraggable, inputStyle, isHighlighted) {
-  // console.log("rendering marble", data.id);
+  // console.log("rendering marble", data.diagramId, data.time);
   let draggableContainerStyle = {
     cursor: 'ew-resize'
   };
@@ -81,21 +81,25 @@ function renderThunk(data, isDraggable, style, isHighlighted) {
   return thunk('marble', data.id, render, [data, isDraggable, style, isHighlighted]);
 }
 
-function marbleComponent({DOM, props}) {
+function marbleComponent({DOM, props: properties}) {
   let mouseDown$ = DOM.select('.marbleRoot').events('mousedown');
   let startHighlight$ = DOM.select('.marbleRoot').events('mouseenter');
   let stopHighlight$ = DOM.select('.marbleRoot').events('mouseleave');
   
+  let props = properties.share();
   let data$ = props.pluck('data');
-  let isDraggable$ = props.pluck('isDraggable').startWith(false);
-  let style$ = props.pluck('style').startWith({});
+  let isDraggable$ = props.pluck('isDraggable');
+  let style$ = props.pluck('style');
   let isHighlighted$ = Rx.Observable.merge(
     startHighlight$.map(() => true),
     stopHighlight$.map(() => false)
   ).startWith(false);
   let vtree$ = Rx.Observable.combineLatest(
-    data$, isDraggable$, style$, isHighlighted$, render
-  );
+    data$, isDraggable$, style$, isHighlighted$,
+    (...args) => args
+  )
+  .distinctUntilChanged()
+  .map(args => render(...args));
 
   let end = props.takeLast(1).doOnCompleted(() => console.log('marble end'))
 
