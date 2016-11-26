@@ -1,16 +1,17 @@
 import {Rx} from '@cycle/core';
 
 module.exports = {
-  // A clone of scan?
-  // "aggregate": {
-  //   "label": "aggregate((x, y) => x + y)"
-  //   "inputs": [
-  //     [{t:5, d:1}, {t:15, d:2}, {t:25, d:3}, {t:35, d:4}, {t:65, d:5}]
-  //   ]
-  //   "apply": (inputs) -> inputs[0].aggregate((x, y) ->
-  //     return {content: x.content + y.content, time: x.time, id: x.id+y.id}
-  //   )
-  // }
+  "aggregate": {
+    "label": "aggregate((x, y) => x + y)",
+    "inputs": [
+      [{t:5, d:1}, {t:15, d:2}, {t:25, d:3}, {t:35, d:4}, {t:65, d:5}, 80]
+    ],
+    "apply": function(inputs) {
+      return inputs[0].aggregate(function(x, y) {
+        return {content: x.content + y.content, time: x.time, id: x.id+y.id};
+      });
+    }
+  },
 
   "average": {
     "label": "average",
