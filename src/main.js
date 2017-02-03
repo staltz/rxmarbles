@@ -2,6 +2,7 @@ import { run } from '@cycle/rxjs-run';
 import { div, label, makeDOMDriver } from '@cycle/dom';
 import { Observable } from 'rxjs';
 
+import { renderSvgDropshadow } from './styles/utils'
 import { Timeline } from './timeline';
 
 function main(sources) {
@@ -11,6 +12,7 @@ function main(sources) {
     DOM: timeline.DOM
       .map((timelineDOM) =>
         div([
+          renderSvgDropshadow(),
           label('Helloz'),
           timelineDOM,
         ]),

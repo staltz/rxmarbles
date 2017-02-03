@@ -11,7 +11,14 @@ function getPercentageFn(element) {
 }
 
 function intent(elementClass, DOMSource) {
-  return DOMSource.select('.' + elementClass).events('mousedown')
+  const element = DOMSource.select('.' + elementClass);
+
+  const startHighlight$ = element.events('mouseenter').mapTo(true);
+  const stopHighlight$ = element.events('mouseleave').mapTo(false);
+  const isHighlighted$ = Observable.merge(startHighlight$, stopHighlight$)
+    .startWith(false);
+
+  const valueChange$ = element.events('mousedown')
     .map(path(['currentTarget', 'parentElement']))
     .map(getPercentageFn)
     .switchMap(getPercentage =>
@@ -20,6 +27,8 @@ function intent(elementClass, DOMSource) {
         .map(getPercentage)
         .distinctUntilChanged()
     );
+
+  return { valueChange$, isHighlighted$ };
 }
 
 function model(props$, valueChange$) {
@@ -43,8 +52,8 @@ function model(props$, valueChange$) {
 
 export function timelineItem(elementClass, view, sources) {
   const { DOM, props } = sources;
-  const valueChange$ = intent(elementClass, DOM);
+  const { valueChange$, isHighlighted$ } = intent(elementClass, DOM);
   const value$ = model(props, valueChange$);
-  const vtree$ = view(props, value$);
+  const vtree$ = view(props, value$, isHighlighted$);
   return { DOM: vtree$, data: value$ };
 }

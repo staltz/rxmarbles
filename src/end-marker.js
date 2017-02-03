@@ -11,7 +11,7 @@ function view(props$, value$) {
     .map((value) =>
       svg.line({
         attrs: { class: ELEMENT_CLASS, x1: value, x2: value, y1: 1, y2: 9 },
-        style: { stroke: 'black', strokeWidth: 0.5 },
+        style: { stroke: 'black', strokeWidth: 0.5, cursor: 'ew-resize' },
       }),
     );
 }
