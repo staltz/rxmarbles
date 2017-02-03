@@ -11,7 +11,7 @@ function main(sources) {
     DOM: timeline.DOM
       .map((timelineDOM) =>
         div([
-          label('Hellozzz'),
+          label('Helloz'),
           timelineDOM,
         ]),
       ),

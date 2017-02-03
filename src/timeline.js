@@ -6,8 +6,19 @@ import { Marble } from './marble';
 import { EndMarker } from './end-marker';
 
 function OriginalTimeline({ DOM, store }) {
-  const marbleSources = { DOM, props: store.pluck('marbles') };
-  const endMarkerSources = { DOM, props: store.pluck('endMarker') };
+  const marbleProps$ = store.map(({ marbles, endMarker }) => ({
+    value: marbles.value,
+    minValue: 0,
+    maxValue: endMarker.value,
+  }));
+  const endMarkerProps$ = store.map(({ marbles, endMarker }) => ({
+    value: endMarker.value,
+    minValue: marbles.value,
+    maxValue: 100,
+  }));
+
+  const marbleSources = { DOM, props: marbleProps$ };
+  const endMarkerSources = { DOM, props: endMarkerProps$ };
 
   const marble = Marble(marbleSources);
   const endMarker = EndMarker(endMarkerSources);

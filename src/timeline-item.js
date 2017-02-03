@@ -1,39 +1,50 @@
 import { Observable } from 'rxjs';
-import { add, compose, complement, equals, path, multiply, max, min } from 'ramda';
+import { add, compose, path, multiply, max, min } from 'ramda';
 
 const mouseMove$ = Observable.fromEvent(document, 'mousemove');
 const mouseUp$ = Observable.fromEvent(document, 'mouseup');
 
-function getPxToPercentageRatio(px) {
-  return (100 / px) || 0.15;
+function getPercentageFn(element) {
+  const ratio = (100 / element.clientWidth) || 0.15;
+  const elementLeft = element.getBoundingClientRect().left + window.scrollX;
+  return (x) => (x - elementLeft) * ratio;
 }
 
 function intent(elementClass, DOMSource) {
   return DOMSource.select('.' + elementClass).events('mousedown')
-    .map(path(['currentTarget', 'parentElement', 'clientWidth']))
-    .map(getPxToPercentageRatio)
-    .switchMap(pxPercentRatio =>
+    .map(path(['currentTarget', 'parentElement']))
+    .map(getPercentageFn)
+    .switchMap(getPercentage =>
       mouseMove$.takeUntil(mouseUp$)
         .pluck('pageX')
-        .pairwise()
-        .map(([x1, x2]) => x2 - x1)
-        .filter(complement(equals(0)))
-        .map(multiply(pxPercentRatio))
+        .map(getPercentage)
+        .distinctUntilChanged()
     );
 }
 
-function model(props$, diffValue$) {
-  return diffValue$.startWith(0)
-    .withLatestFrom(props$.pluck('value'), add)
+function model(props$, valueChange$) {
+  const currentValue$ = props$.pluck('value');
+
+  const restrictedValueChange$ = valueChange$
     .map(max(0))
     .map(min(100))
     .publishReplay(1).refCount();
+
+  const minChange$ = props$.pluck('minValue')
+    .distinctUntilChanged()
+    .withLatestFrom(currentValue$, max);
+
+  const maxChange$ = props$.pluck('maxValue')
+    .distinctUntilChanged()
+    .withLatestFrom(currentValue$, min);
+
+  return Observable.merge(restrictedValueChange$, minChange$, maxChange$);
 }
 
 export function timelineItem(elementClass, view, sources) {
   const { DOM, props } = sources;
-  const diffValue$ = intent(elementClass, DOM);
-  const value$ = model(props, diffValue$);
+  const valueChange$ = intent(elementClass, DOM);
+  const value$ = model(props, valueChange$);
   const vtree$ = view(props, value$);
   return { DOM: vtree$, data: value$ };
 }
