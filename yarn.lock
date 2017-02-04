@@ -2,6 +2,14 @@
 # yarn lockfile v1
 
 
+"@cycle/collection@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@cycle/collection/-/collection-0.5.1.tgz#02fc26cac00af2a67b82cd84b33817b933d169bc"
+  dependencies:
+    "@cycle/isolate" "^1.4.0"
+    "@cycle/xstream-adapter" "^3.0.3"
+    xstream "^9.2.0"
+
 "@cycle/dom@^15.0.0-rc.1":
   version "15.0.0-rc.1"
   resolved "https://registry.yarnpkg.com/@cycle/dom/-/dom-15.0.0-rc.1.tgz#9c88ad6a2e7249fcf77d8ee74a29bb2b2541d126"
@@ -21,11 +29,19 @@
   dependencies:
     xstream "10.x"
 
+"@cycle/rxjs-adapter@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@cycle/rxjs-adapter/-/rxjs-adapter-3.3.0.tgz#1b26d94b2154d44667690e334a13609c47a83ca6"
+
 "@cycle/rxjs-run@^4.0.0-rc.3":
   version "4.0.0-rc.3"
   resolved "https://registry.yarnpkg.com/@cycle/rxjs-run/-/rxjs-run-4.0.0-rc.3.tgz#2dfd29b090ad82b680a72bef9cead3b01c490b02"
   dependencies:
     "@cycle/run" "1.0.0-rc.7"
+
+"@cycle/xstream-adapter@^3.0.3":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@cycle/xstream-adapter/-/xstream-adapter-3.1.0.tgz#97b64f3161d91913666be81ee11a13f3d1e754b4"
 
 abbrev@1:
   version "1.0.9"
@@ -2516,6 +2532,12 @@ wrappy@1:
 xstream@10.x:
   version "10.0.0"
   resolved "https://registry.yarnpkg.com/xstream/-/xstream-10.0.0.tgz#a48f4cd92d0b2dfa621ce7dddb86d0a0e12ed26e"
+  dependencies:
+    symbol-observable "^1.0.2"
+
+xstream@^9.2.0:
+  version "9.3.0"
+  resolved "https://registry.yarnpkg.com/xstream/-/xstream-9.3.0.tgz#7cc9c91970c84644fc00d59621027259cc2dad0e"
   dependencies:
     symbol-observable "^1.0.2"
 

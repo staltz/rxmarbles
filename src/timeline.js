@@ -1,30 +1,38 @@
 import { svg } from '@cycle/dom';
+import { Collection } from './collection';
 import isolate from '@cycle/isolate';
 import { Observable } from 'rxjs';
+import { max, prop } from 'ramda';
 
 import { Marble } from './marble';
 import { EndMarker } from './end-marker';
 
 function OriginalTimeline({ DOM, store }) {
-  const marbleProps$ = store.map(({ marbles, endMarker }) => ({
-    value: marbles.value,
+  const marblesProps$ = store.map(({ endMarker }) => ({
     minValue: 0,
-    maxValue: endMarker.value,
+    maxValue: endMarker,
   }));
-  const endMarkerProps$ = store.map(({ marbles, endMarker }) => ({
-    value: endMarker.value,
-    minValue: marbles.value,
+  const endMarkerProps$ = store.map(({ marbles }) => ({
+    minValue: marbles.reduce(max),
     maxValue: 100,
   }));
 
-  const marbleSources = { DOM, props: marbleProps$ };
-  const endMarkerSources = { DOM, props: endMarkerProps$ };
+  const marblesSources = { DOM, props: marblesProps$ };
+  const endMarkerSources = {
+    DOM,
+    props: endMarkerProps$,
+    value: store.pluck('endMarker'),
+  };
 
-  const marble = Marble(marbleSources);
+  const marblesState$ = store.pluck('marbles')
+    .map(values => values.map((value, id) => ({ value, id }) ));
+
+  const marbles$ = Collection.gather(Marble, marblesSources, marblesState$);
+  const marbleDOMs$ = Collection.pluck(marbles$, prop('DOM'));
   const endMarker = EndMarker(endMarkerSources);
 
-  const vtree$ = Observable.combineLatest(marble.DOM, endMarker.DOM)
-    .map(([marbleDOM, endMarkerDOM]) =>
+  const vtree$ = Observable.combineLatest(marbleDOMs$, endMarker.DOM)
+    .map(([marbleDOMs, endMarkerDOM]) =>
       svg({
         attrs: { viewBox: '0 0 100 10' },
         style: { width: 300, height: 30, overflow: 'visible' },
@@ -34,14 +42,14 @@ function OriginalTimeline({ DOM, store }) {
           style: { stroke: 'black', strokeWidth: 0.5 },
         }),
         endMarkerDOM,
-        marbleDOM,
-      ])
+      ].concat(marbleDOMs))
     );
 
-  const data$ = Observable.combineLatest(marble.data, endMarker.data)
-    .map(([marbleValue, endMarkerValue]) => ({
-      marbles: { value: marbleValue },
-      endMarker: { value: endMarkerValue },
+  const marbleData$ = Collection.pluck(marbles$, prop('data'));
+  const data$ = Observable.combineLatest(marbleData$, endMarker.data)
+    .map(([marbleValues, endMarkerValue]) => ({
+      marbles: marbleValues,
+      endMarker: endMarkerValue,
     }));
 
   return { DOM: vtree$, data: data$ };

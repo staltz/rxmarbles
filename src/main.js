@@ -30,7 +30,7 @@ function dummyDriver(initialValue) {
 run(main, {
   DOM: makeDOMDriver('#app-container'),
   store: dummyDriver({
-    marbles: { value: 10 },
-    endMarker: { value: 80 },
+    marbles: [15, 30, 40],
+    endMarker: 80,
   }),
 });

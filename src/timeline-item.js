@@ -31,29 +31,28 @@ function intent(elementClass, DOMSource) {
   return { valueChange$, isHighlighted$ };
 }
 
-function model(props$, valueChange$) {
-  const currentValue$ = props$.pluck('value');
-
+function model(props$, valueSource$, valueChange$, id) {
   const restrictedValueChange$ = valueChange$
     .map(max(0))
     .map(min(100))
+    .distinctUntilChanged()
     .publishReplay(1).refCount();
 
   const minChange$ = props$.pluck('minValue')
     .distinctUntilChanged()
-    .withLatestFrom(currentValue$, max);
+    .withLatestFrom(valueSource$, max);
 
   const maxChange$ = props$.pluck('maxValue')
     .distinctUntilChanged()
-    .withLatestFrom(currentValue$, min);
+    .withLatestFrom(valueSource$, min);
 
   return Observable.merge(restrictedValueChange$, minChange$, maxChange$);
 }
 
 export function timelineItem(elementClass, view, sources) {
-  const { DOM, props } = sources;
+  const { DOM, props, value: valueSource, id } = sources;
   const { valueChange$, isHighlighted$ } = intent(elementClass, DOM);
-  const value$ = model(props, valueChange$);
+  const value$ = model(props, valueSource, valueChange$, id);
   const vtree$ = view(props, value$, isHighlighted$);
   return { DOM: vtree$, data: value$ };
 }
