@@ -18,7 +18,7 @@ function intent(elementClass, DOMSource) {
   const isHighlighted$ = Observable.merge(startHighlight$, stopHighlight$)
     .startWith(false);
 
-  const valueChange$ = element.events('mousedown')
+  const timeChange$ = element.events('mousedown')
     .map(path(['currentTarget', 'parentElement']))
     .map(getPercentageFn)
     .switchMap(getPercentage =>
@@ -28,31 +28,31 @@ function intent(elementClass, DOMSource) {
         .distinctUntilChanged()
     );
 
-  return { valueChange$, isHighlighted$ };
+  return { timeChange$, isHighlighted$ };
 }
 
-function model(props$, valueSource$, valueChange$, id) {
-  const restrictedValueChange$ = valueChange$
+function model(props$, timeSource$, timeChange$) {
+  const restrictedTimeChange$ = timeChange$
     .map(max(0))
     .map(min(100))
     .distinctUntilChanged()
     .publishReplay(1).refCount();
 
-  const minChange$ = props$.pluck('minValue')
+  const minChange$ = props$.pluck('minTime')
     .distinctUntilChanged()
-    .withLatestFrom(valueSource$, max);
+    .withLatestFrom(timeSource$, max);
 
-  const maxChange$ = props$.pluck('maxValue')
+  const maxChange$ = props$.pluck('maxTime')
     .distinctUntilChanged()
-    .withLatestFrom(valueSource$, min);
+    .withLatestFrom(timeSource$, min);
 
-  return Observable.merge(restrictedValueChange$, minChange$, maxChange$);
+  return Observable.merge(restrictedTimeChange$, minChange$, maxChange$);
 }
 
 export function timelineItem(elementClass, view, sources) {
-  const { DOM, props, value: valueSource, id } = sources;
-  const { valueChange$, isHighlighted$ } = intent(elementClass, DOM);
-  const value$ = model(props, valueSource, valueChange$, id);
-  const vtree$ = view(props, value$, isHighlighted$);
-  return { DOM: vtree$, data: value$ };
+  const { DOM, props, time: timeSource$, id: id$ } = sources;
+  const { timeChange$, isHighlighted$ } = intent(elementClass, DOM);
+  const time$ = model(props, timeSource$, timeChange$);
+  const vtree$ = view(sources, time$, isHighlighted$);
+  return { DOM: vtree$, time: time$ };
 }

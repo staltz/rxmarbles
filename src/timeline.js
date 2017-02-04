@@ -2,54 +2,66 @@ import { svg } from '@cycle/dom';
 import { Collection } from './collection';
 import isolate from '@cycle/isolate';
 import { Observable } from 'rxjs';
-import { max, prop } from 'ramda';
+import { apply, flip, map, max, merge, path, prop, sortBy, zip } from 'ramda';
 
 import { Marble } from './marble';
 import { EndMarker } from './end-marker';
 
+function sortMarbleDoms$(marbles$) {
+  const doms$ = Collection.pluck(marbles$, prop('DOM'));
+  const dataList$ = Collection.pluck(marbles$, prop('data'));
+
+  return Observable.combineLatest(doms$, dataList$, zip)
+    .map(sortBy(path([1, 'time'])))
+    .map(map(prop(0)));
+}
+
 function OriginalTimeline({ DOM, store }) {
   const marblesProps$ = store.map(({ endMarker }) => ({
-    minValue: 0,
-    maxValue: endMarker,
+    minTime: 0,
+    maxTime: endMarker.time,
   }));
   const endMarkerProps$ = store.map(({ marbles }) => ({
-    minValue: marbles.reduce(max),
-    maxValue: 100,
+    minTime: marbles.map(prop('time')).reduce(max),
+    maxTime: 100,
   }));
 
   const marblesSources = { DOM, props: marblesProps$ };
   const endMarkerSources = {
     DOM,
     props: endMarkerProps$,
-    value: store.pluck('endMarker'),
+    time: store.map(path(['endMarker', 'time'])),
   };
 
-  const marblesState$ = store.pluck('marbles')
-    .map(values => values.map((value, id) => ({ value, id }) ));
+  const marblesState$ = store.pluck('marbles');
 
-  const marbles$ = Collection.gather(Marble, marblesSources, marblesState$);
-  const marbleDOMs$ = Collection.pluck(marbles$, prop('DOM'));
+  const marbles$ = Collection.gather(
+    Marble, marblesSources, marblesState$, '_id');
+  const marbleDOMs$ = sortMarbleDoms$(marbles$);
   const endMarker = EndMarker(endMarkerSources);
 
   const vtree$ = Observable.combineLatest(marbleDOMs$, endMarker.DOM)
     .map(([marbleDOMs, endMarkerDOM]) =>
       svg({
         attrs: { viewBox: '0 0 100 10' },
-        style: { width: 300, height: 30, overflow: 'visible' },
+        style: { width: 500, height: 50, overflow: 'visible' },
       }, [
         svg.line({
           attrs: { x1: 0, x2: 100, y1: 5, y2: 5 },
-          style: { stroke: 'black', strokeWidth: 0.5 },
+          style: { stroke: 'black', strokeWidth: 0.4 },
         }),
         endMarkerDOM,
       ].concat(marbleDOMs))
     );
 
-  const marbleData$ = Collection.pluck(marbles$, prop('data'));
-  const data$ = Observable.combineLatest(marbleData$, endMarker.data)
-    .map(([marbleValues, endMarkerValue]) => ({
-      marbles: marbleValues,
-      endMarker: endMarkerValue,
+  const marbleData$ = Collection.pluck(marbles$, prop('data'))
+    .withLatestFrom(marblesState$, zip)
+    .map(map(apply(flip(merge))));
+
+  const data$ = Observable.combineLatest(marbleData$, endMarker.time)
+    .map(([marbles, endMarkerTime]) => ({
+      marbles,
+      endMarker: { time: endMarkerTime },
     }));
 
   return { DOM: vtree$, data: data$ };
