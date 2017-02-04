@@ -1,8 +1,9 @@
 import { svg } from '@cycle/dom';
-import { Collection } from './collection';
 import isolate from '@cycle/isolate';
 import { Observable } from 'rxjs';
 import { apply, flip, map, max, merge, path, prop, sortBy, zip } from 'ramda';
+
+import { Collection } from '../collection';
 
 import { Marble } from './marble';
 import { EndMarker } from './end-marker';
@@ -36,7 +37,7 @@ function OriginalTimeline({ DOM, store }) {
   const marblesState$ = store.pluck('marbles');
 
   const marbles$ = Collection.gather(
-    Marble, marblesSources, marblesState$, '_id');
+    Marble, marblesSources, marblesState$, '_itemId');
   const marbleDOMs$ = sortMarbleDoms$(marbles$);
   const endMarker = EndMarker(endMarkerSources);
 

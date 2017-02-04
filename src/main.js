@@ -2,37 +2,31 @@ import { run } from '@cycle/rxjs-run';
 import { div, makeDOMDriver } from '@cycle/dom';
 
 import { renderSvgDropshadow } from './styles/utils'
-import { Timeline } from './timeline';
+import { Sandbox } from './sandbox';
 
 function main(sources) {
-  const timeline = Timeline(sources);
+  const sandbox = Sandbox(sources);
 
   const sinks = {
-    DOM: timeline.DOM
-      .map((timelineDOM) =>
+    DOM: sandbox.DOM
+      .map((sandboxDOM) =>
         div([
           renderSvgDropshadow(),
-          timelineDOM,
+          sandboxDOM,
         ]),
       ),
-    store: timeline.data,
+    store: sandbox.data,
   };
 
   return sinks;
 }
 
+// Note: drivers use xstream 
 function dummyDriver(initialValue) {
   return (value$) => value$.startWith(initialValue);
 }
 
 run(main, {
   DOM: makeDOMDriver('#app-container'),
-  store: dummyDriver({
-    marbles: [
-      { time: 15, content: 'A', id: 1, _id: 1 },
-      { time: 30, content: 'B', id: 2, _id: 2 },
-      { time: 40, content: 'C', id: 3, _id: 3 },
-    ],
-    endMarker: { time: 80 },
-  }),
+  store: dummyDriver({}),
 });
