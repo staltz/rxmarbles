@@ -2,9 +2,9 @@ import { run } from '@cycle/rxjs-run';
 import { div, makeDOMDriver } from '@cycle/dom';
 
 import { renderSvgDropshadow } from './styles/utils'
-import { Sandbox } from './sandbox';
-import { inputsToMarbles } from './sandbox-utils';
-import { utilityExamples } from './data/utility-examples';
+import { Sandbox } from './sandbox/sandbox';
+import { inputsToMarbles } from './sandbox/sandbox-utils';
+import { examples } from './data';
 
 function main(sources) {
   const sandbox = Sandbox(sources);
@@ -23,8 +23,9 @@ function main(sources) {
   return sinks;
 }
 
-const example = utilityExamples.delay;
-const inputMarbles = inputsToMarbles(example.inputs)[0];
+const example = examples.merge;
+const inputs = inputsToMarbles(example.inputs)
+  .map((marbles) => ({ marbles, end: { time: 90 } }));
 
 // Note: drivers use xstream 
 function dummyDriver(initialValue) {
@@ -33,10 +34,5 @@ function dummyDriver(initialValue) {
 
 run(main, {
   DOM: makeDOMDriver('#app-container'),
-  store: dummyDriver({
-    inputs: {
-      marbles: inputMarbles,
-      end: { time: 90 },
-    },
-  }),
+  store: dummyDriver({ inputs }),
 });

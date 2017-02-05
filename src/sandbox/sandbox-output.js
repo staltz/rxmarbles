@@ -1,11 +1,11 @@
 import { Observable, ReplaySubject, VirtualTimeScheduler } from 'rxjs';
-import { assoc, merge } from 'ramda';
+import { assoc, curry, merge } from 'ramda';
 
 import { calculateNotificationContentHash } from './sandbox-utils';
 
 const MAX_TIME = 100;
 
-function toVTStream(scheduler, data) {
+const toVTStream = curry(function _toVTStream(scheduler, data) {
   const marbleStreams$ = new Observable(observer => {
     data.marbles.forEach(item =>
       scheduler.schedule(() => observer.next(item), item.time));
@@ -13,7 +13,7 @@ function toVTStream(scheduler, data) {
   return marbleStreams$
     .takeUntil(Observable.timer(data.end.time, scheduler))
     .publish().refCount();
-}
+});
 
 function outputStreamToMarbles$(scheduler, stream) {
   const subject$ = new ReplaySubject(1);
@@ -37,13 +37,13 @@ function outputStreamToMarbles$(scheduler, stream) {
   return subject$.asObservable();
 }
 
-export function createOutputStream$(inputsStore$, example) {
-  return inputsStore$
-    .map(inputsStore => {
+export function createOutputStream$(inputStores$, example) {
+  return inputStores$
+    .map(inputStores => {
       const vtScheduler = new VirtualTimeScheduler(undefined, MAX_TIME);
 
-      const inputStream = toVTStream(vtScheduler, inputsStore);
-      const outputStream = example.apply([inputStream], vtScheduler)
+      const inputStreams = inputStores.map(toVTStream(vtScheduler));
+      const outputStream = example.apply(inputStreams, vtScheduler)
         .takeUntil(Observable.timer(MAX_TIME, vtScheduler));
 
       return outputStreamToMarbles$(vtScheduler, outputStream)

@@ -6,7 +6,7 @@ const path = require('path');
 const isProduction = false;
 
 module.exports = {
-  entry: './src/main.js',
+  entry: './src/app.js',
 
   output: {
     path: path.resolve(__dirname, 'dist'),

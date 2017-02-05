@@ -1,7 +1,7 @@
 import { svg } from '@cycle/dom';
 import isolate from '@cycle/isolate';
 import { Observable } from 'rxjs';
-import { merge } from 'ramda';
+import { merge, values } from 'ramda';
 
 import { dropshadow } from '../styles/utils';
 import { COLORS } from '../styles/colors';
@@ -11,11 +11,7 @@ import { timelineItem } from './timeline-item';
 const ELEMENT_CLASS = 'marble';
 
 function color(id) {
-  return {
-    0: COLORS.yellow,
-    1: COLORS.blue,
-    2: COLORS.red,
-  }[id];
+  return values(COLORS)[id];
 }
 
 function view(sources, value$, isHighlighted$) {
