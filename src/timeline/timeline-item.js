@@ -16,7 +16,8 @@ function intent(elementClass, DOMSource) {
   const startHighlight$ = element.events('mouseenter').mapTo(true);
   const stopHighlight$ = element.events('mouseleave').mapTo(false);
   const isHighlighted$ = Observable.merge(startHighlight$, stopHighlight$)
-    .startWith(false);
+    .startWith(false)
+    .publishReplay(1).refCount();
 
   const timeChange$ = element.events('mousedown')
     .map(path(['currentTarget', 'parentElement']))
@@ -34,8 +35,7 @@ function intent(elementClass, DOMSource) {
 function model(props$, timeSource$, timeChange$) {
   const restrictedTimeChange$ = timeChange$
     .map(max(0))
-    .map(min(100))
-    .publishReplay(1).refCount();
+    .map(min(100));
 
   const minChange$ = props$.pluck('minTime')
     .distinctUntilChanged()
@@ -43,13 +43,13 @@ function model(props$, timeSource$, timeChange$) {
 
   const maxChange$ = props$.pluck('maxTime')
     .distinctUntilChanged()
-    .withLatestFrom(timeSource$, min)
-    ;
+    .withLatestFrom(timeSource$, min);
 
   return Observable.merge(
     // order matters
     timeSource$, restrictedTimeChange$, minChange$, maxChange$)
-    .distinctUntilChanged();
+    .distinctUntilChanged()
+    .publishReplay(1).refCount();
 }
 
 export function timelineItem(elementClass, view, sources) {

@@ -37,9 +37,9 @@ function outputStreamToMarbles$(scheduler, stream) {
   return subject$.asObservable();
 }
 
-export function createOutputStream$(inputStores$, example) {
-  return inputStores$
-    .map(inputStores => {
+export function createOutputStream$(example$, inputStores$) {
+  return inputStores$.withLatestFrom(example$)
+    .map(([inputStores, example]) => {
       const vtScheduler = new VirtualTimeScheduler(undefined, MAX_TIME);
 
       const inputStreams = inputStores.map(toVTStream(vtScheduler));
@@ -49,5 +49,6 @@ export function createOutputStream$(inputStores$, example) {
       return outputStreamToMarbles$(vtScheduler, outputStream)
         .map(marbles => ({ marbles, end: { time: vtScheduler.now() } }));
     })
-    .mergeAll();
+    .mergeAll()
+    .publishReplay(1).refCount();
 }

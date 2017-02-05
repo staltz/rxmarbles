@@ -17,13 +17,13 @@ function sortMarbleDoms$(marbles$) {
     .map(map(prop(0)));
 }
 
-function OriginalTimeline({ DOM, store }) {
-  const marblesProps$ = store.map(({ end }) => ({
+function OriginalTimeline({ DOM, marbles: marblesState$, end: end$ }) {
+  const marblesProps$ = end$.map(({ time }) => ({
     minTime: 0,
-    maxTime: end.time,
+    maxTime: time,
   }));
-  const endMarkerProps$ = store.map(({ marbles }) => ({
-    minTime: marbles.map(prop('time')).reduce(max),
+  const endMarkerProps$ = marblesState$.map(marbles => ({
+    minTime: marbles.map(prop('time')).reduce(max, 0),
     maxTime: 100,
   }));
 
@@ -31,10 +31,8 @@ function OriginalTimeline({ DOM, store }) {
   const endMarkerSources = {
     DOM,
     props: endMarkerProps$,
-    time: store.map(path(['end', 'time'])),
+    time: end$.pluck('time'),
   };
-
-  const marblesState$ = store.pluck('marbles');
 
   const marbles$ = Collection.gather(
     Marble, marblesSources, marblesState$, '_itemId');
@@ -57,6 +55,7 @@ function OriginalTimeline({ DOM, store }) {
     );
 
   const marbleData$ = Collection.pluck(marbles$, prop('data'))
+    .debounceTime(0)
     .withLatestFrom(marblesState$, zip)
     .map(map(apply(flip(merge))));
 
