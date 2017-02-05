@@ -35,7 +35,6 @@ function model(props$, timeSource$, timeChange$) {
   const restrictedTimeChange$ = timeChange$
     .map(max(0))
     .map(min(100))
-    .distinctUntilChanged()
     .publishReplay(1).refCount();
 
   const minChange$ = props$.pluck('minTime')
@@ -44,9 +43,13 @@ function model(props$, timeSource$, timeChange$) {
 
   const maxChange$ = props$.pluck('maxTime')
     .distinctUntilChanged()
-    .withLatestFrom(timeSource$, min);
+    .withLatestFrom(timeSource$, min)
+    ;
 
-  return Observable.merge(restrictedTimeChange$, minChange$, maxChange$);
+  return Observable.merge(
+    // order matters
+    timeSource$, restrictedTimeChange$, minChange$, maxChange$)
+    .distinctUntilChanged();
 }
 
 export function timelineItem(elementClass, view, sources) {

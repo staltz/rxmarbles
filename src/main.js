@@ -3,6 +3,8 @@ import { div, makeDOMDriver } from '@cycle/dom';
 
 import { renderSvgDropshadow } from './styles/utils'
 import { Sandbox } from './sandbox';
+import { inputsToMarbles } from './sandbox-utils';
+import { utilityExamples } from './data/utility-examples';
 
 function main(sources) {
   const sandbox = Sandbox(sources);
@@ -21,6 +23,9 @@ function main(sources) {
   return sinks;
 }
 
+const example = utilityExamples.delay;
+const inputMarbles = inputsToMarbles(example.inputs)[0];
+
 // Note: drivers use xstream 
 function dummyDriver(initialValue) {
   return (value$) => value$.startWith(initialValue);
@@ -28,5 +33,10 @@ function dummyDriver(initialValue) {
 
 run(main, {
   DOM: makeDOMDriver('#app-container'),
-  store: dummyDriver({}),
+  store: dummyDriver({
+    inputs: {
+      marbles: inputMarbles,
+      end: { time: 90 },
+    },
+  }),
 });

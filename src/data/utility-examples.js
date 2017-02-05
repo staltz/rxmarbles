@@ -5,9 +5,9 @@ export const utilityExamples = {
   delay: {
     label: 'delay(20)',
     inputs: [
-      [{t:10, c:'1'}, {t:20, c:'2'}, {t:35, c:'1'}]
+      [{t:10, c:'1'}, {t:20, c:'2'}, {t:75, c:'1'}]
     ],
     apply: (inputs, scheduler) =>
-      inputs[0].map(prop('content')).delay(15, scheduler),
+      inputs[0].map(prop('content')).delay(30, scheduler),
   },
 };

@@ -18,9 +18,9 @@ function sortMarbleDoms$(marbles$) {
 }
 
 function OriginalTimeline({ DOM, store }) {
-  const marblesProps$ = store.map(({ endMarker }) => ({
+  const marblesProps$ = store.map(({ end }) => ({
     minTime: 0,
-    maxTime: endMarker.time,
+    maxTime: end.time,
   }));
   const endMarkerProps$ = store.map(({ marbles }) => ({
     minTime: marbles.map(prop('time')).reduce(max),
@@ -31,7 +31,7 @@ function OriginalTimeline({ DOM, store }) {
   const endMarkerSources = {
     DOM,
     props: endMarkerProps$,
-    time: store.map(path(['endMarker', 'time'])),
+    time: store.map(path(['end', 'time'])),
   };
 
   const marblesState$ = store.pluck('marbles');
@@ -52,7 +52,8 @@ function OriginalTimeline({ DOM, store }) {
           style: { stroke: 'black', strokeWidth: 0.4 },
         }),
         endMarkerDOM,
-      ].concat(marbleDOMs))
+        ...marbleDOMs,
+      ])
     );
 
   const marbleData$ = Collection.pluck(marbles$, prop('data'))
@@ -62,7 +63,7 @@ function OriginalTimeline({ DOM, store }) {
   const data$ = Observable.combineLatest(marbleData$, endMarker.time)
     .map(([marbles, endMarkerTime]) => ({
       marbles,
-      endMarker: { time: endMarkerTime },
+      end: { time: endMarkerTime },
     }));
 
   return { DOM: vtree$, data: data$ };
