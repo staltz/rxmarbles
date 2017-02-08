@@ -1,4 +1,4 @@
-import { svg } from '@cycle/dom';
+import { svg, div } from '@cycle/dom';
 
 const DROPSHADOW_FILTER_ID = 'dropshadow';
 
@@ -22,4 +22,26 @@ function renderSvgDropshadow() {
 
 const dropshadow = { filter: `url(#${DROPSHADOW_FILTER_ID})` };
 
-export { renderSvgDropshadow, dropshadow };
+function getElevationPseudoElementStyle(dy, blur, opacity) {
+  return {
+    display: 'block',
+    position: 'absolute',
+    left: '0', top: '0', right: '0', bottom: '0',
+    '-webkit-box-shadow': `0 ${dy} ${blur} 0 rgba(0,0,0,${opacity})`,
+       '-moz-box-shadow': `0 ${dy} ${blur} 0 rgba(0,0,0,${opacity})`,
+            'box-shadow': `0 ${dy} ${blur} 0 rgba(0,0,0,${opacity})`
+  };
+}
+
+const elevation2Before = div(
+  { style: getElevationPseudoElementStyle('2px', '10px', '0.17') }, '');
+
+const elevation2After = div(
+  { style: getElevationPseudoElementStyle('2px', '5px', '0.26') }, '');
+
+export {
+  dropshadow,
+  elevation2Before,
+  elevation2After,
+  renderSvgDropshadow,
+};

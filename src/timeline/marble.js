@@ -5,6 +5,8 @@ import { merge, values } from 'ramda';
 
 import { dropshadow } from '../styles/utils';
 import { COLORS } from '../styles/colors';
+import { FONTS } from '../styles/fonts';
+
 import { timelineItem } from './timeline-item';
 
 
@@ -23,7 +25,7 @@ function view(sources, value$, isHighlighted$) {
         style: { cursor: 'ew-resize' },
       }, [
         svg.circle({
-          attrs: { r: 3 },
+          attrs: { r: 2.8 },
           style: merge({
             fill: color(itemId),
             stroke: 'black',
@@ -32,7 +34,7 @@ function view(sources, value$, isHighlighted$) {
         }),
         svg.text({
           attrs: { 'text-anchor': 'middle', 'alignment-baseline': 'middle' },
-          style: { fontSize: 3.5, userSelect: 'none' }
+          style: { fontFamily: FONTS.base, fontSize: 2.5, userSelect: 'none' },
         }, [content]),
       ]),
     );

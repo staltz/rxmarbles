@@ -7,7 +7,8 @@ import { Timeline } from '../timeline/timeline';
 import { examples } from '../data';
 
 import { createOutputStream$ } from './sandbox-output';
-import { inputsToTimelines } from './sandbox-utils';
+import { inputsToTimelines } from './sandbox-input';
+import { renderOperatorBox } from './operator-label';;
 
 
 export function Sandbox({ DOM, store }) {
@@ -44,10 +45,11 @@ export function Sandbox({ DOM, store }) {
     .map(map(apply(flip(merge))));
 
   const vtree$ = Observable
-    .combineLatest(inputDOMs$, outputTimeline.DOM)
-    .map(([inputsDOMs, outputDOM]) =>
+    .combineLatest(inputDOMs$, outputTimeline.DOM, example$)
+    .map(([inputsDOMs, outputDOM, example]) =>
       div([
         ...inputsDOMs,
+        renderOperatorBox(example.label),
         outputDOM,
       ]),
     );

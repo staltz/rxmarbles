@@ -42,12 +42,15 @@ function OriginalTimeline({ DOM, marbles: marblesState$, end: end$ }) {
   const vtree$ = Observable.combineLatest(marbleDOMs$, endMarker.DOM)
     .map(([marbleDOMs, endMarkerDOM]) =>
       svg({
-        attrs: { viewBox: '0 0 100 10' },
-        style: { width: 500, height: 50, overflow: 'visible' },
+        attrs: { viewBox: '-9 0 110 10' },
+        style: { width: 595, height: 50, overflow: 'visible' },
       }, [
         svg.line({
-          attrs: { x1: 0, x2: 100, y1: 5, y2: 5 },
+          attrs: { x1: -9, x2: 108, y1: 5, y2: 5 },
           style: { stroke: 'black', strokeWidth: 0.4 },
+        }),
+        svg.polygon({
+          attrs: { points: '107,6.5 107,3.5 110,5' },
         }),
         endMarkerDOM,
         ...marbleDOMs,

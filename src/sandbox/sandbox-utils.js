@@ -18,7 +18,7 @@ export function calculateNotificationContentHash(content) {
   }
 }
 
-function calculateNotificationHash({ time, content }) {
+export function calculateNotificationHash({ time, content }) {
   const SMALL_PRIME = 7;
   const LARGE_PRIME = 1046527;
   const MAX = 100000;
@@ -26,24 +26,3 @@ function calculateNotificationHash({ time, content }) {
   return ((time + contentHash + SMALL_PRIME) * LARGE_PRIME) % MAX;
 }
 
-function inputsToMarbles(inputs) {
-  return inputs.map(stream =>
-    stream.map(({ t: time, c: content }, index) => ({
-      id: calculateNotificationHash({ time, content }),
-      time,
-      content,
-      itemId: index,
-      _itemId: index, // Collection.gather consumes your ID key
-    }))
-  );
-}
-
-export function inputsToTimelines(inputs) {
-  return inputsToMarbles(inputs)
-    .map((marbles, index) => ({
-      id: index,
-      _id: index,
-      marbles,
-      end: { time: 100 }
-    }));
-}
