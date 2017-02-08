@@ -1,8 +1,7 @@
-import { utilityExamples } from './utility-examples';
-import { transformationExamples } from './transformation-examples';
+import { values, merge } from 'ramda';
 
-export const examples = Object.assign(
-  {},
-  utilityExamples,
-  transformationExamples,
-);
+import { categories } from './categories';
+
+export const examples = values(categories).reduce(merge, {});
+
+export { categories };

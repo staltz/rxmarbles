@@ -6,8 +6,18 @@ import { merge } from 'ramda';
 import { renderSvgDropshadow } from './styles/utils'
 import { Sandbox } from './sandbox/sandbox';
 
-import { examples } from './data';
+import { renderOperatorsMenu } from './operators-menu';
 import { appModel } from './app-model';
+
+function renderContent(sandboxDOM) {
+  const flex = { display: 'flex' };
+  const flex1 = { flex: '1' };
+
+  return div({ style: flex }, [
+    div({ style: { flex: '0 0 0 200px'} }, [renderOperatorsMenu()]),
+    div({ style: flex1 }, [sandboxDOM]),
+  ]);
+}
 
 function main(sources) {
   const route$ = appModel();
@@ -18,7 +28,7 @@ function main(sources) {
       .map((sandboxDOM) =>
         div([
           renderSvgDropshadow(),
-          sandboxDOM,
+          renderContent(sandboxDOM),
         ]),
       ),
     store: Observable.merge(route$, sandbox.data)
