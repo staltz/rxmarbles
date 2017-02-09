@@ -5,8 +5,9 @@ const mouseMove$ = Observable.fromEvent(document, 'mousemove');
 const mouseUp$ = Observable.fromEvent(document, 'mouseup');
 
 function getPercentageFn(element) {
-  const ratio = (100 / element.clientWidth) || 0.15;
-  const elementLeft = element.getBoundingClientRect().left + window.scrollX;
+  const { width, left } = element.getBoundingClientRect();
+  const ratio = (100 / width) || 0.15;
+  const elementLeft = left + window.scrollX;
   return (x) => (x - elementLeft) * ratio;
 }
 

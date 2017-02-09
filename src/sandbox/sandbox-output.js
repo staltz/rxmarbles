@@ -21,11 +21,13 @@ function outputStreamToMarbles$(scheduler, stream) {
   stream
     .observeOn(scheduler)
     .timestamp(scheduler)
-    .map(({ value, timestamp }) => ({
-      content: value,
-      id: calculateNotificationContentHash(value),
-      time: timestamp / MAX_TIME * 100,
-    }))
+    .map(({ value, timestamp }) => {
+      const marble = typeof value !== 'object'
+        ? { content: value, id: calculateNotificationContentHash(value) }
+        : value;
+
+      return assoc('time', timestamp / MAX_TIME * 100, marble);
+    })
     .reduce((a, b) => a.concat(b), [])
     .map(items => items.map(
       (item, i) => merge(item, { itemId: i, _itemId: i }))

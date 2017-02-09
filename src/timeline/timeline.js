@@ -1,4 +1,4 @@
-import { svg } from '@cycle/dom';
+import { svg, div } from '@cycle/dom';
 import isolate from '@cycle/isolate';
 import { Observable } from 'rxjs';
 import { apply, flip, map, max, merge, path, prop, sortBy, zip } from 'ramda';
@@ -41,19 +41,26 @@ function OriginalTimeline({ DOM, marbles: marblesState$, end: end$ }) {
 
   const vtree$ = Observable.combineLatest(marbleDOMs$, endMarker.DOM)
     .map(([marbleDOMs, endMarkerDOM]) =>
-      svg({
-        attrs: { viewBox: '-9 0 110 10' },
-        style: { width: 595, height: 50, overflow: 'visible' },
-      }, [
-        svg.line({
-          attrs: { x1: -9, x2: 108, y1: 5, y2: 5 },
-          style: { stroke: 'black', strokeWidth: 0.4 },
-        }),
-        svg.polygon({
-          attrs: { points: '107,6.5 107,3.5 110,5' },
-        }),
-        endMarkerDOM,
-        ...marbleDOMs,
+      div([
+        svg({
+          attrs: { viewBox: '0 0 10 10' },
+          style: { width: 50, height: 50, overflow: 'visible' },
+        }, [
+          svg.line({
+            attrs: { x1: 0, x2: 119, y1: 5, y2: 5 },
+            style: { stroke: 'black', strokeWidth: 0.4 },
+          }),
+          svg.polygon({
+            attrs: { points: '117,6.5 117,3.5 120,5' },
+          }),
+        ]),
+        svg({
+          attrs: { viewBox: '0 0 100 10' },
+          style: { width: 500, height: 50, overflow: 'visible' },
+        }, [
+          endMarkerDOM,
+          ...marbleDOMs,
+        ]),
       ])
     );
 

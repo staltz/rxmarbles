@@ -47,3 +47,5 @@ run(main, {
   DOM: makeDOMDriver('#app-container'),
   store: dummyDriver({}),
 });
+
+import './mouse-debug';
