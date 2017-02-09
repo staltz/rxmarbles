@@ -42,7 +42,7 @@ function OriginalTimeline({ DOM, marbles: marblesState$, end: end$ }) {
   };
 
   const marbles$ = Collection.gather(
-    Marble, marblesSources, marblesState$, '_itemId');
+    Marble, marblesSources, marblesState$, 'itemId');
   const marbleDOMs$ = sortMarbleDoms$(marbles$);
   const endMarker = EndMarker(endMarkerSources);
 

@@ -8,7 +8,6 @@ function inputToMarbles(stream) {
     time,
     content,
     itemId: index,
-    _itemId: index, // Collection.gather consumes your ID key
   }));
 }
 
@@ -30,7 +29,6 @@ export function inputsToTimelines(inputs) {
   return inputs
     .map((input, index) => ({
       id: index,
-      _id: index,
       marbles: inputToMarbles(getInput(input)),
       end: { time: getTime(input) },
     }));

@@ -30,7 +30,7 @@ function outputStreamToMarbles$(scheduler, stream) {
     })
     .reduce((a, b) => a.concat(b), [])
     .map(items => items.map(
-      (item, i) => merge(item, { itemId: i, _itemId: i }))
+      (item, i) => merge(item, { itemId: i }))
     )
     .subscribe(items => subject$.next(items));
 

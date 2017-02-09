@@ -1,6 +1,9 @@
 import { div, span } from '@cycle/dom';
 
-import { renderElevation2After, renderElevation2Before } from '../../styles/utils';
+import {
+  renderElevation2After,
+  renderElevation2Before
+} from '../../styles/utils';
 import { fontCode, DIMENS, merge } from '../../styles';
 
 function renderOperatorLabel(label) {

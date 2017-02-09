@@ -1,25 +1,22 @@
 import { div, li, ul } from '@cycle/dom';
 import { keys, merge, toPairs } from 'ramda';
 
-import { COLORS } from '../../styles/colors';
-import { DIMENS } from '../../styles/dimens';
+import { greyDark, DIMENS } from '../../styles';
 import { categories } from '../../data';
 
 import { renderOperatorsMenuLink } from './operators-menu-link';
 
 
-const operatorsMenuCategoryStyle = {
+const operatorsMenuCategoryStyle = merge({
   textTransform: 'uppercase',
   fontSize: '0.7em',
-  color: COLORS.grey,
   marginTop: DIMENS.spaceMedium,
-};
+}, greyDark);
 
-const operatorsMenuItemStyle = {
-  color: COLORS.greyDark,
+const operatorsMenuItemStyle = merge({
   fontSize: '1rem',
   lineHeight: '1.6rem'
-};
+}, greyDark);
 
 const operatorsMenuStyle = {
   marginRight: DIMENS.spaceLarge,

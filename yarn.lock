@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@cycle/collection@^0.5.1":
+"@cycle/collection@0.5.1":
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/@cycle/collection/-/collection-0.5.1.tgz#02fc26cac00af2a67b82cd84b33817b933d169bc"
   dependencies:
@@ -10,7 +10,7 @@
     "@cycle/xstream-adapter" "^3.0.3"
     xstream "^9.2.0"
 
-"@cycle/dom@^15.0.0-rc.1":
+"@cycle/dom@15.0.0-rc.1":
   version "15.0.0-rc.1"
   resolved "https://registry.yarnpkg.com/@cycle/dom/-/dom-15.0.0-rc.1.tgz#9c88ad6a2e7249fcf77d8ee74a29bb2b2541d126"
   dependencies:
@@ -19,7 +19,7 @@
     snabbdom-selector "1.1.1"
     snabbdom-to-html "3.0.1"
 
-"@cycle/isolate@^1.4.0":
+"@cycle/isolate@1.4.0", "@cycle/isolate@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@cycle/isolate/-/isolate-1.4.0.tgz#7cd7908a280e0695467b41c1171b1e37522233df"
 
@@ -29,11 +29,11 @@
   dependencies:
     xstream "10.x"
 
-"@cycle/rxjs-adapter@^3.3.0":
+"@cycle/rxjs-adapter@3.3.0":
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/@cycle/rxjs-adapter/-/rxjs-adapter-3.3.0.tgz#1b26d94b2154d44667690e334a13609c47a83ca6"
 
-"@cycle/rxjs-run@^4.0.0-rc.3":
+"@cycle/rxjs-run@4.0.0-rc.3":
   version "4.0.0-rc.3"
   resolved "https://registry.yarnpkg.com/@cycle/rxjs-run/-/rxjs-run-4.0.0-rc.3.tgz#2dfd29b090ad82b680a72bef9cead3b01c490b02"
   dependencies:
@@ -176,7 +176,7 @@ babel-code-frame@^6.22.0:
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
-babel-core@^6.22.0, babel-core@^6.22.1:
+babel-core@6.22.1, babel-core@^6.22.0:
   version "6.22.1"
   resolved "https://registry.yarnpkg.com/babel-core/-/babel-core-6.22.1.tgz#9c5fd658ba1772d28d721f6d25d968fc7ae21648"
   dependencies:
@@ -287,7 +287,7 @@ babel-helpers@^6.22.0:
     babel-runtime "^6.22.0"
     babel-template "^6.22.0"
 
-babel-loader@^6.2.10:
+babel-loader@6.2.10:
   version "6.2.10"
   resolved "https://registry.yarnpkg.com/babel-loader/-/babel-loader-6.2.10.tgz#adefc2b242320cd5d15e65b31cea0e8b1b02d4b0"
   dependencies:
@@ -489,7 +489,7 @@ babel-plugin-transform-strict-mode@^6.22.0:
     babel-runtime "^6.22.0"
     babel-types "^6.22.0"
 
-babel-preset-es2015@^6.22.0:
+babel-preset-es2015@6.22.0:
   version "6.22.0"
   resolved "https://registry.yarnpkg.com/babel-preset-es2015/-/babel-preset-es2015-6.22.0.tgz#af5a98ecb35eb8af764ad8a5a05eb36dc4386835"
   dependencies:
@@ -801,6 +801,19 @@ core-js@^2.4.0:
 core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
+
+cross-env@^3.1.4:
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-3.1.4.tgz#56e8bca96f17908a6eb1bc2012ca126f92842130"
+  dependencies:
+    cross-spawn "^3.0.1"
+
+cross-spawn@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-3.0.1.tgz#1256037ecb9f0c5f79e3d6ef135e30770184b982"
+  dependencies:
+    lru-cache "^4.0.1"
+    which "^1.2.9"
 
 cryptiles@2.x.x:
   version "2.0.5"
@@ -1438,6 +1451,10 @@ isarray@1.0.0, isarray@^1.0.0, isarray@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/isarray/-/isarray-1.0.0.tgz#bb935d48582cba168c06834957a54a3e07124f11"
 
+isexe@^1.1.1:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/isexe/-/isexe-1.1.2.tgz#36f3e22e60750920f5e7241a476a8c6a42275ad0"
+
 isobject@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-2.1.0.tgz#f065561096a3f1da2ef46272f815c840d87e0c89"
@@ -1550,6 +1567,13 @@ loose-envify@^1.0.0:
   resolved "https://registry.yarnpkg.com/loose-envify/-/loose-envify-1.3.1.tgz#d1a8ad33fa9ce0e713d65fdd0ac8b748d478c848"
   dependencies:
     js-tokens "^3.0.0"
+
+lru-cache@^4.0.1:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-4.0.2.tgz#1d17679c069cda5d040991a09dbc2c0db377e55e"
+  dependencies:
+    pseudomap "^1.0.1"
+    yallist "^2.0.0"
 
 media-typer@0.3.0:
   version "0.3.0"
@@ -1862,6 +1886,10 @@ prr@~0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/prr/-/prr-0.0.0.tgz#1a84b85908325501411853d0081ee3fa86e2926a"
 
+pseudomap@^1.0.1:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/pseudomap/-/pseudomap-1.0.2.tgz#f052a28da70e618917ef0a8ac34c1ae5a68286b3"
+
 punycode@1.3.2:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.3.2.tgz#9653a036fb7c1ee42342f2325cceefea3926c48d"
@@ -1890,7 +1918,7 @@ querystringify@0.0.x:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-0.0.4.tgz#0cf7f84f9463ff0ae51c4c4b142d95be37724d9c"
 
-ramda@^0.23.0:
+ramda@0.23.0:
   version "0.23.0"
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.23.0.tgz#ccd13fff73497a93974e3e86327bfd87bd6e8e2b"
 
@@ -1905,7 +1933,7 @@ range-parser@^1.0.3, range-parser@~1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.0.tgz#f49be6b487894ddc40dcc94a322f611092e00d5e"
 
-raw-loader@^0.5.1:
+raw-loader@0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/raw-loader/-/raw-loader-0.5.1.tgz#0c3d0beaed8a01c966d9787bf778281252a979aa"
 
@@ -2051,7 +2079,7 @@ ripemd160@0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/ripemd160/-/ripemd160-0.2.0.tgz#2bf198bde167cacfa51c0a928e84b68bbe171fce"
 
-rxjs@^5.0.3:
+rxjs@5.0.3:
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.0.3.tgz#fc8bdf464ebf938812748e4196788f392fef9754"
   dependencies:
@@ -2450,7 +2478,7 @@ webpack-dev-middleware@^1.4.0:
     path-is-absolute "^1.0.0"
     range-parser "^1.0.3"
 
-webpack-dev-server@^1.16.2:
+webpack-dev-server@1.16.2:
   version "1.16.2"
   resolved "https://registry.yarnpkg.com/webpack-dev-server/-/webpack-dev-server-1.16.2.tgz#8bebc2c4ce1c45a15c72dd769d9ba08db306a793"
   dependencies:
@@ -2468,7 +2496,7 @@ webpack-dev-server@^1.16.2:
     supports-color "^3.1.1"
     webpack-dev-middleware "^1.4.0"
 
-webpack-hot-middleware@^2.16.0:
+webpack-hot-middleware@2.16.0:
   version "2.16.0"
   resolved "https://registry.yarnpkg.com/webpack-hot-middleware/-/webpack-hot-middleware-2.16.0.tgz#31f3b83d092cd17d151f8d0564ac662c14fbf2fe"
   dependencies:
@@ -2477,7 +2505,7 @@ webpack-hot-middleware@^2.16.0:
     querystring "^0.2.0"
     strip-ansi "^3.0.0"
 
-webpack@^1.14.0:
+webpack@1.14.0:
   version "1.14.0"
   resolved "https://registry.yarnpkg.com/webpack/-/webpack-1.14.0.tgz#54f1ffb92051a328a5b2057d6ae33c289462c823"
   dependencies:
@@ -2506,6 +2534,12 @@ websocket-driver@>=0.5.1:
 websocket-extensions@>=0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.1.tgz#76899499c184b6ef754377c2dbb0cd6cb55d29e7"
+
+which@^1.2.9:
+  version "1.2.12"
+  resolved "https://registry.yarnpkg.com/which/-/which-1.2.12.tgz#de67b5e450269f194909ef23ece4ebe416fa1192"
+  dependencies:
+    isexe "^1.1.1"
 
 wide-align@^1.1.0:
   version "1.1.0"
@@ -2544,6 +2578,10 @@ xstream@^9.2.0:
 xtend@^4.0.0:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.1.tgz#a5c6d532be656e23db820efb943a1f04998d63af"
+
+yallist@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/yallist/-/yallist-2.0.0.tgz#306c543835f09ee1a4cb23b7bce9ab341c91cdd4"
 
 yargs@~3.10.0:
   version "3.10.0"

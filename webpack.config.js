@@ -1,9 +1,12 @@
 'use strict';
 
+const webpack = require('webpack');
 const path = require('path');
-// const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === 'production';
+const gitPackage = require('./package.json');
 
-const isProduction = false;
+const rxjsVersion = gitPackage.devDependencies.rxjs;
+const appVersion = gitPackage.version;
 
 module.exports = {
   entry: './src/app.js',
@@ -22,6 +25,13 @@ module.exports = {
     proxy: {},
     host: '0.0.0.0',
   },
+
+  plugins: [
+    new webpack.DefinePlugin({
+      RXJS_VERSION: `"${rxjsVersion}"`,
+      APP_VERSION: `"${appVersion}"`,
+    }),
+  ],
 
   module: {
     loaders: [
