@@ -20,7 +20,7 @@ function view(sources, value$, isHighlighted$) {
     .map(([id, content, value, isHighlighted]) =>
       svg.g({
         attrs: { class: ELEMENT_CLASS, transform: `translate(${value}, 5)` },
-        style: { cursor: 'ew-resize' },
+        style: { cursor: isHighlighted ? 'ew-resize' : 'default'  },
       }, [
         svg.circle({
           attrs: { r: MARBLE_SIZE },

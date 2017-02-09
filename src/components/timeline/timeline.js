@@ -21,24 +21,38 @@ function sortMarbleDoms$(marbles$) {
     .map(map(prop(0)));
 }
 
-function OriginalTimeline({ DOM, marbles: marblesState$, end: end$ }) {
-  const marblesProps$ = end$.map(({ time }) => ({
-    minTime: 0,
-    maxTime: time,
-  }));
-  const endMarkerProps$ = Observable.combineLatest(marblesState$, end$)
-    .map(([marbles, end]) => [marbles.map(prop('time')).reduce(max, 0), end])
-    .map(([maxMarbleTime, end]) => ({
-      isTall: end.time <= (maxMarbleTime + MARBLE_SIZE),
-      minTime: maxMarbleTime,
-      maxTime: 100,
+function OriginalTimeline(sources) {
+  const {
+    DOM,
+    marbles: marblesState$,
+    end: end$,
+    interactive: interactive$
+  } = sources;
+  const marblesProps$ = end$
+    .map((end) => ({
+      minTime: 0,
+      maxTime: end.time,
     }));
+  const endMarkerProps$ = Observable.combineLatest(marblesState$, end$)
+    .map(([marbles, end]) => {
+      const maxMarbleTime = marbles.map(prop('time')).reduce(max, 0);
+      return {
+        isTall: end.time <= (maxMarbleTime + MARBLE_SIZE),
+        minTime: maxMarbleTime,
+        maxTime: 100,
+      };
+    });
 
-  const marblesSources = { DOM, props: marblesProps$ };
+  const marblesSources = {
+    DOM,
+    props: marblesProps$,
+    isDraggable: interactive$
+  };
   const endMarkerSources = {
     DOM,
     props: endMarkerProps$,
     time: end$.pluck('time'),
+    isDraggable: interactive$,
   };
 
   const marbles$ = Collection.gather(

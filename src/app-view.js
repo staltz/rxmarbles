@@ -9,7 +9,7 @@ import { renderOperatorsMenu } from './components/operators-menu';
 const appVersion = APP_VERSION;
 const rxjsVersion = RXJS_VERSION;
 
-const rxmarblesGithubUrl = 'https://github.com/staltz/rxmarbles';
+const rxjsMarblesGithubUrl = 'https://github.com/staltz/rxmarbles';
 const rxjsGithubUrl = 'https://github.com/ReactiveX/rxjs';
 
 const containerWidth = { width: '1060px' };
@@ -40,7 +40,7 @@ function renderFooter() {
     right: DIMENS.spaceMedium,
   };
   return section({ style: merge(style, greyDark) }, [
-    a({ attrs: { href: `${rxmarblesGithubUrl}` } }, `v${appVersion}`),
+    a({ attrs: { href: `${rxjsMarblesGithubUrl}` } }, `v${appVersion}`),
     ' built on ',
     a({ attrs: { href: `${rxjsGithubUrl}/tree/${rxjsVersion}` } }, `RxJS v${rxjsVersion}`),
     ' by ',

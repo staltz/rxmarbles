@@ -11,12 +11,18 @@ function getPercentageFn(element) {
   return (x) => (x - elementLeft) * ratio;
 }
 
-function intent(elementClass, DOMSource) {
+function getPausable$(pause$, obsv$) {
+  return pause$
+    .switchMap(pause => pause ? obsv$ : Observable.never());
+}
+
+function intent(elementClass, DOMSource, isDraggable$) {
   const element = DOMSource.select('.' + elementClass);
 
   const startHighlight$ = element.events('mouseenter').mapTo(true);
   const stopHighlight$ = element.events('mouseleave').mapTo(false);
-  const isHighlighted$ = Observable.merge(startHighlight$, stopHighlight$)
+  const isHighlighted$ = getPausable$(
+    isDraggable$, Observable.merge(startHighlight$, stopHighlight$))
     .startWith(false)
     .publishReplay(1).refCount();
 
@@ -33,8 +39,8 @@ function intent(elementClass, DOMSource) {
   return { timeChange$, isHighlighted$ };
 }
 
-function model(props$, timeSource$, timeChange$) {
-  const restrictedTimeChange$ = timeChange$
+function model(props$, timeSource$, timeChange$, isDraggable$) {
+  const restrictedTimeChange$ = getPausable$(isDraggable$, timeChange$)
     .map(max(0))
     .map(min(100));
 
@@ -54,9 +60,10 @@ function model(props$, timeSource$, timeChange$) {
 }
 
 export function timelineItem(elementClass, view, sources) {
-  const { DOM, props, time: timeSource$, id: id$ } = sources;
-  const { timeChange$, isHighlighted$ } = intent(elementClass, DOM);
-  const time$ = model(props, timeSource$, timeChange$);
+  const { DOM, props, time: timeSource$, isDraggable } = sources;
+  const { timeChange$, isHighlighted$ }
+    = intent(elementClass, DOM, isDraggable);
+  const time$ = model(props, timeSource$, timeChange$, isDraggable);
   const vtree$ = view(sources, time$, isHighlighted$);
   return { DOM: vtree$, time: time$ };
 }

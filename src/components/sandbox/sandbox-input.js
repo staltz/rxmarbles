@@ -31,5 +31,6 @@ export function inputsToTimelines(inputs) {
       id: index,
       marbles: inputToMarbles(getInput(input)),
       end: { time: getTime(input) },
+      interactive: true,
     }));
 }

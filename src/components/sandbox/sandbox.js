@@ -37,6 +37,7 @@ export function Sandbox({ DOM, store }) {
     DOM,
     marbles: outputStore$.pluck('marbles'),
     end: outputStore$.pluck('end'),
+    interactive: Observable.of(false),
   };
 
   const inputTimelines$
