@@ -34,7 +34,7 @@ function view(sources, value$, isHighlighted$) {
           attrs: {
             'text-anchor': 'middle', 'alignment-baseline': 'middle', y: '0.2' },
           style: merge({ fontSize: 2.5, userSelect: 'none' }, fontBase),
-        }, [content]),
+        }, [`${content}`]),
       ]),
     );
 }

@@ -40,7 +40,7 @@ function outputStreamToMarbles$(scheduler, stream) {
 }
 
 export function createOutputStream$(example$, inputStores$) {
-  return inputStores$.withLatestFrom(example$)
+  return inputStores$.debounceTime(0).withLatestFrom(example$)
     .map(([inputStores, example]) => {
       const vtScheduler = new VirtualTimeScheduler(undefined, MAX_TIME);
 

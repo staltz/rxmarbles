@@ -23,7 +23,8 @@ export function Sandbox({ DOM, store }) {
     .map(exampleKey => examples[exampleKey])
     .publishReplay(1).refCount();
 
-  const newRouteInputs$ = example$.pluck('inputs')
+  const newRouteInputs$ = example$
+    .pluck('inputs')
     .map(inputsToTimelines);
   const storeInputs$ = store.pluck('inputs')
     .filter(identity);

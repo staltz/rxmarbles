@@ -22,16 +22,16 @@ const operatorsMenuItemStyle = {
 };
 
 const operatorsMenuStyle = {
-  paddingRight: DIMENS.spaceLarge,
+  marginRight: DIMENS.spaceLarge,
   boxSizing: 'border-box',
+  overflowY: 'scroll',
+  height: 'calc(100vh - 150px)'
 };
 
 const categoryMenuStyle = {
   margin: '0',
   padding: '0',
   listStyleType: 'none',
-  overflowY: 'scroll',
-  height: '100%'
 };
 
 function renderOperatorsMenuLinkItem(operator) {
