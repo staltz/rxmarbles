@@ -2,14 +2,19 @@ import { div } from '@cycle/dom';
 import { Observable } from 'rxjs';
 import { apply, flip, identity, length, map, merge, prop, zip } from 'ramda';
 
-import { Collection } from '../collection';
-import { Timeline } from '../timeline/timeline';
-import { examples } from '../data';
+import { Collection } from '../../collection';
+import { examples } from '../../data';
+import { bgWhite } from '../../styles';
+import { merge as mergeStyles, elevation1 } from '../../styles/utils';
+
+import { Timeline } from '../timeline';
 
 import { createOutputStream$ } from './sandbox-output';
 import { inputsToTimelines } from './sandbox-input';
 import { renderOperatorBox } from './operator-label';;
 
+
+const sandboxStyle = mergeStyles(bgWhite, elevation1, { borderRadius: '2px' });
 
 export function Sandbox({ DOM, store }) {
   const example$ = store.pluck('route')
@@ -47,7 +52,7 @@ export function Sandbox({ DOM, store }) {
   const vtree$ = Observable
     .combineLatest(inputDOMs$, outputTimeline.DOM, example$)
     .map(([inputsDOMs, outputDOM, example]) =>
-      div([
+      div({ style: sandboxStyle }, [
         ...inputsDOMs,
         renderOperatorBox(example.label),
         outputDOM,

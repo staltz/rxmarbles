@@ -1,16 +1,14 @@
 import { div, span } from '@cycle/dom';
 
-import { elevation2After, elevation2Before } from '../styles/utils';
-import { FONTS } from '../styles/fonts';
-import { DIMENS } from '../styles/dimens';
+import { renderElevation2After, renderElevation2Before } from '../../styles/utils';
+import { fontCode, DIMENS, merge } from '../../styles';
 
 function renderOperatorLabel(label) {
   let fontSize = (label.length >= 45) ? 1.3 : (label.length >= 30) ? 1.5 : 2;
-  let style = {
-    fontFamily: FONTS.code,
+  let style = merge({
     fontWeight: '400',
     fontSize: `${fontSize}rem`,
-  };
+  }, fontCode);
   return span('.operatorLabel', { style }, label);
 }
 
@@ -22,8 +20,8 @@ export function renderOperatorBox(label) {
     position: 'relative',
   };
   return div('.operatorBox', { style }, [
-    elevation2Before,
+    renderElevation2Before(),
     renderOperatorLabel(label),
-    elevation2After
+    renderElevation2After(),
   ]);
 }

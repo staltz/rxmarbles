@@ -1,9 +1,9 @@
 import { div, li, ul } from '@cycle/dom';
 import { keys, merge, toPairs } from 'ramda';
 
-import { COLORS } from '../styles/colors';
-import { DIMENS } from '../styles/dimens';
-import { categories } from '../data';
+import { COLORS } from '../../styles/colors';
+import { DIMENS } from '../../styles/dimens';
+import { categories } from '../../data';
 
 import { renderOperatorsMenuLink } from './operators-menu-link';
 
@@ -22,10 +22,8 @@ const operatorsMenuItemStyle = {
 };
 
 const operatorsMenuStyle = {
-  paddingRight: '36px',
+  paddingRight: DIMENS.spaceLarge,
   boxSizing: 'border-box',
-  // 100px is the estimated header page row height
-  // height: 'calc(100vh - 100px)'
 };
 
 const categoryMenuStyle = {
@@ -71,8 +69,10 @@ export function renderOperatorsMenu() {
     { style: operatorsMenuStyle },
     [
       ...categoryMenus,
-      li({ style: operatorsMenuCategoryStyle }, 'More'),
-      li({ style: operatorsMenuItemStyle }, 'Coming soon...'),
+      ul({ style: categoryMenuStyle }, [
+        li({ style: operatorsMenuCategoryStyle }, 'More'),
+        li({ style: operatorsMenuItemStyle }, 'Coming soon...'),
+      ]),
     ],
   );
 }

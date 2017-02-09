@@ -1,40 +1,39 @@
 import { svg } from '@cycle/dom';
 import isolate from '@cycle/isolate';
 import { Observable } from 'rxjs';
-import { merge, values } from 'ramda';
+import { merge, values, range } from 'ramda';
 
-import { dropshadow } from '../styles/utils';
-import { COLORS } from '../styles/colors';
-import { FONTS } from '../styles/fonts';
+import { dropshadow } from '../../styles/utils';
+import { COLORS, fontBase } from '../../styles';
 
+import { MARBLE_SIZE, STROKE_WIDTH } from './timeline-constants';
 import { timelineItem } from './timeline-item';
 
 
 const ELEMENT_CLASS = 'marble';
 
-function color(id) {
-  return values(COLORS)[id];
-}
+const POSSIBLE_COLORS = [COLORS.blue, COLORS.green, COLORS.yellow, COLORS.red];
 
 function view(sources, value$, isHighlighted$) {
   return Observable.combineLatest(
-    sources.itemId, sources.content, value$, isHighlighted$)
-    .map(([itemId, content, value, isHighlighted]) =>
+    sources.id, sources.content, value$, isHighlighted$)
+    .map(([id, content, value, isHighlighted]) =>
       svg.g({
         attrs: { class: ELEMENT_CLASS, transform: `translate(${value}, 5)` },
         style: { cursor: 'ew-resize' },
       }, [
         svg.circle({
-          attrs: { r: 2.8 },
+          attrs: { r: MARBLE_SIZE },
           style: merge({
-            fill: color(itemId),
+            fill: POSSIBLE_COLORS[id % POSSIBLE_COLORS.length],
             stroke: 'black',
-            strokeWidth: 0.4,
+            strokeWidth: STROKE_WIDTH,
           }, isHighlighted ? dropshadow : {}),
         }),
         svg.text({
-          attrs: { 'text-anchor': 'middle', 'alignment-baseline': 'middle' },
-          style: { fontFamily: FONTS.base, fontSize: 2.5, userSelect: 'none' },
+          attrs: {
+            'text-anchor': 'middle', 'alignment-baseline': 'middle', y: '0.2' },
+          style: merge({ fontSize: 2.5, userSelect: 'none' }, fontBase),
         }, [content]),
       ]),
     );

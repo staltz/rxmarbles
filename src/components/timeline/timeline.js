@@ -3,10 +3,14 @@ import isolate from '@cycle/isolate';
 import { Observable } from 'rxjs';
 import { apply, flip, map, max, merge, path, prop, sortBy, zip } from 'ramda';
 
-import { Collection } from '../collection';
+import { Collection } from '../../collection';
+import { DIMENS } from '../../styles';
 
+import { MARBLE_SIZE, STROKE_WIDTH } from './timeline-constants';
 import { Marble } from './marble';
 import { EndMarker } from './end-marker';
+
+const timelineStyle = { padding: `${DIMENS.spaceSmall} ${DIMENS.spaceMedium}` };
 
 function sortMarbleDoms$(marbles$) {
   const doms$ = Collection.pluck(marbles$, prop('DOM'));
@@ -22,10 +26,13 @@ function OriginalTimeline({ DOM, marbles: marblesState$, end: end$ }) {
     minTime: 0,
     maxTime: time,
   }));
-  const endMarkerProps$ = marblesState$.map(marbles => ({
-    minTime: marbles.map(prop('time')).reduce(max, 0),
-    maxTime: 100,
-  }));
+  const endMarkerProps$ = Observable.combineLatest(marblesState$, end$)
+    .map(([marbles, end]) => [marbles.map(prop('time')).reduce(max, 0), end])
+    .map(([maxMarbleTime, end]) => ({
+      isTall: end.time <= (maxMarbleTime + MARBLE_SIZE),
+      minTime: maxMarbleTime,
+      maxTime: 100,
+    }));
 
   const marblesSources = { DOM, props: marblesProps$ };
   const endMarkerSources = {
@@ -41,22 +48,22 @@ function OriginalTimeline({ DOM, marbles: marblesState$, end: end$ }) {
 
   const vtree$ = Observable.combineLatest(marbleDOMs$, endMarker.DOM)
     .map(([marbleDOMs, endMarkerDOM]) =>
-      div([
+      div({ style: timelineStyle }, [
         svg({
-          attrs: { viewBox: '0 0 10 10' },
-          style: { width: 50, height: 50, overflow: 'visible' },
+          attrs: { viewBox: '0 0 7 10' },
+          style: { width: 48, height: 68, overflow: 'visible' },
         }, [
           svg.line({
-            attrs: { x1: 0, x2: 119, y1: 5, y2: 5 },
-            style: { stroke: 'black', strokeWidth: 0.4 },
+            attrs: { x1: 0, x2: 112, y1: 5, y2: 5 },
+            style: { stroke: 'black', strokeWidth: STROKE_WIDTH },
           }),
           svg.polygon({
-            attrs: { points: '117,6.5 117,3.5 120,5' },
+            attrs: { points: '111.7,6.1 111.7,3.9 114,5' },
           }),
         ]),
         svg({
           attrs: { viewBox: '0 0 100 10' },
-          style: { width: 500, height: 50, overflow: 'visible' },
+          style: { width: 680, height: 68, overflow: 'visible' },
         }, [
           endMarkerDOM,
           ...marbleDOMs,

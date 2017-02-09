@@ -10,3 +10,15 @@ export const COLORS = {
   greyDark:    '#7C7C7C',
   black:       '#323232',
 };
+
+export const blue = { color: COLORS.blue };
+export const yellow = { color: COLORS.yellow };
+export const red = { color: COLORS.red };
+export const green = { color: COLORS.green };
+export const white = { color: COLORS.white };
+export const almostWhite = { color: COLORS.almostWhite };
+export const greyLight = { color: COLORS.greyLight };
+export const grey = { color: COLORS.grey };
+export const greyDark = { color: COLORS.greyDark };
+export const black = { color: COLORS.black };
+export const bgWhite = { backgroundColor: COLORS.white };
