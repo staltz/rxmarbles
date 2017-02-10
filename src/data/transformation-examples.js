@@ -40,6 +40,32 @@ export const transformationExamples = {
     } 
   },
 
+  bufferToggle: {
+    label: 'bufferToggle(start$, x => Observable.timer(x))',
+    inputs: [
+      [{t:0, c:1}, {t:10, c:2}, {t:20, c:3}, {t:30, c:4}, {t:40, c:5}, {t:50, c:6}, {t:60, c:7}, {t:70, c:8}, {t:80, c:9}],
+      [{t:15, c:10}, {t:45, c:30}],
+    ],
+    apply: function(inputs, scheduler) {
+      return inputs[0].pluck('content')
+        .bufferToggle(inputs[1], (x) => Observable.timer(x.content, scheduler))
+        .map(x => `[${x}]`);
+    }
+  },
+
+  bufferWhen: {
+    label: 'bufferWhen',
+    inputs: [
+      [{t:0, c:1}, {t:10, c:2}, {t:20, c:3}, {t:30, c:4}, {t:40, c:5}, {t:50, c:6}, {t:60, c:7}, {t:70, c:8}, {t:80, c:9}],
+      [{t:35, c:0}, {t:50, c:0}],
+    ],
+    apply: function(inputs) {
+      return inputs[0].pluck('content')
+        .bufferWhen(() => inputs[1])
+        .map(x => `[${x}]`);
+    }
+  },
+
   map: {
     label: 'map(x => 10 * x)',
     inputs: [
@@ -47,6 +73,17 @@ export const transformationExamples = {
     ],
     apply: function(inputs) {
       return inputs[0].map(evolve({ content: (c) => c * 10 }));
+    }
+  },
+
+  pluck: {
+    label: 'pluck("a")',
+    inputs: [
+      [{t:10, c:'{a:1}'}, {t:20, c:'{a:2}'}, {t:50, c:'{a:5}'}]
+    ],
+    apply: function(inputs) {
+      // simulated implementation
+      return inputs[0].map(evolve({ content: c => c.match(/\d/)[0] }));
     }
   },
 
