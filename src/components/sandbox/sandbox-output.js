@@ -17,6 +17,7 @@ const toVTStream = curry(function _toVTStream(scheduler, data) {
 
 function outputStreamToMarbles$(scheduler, stream) {
   const subject$ = new ReplaySubject(1);
+  let endTime;
 
   stream
     .observeOn(scheduler)
@@ -32,11 +33,16 @@ function outputStreamToMarbles$(scheduler, stream) {
     .map(items => items.map(
       (item, i) => merge(item, { itemId: i }))
     )
-    .subscribe(items => subject$.next(items));
+    .subscribe(
+      items => subject$.next(items),
+      undefined,
+      () => endTime = scheduler.now(),
+    );
 
   scheduler.flush();
 
-  return subject$.asObservable();
+  return subject$.asObservable()
+    .map(marbles => ({ marbles, end: { time: endTime } }));
 }
 
 export function createOutputStream$(example$, inputStores$) {
@@ -46,10 +52,10 @@ export function createOutputStream$(example$, inputStores$) {
 
       const inputStreams = inputStores.map(toVTStream(vtScheduler));
       const outputStream = example.apply(inputStreams, vtScheduler)
-        .takeUntil(Observable.timer(MAX_TIME, vtScheduler));
+        // adds 0.01 or else things at exactly MAX_TIME will cut off 
+        .takeUntil(Observable.timer(MAX_TIME + 0.01, vtScheduler));
 
-      return outputStreamToMarbles$(vtScheduler, outputStream)
-        .map(marbles => ({ marbles, end: { time: vtScheduler.now() } }));
+      return outputStreamToMarbles$(vtScheduler, outputStream);
     })
     .mergeAll()
     .publishReplay(1).refCount();

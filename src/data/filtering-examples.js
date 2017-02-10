@@ -94,6 +94,16 @@ export const filteringExamples = {
     }
   },
 
+  ignoreElements: {
+    label: 'ignoreElements',
+    inputs: [
+      [{t:20, c:'A'}, {t:40, c:'B'}, {t:50, c:'C'}, {t:75, c:'D'}, 90]
+    ],
+    apply: function(inputs) {
+      return inputs[0].ignoreElements();
+    }
+  },
+
   last: {
     label: 'last',
     inputs: [
@@ -101,6 +111,17 @@ export const filteringExamples = {
     ],
     apply: function(inputs) {
       return inputs[0].last();
+    }
+  },
+
+  sample: {
+    label: 'sample',
+    inputs: [
+      [{t:0, c:1}, {t:20, c:2}, {t:40, c:3}, {t:60, c:4}, {t:80, c:5}],
+      [{t:10, c:'A'}, {t:25, c:'B'}, {t:33, c:'C'}, {t:70, c:'D'}, 90]
+    ],
+    apply: function(inputs) {
+      return inputs[0].sample(inputs[1]);
     }
   },
 
@@ -122,6 +143,16 @@ export const filteringExamples = {
     ],
     apply: function(inputs) {
       return inputs[0].skipUntil(inputs[1]);
+    }
+  },
+
+  skipWhile: {
+    label: 'skipWhile(x => x < 5)',
+    inputs: [
+      [{t:5, c:1}, {t:20, c:3}, {t:35, c:6}, {t:50, c:4}, {t:65, c:7}, {t:80, c:2}]
+    ],
+    apply: function(inputs) {
+      return inputs[0].skipWhile(x => x.content < 5);
     }
   },
 
@@ -153,6 +184,38 @@ export const filteringExamples = {
     ],
     apply: function(inputs) {
       return inputs[0].takeUntil(inputs[1]);
+    }
+  },
+
+  takeWhile: {
+    label: 'takeWhile(x => x < 5)',
+    inputs: [
+      [{t:5, c:1}, {t:20, c:3}, {t:35, c:6}, {t:50, c:4}, {t:65, c:7}, {t:80, c:2}]
+    ],
+    apply: function(inputs) {
+      return inputs[0].takeWhile(x => x.content < 5);
+    }
+  },
+
+  throttle: {
+    label: 'throttle(x => Rx.Observable.timer(10 * x))',
+    inputs: [
+      [{t:0, c:1}, {t:26, c:2}, {t:34, c:1}, {t:40, c:1}, {t:45, c:2}, {t:79, c:1}]
+    ],
+    apply: function(inputs, scheduler) {
+      return inputs[0].throttle(x =>
+        Observable.timer(Number(x.content) * 10, 1000, scheduler)
+      );
+    }
+  },
+
+  throttleTime: {
+    label: 'throttleTime(25)',
+    inputs: [
+      [{t:0 ,c:'A'}, {t:8 ,c:'B'}, {t:16 ,c:'C'}, {t:40 ,c:'D'}, {t:55 ,c:'E'}, {t:60 ,c:'F'}, {t:70 ,c:'G'}]
+    ],
+    apply: function(inputs, scheduler) {
+      return inputs[0].throttleTime(25, scheduler);
     }
   },
 }

@@ -2,6 +2,14 @@ import { Observable } from 'rxjs';
 
 /* t = time, c = content */
 export const conditionalExamples = {
+  defaultIfEmpty: {
+    label: 'defaultIfEmpty(true)',
+    inputs: [[]],
+    apply: function(inputs) {
+      return inputs[0].defaultIfEmpty(true);
+    }
+  },
+
   every: {
     label: 'every(x => x < 10)',
     inputs: [
@@ -23,8 +31,5 @@ export const conditionalExamples = {
         (x, y) => (x.content === y.content)
       );
     }
-  }
-  // defaultIfEmpty: {
-
-  // }
+  },
 }

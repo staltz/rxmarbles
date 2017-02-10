@@ -59,17 +59,6 @@ export const combinationExamples = {
     }
   },
 
-  sample: {
-    label: 'sample',
-    inputs: [
-      [{t:0, c:1}, {t:20, c:2}, {t:40, c:3}, {t:60, c:4}, {t:80, c:5}],
-      [{t:10, c:'A'}, {t:25, c:'B'}, {t:33, c:'C'}, {t:70, c:'D'}, 90]
-    ],
-    apply: function(inputs) {
-      return inputs[0].sample(inputs[1]);
-    }
-  },
-
   withLatestFrom: {
     label: 'withLatestFrom((x, y) => "" + x + y)',
     inputs: [

@@ -4,7 +4,12 @@ import { Observable } from 'rxjs';
 import { merge, values, range } from 'ramda';
 
 import { dropshadow } from '../../styles/utils';
-import { COLORS, fontBase } from '../../styles';
+import {
+  COLORS,
+  fontBase,
+  userSelectNone,
+  merge as mergeStyles
+} from '../../styles';
 
 import { MARBLE_SIZE, STROKE_WIDTH } from './timeline-constants';
 import { timelineItem } from './timeline-item';
@@ -32,8 +37,8 @@ function view(sources, value$, isHighlighted$) {
         }),
         svg.text({
           attrs: {
-            'text-anchor': 'middle', 'alignment-baseline': 'middle', y: '0.2' },
-          style: merge({ fontSize: 2.5, userSelect: 'none' }, fontBase),
+            'text-anchor': 'middle', y: '0.8' },
+          style: mergeStyles({ fontSize: '2.5px' }, fontBase, userSelectNone),
         }, [`${content}`]),
       ]),
     );

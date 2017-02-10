@@ -1,8 +1,45 @@
 import { Observable } from 'rxjs';
-import { evolve, merge } from 'ramda';
+import { evolve, merge, prop } from 'ramda';
 
 /* t = time, c = content */
 export const transformationExamples = {
+  buffer: {
+    label: 'buffer',
+    inputs: [
+      [{t:9, c:'A'}, {t:23, c:'B'}, {t:40, c:'C'}, {t:54, c:'D'}, {t:71, c:'E'}, {t:85, c:'F'}],
+      [{t:33, c:0}, {t:66, c:0}, {t:90, c:0}],
+    ],
+    apply: function(inputs) {
+      return inputs[0].pluck('content')
+        .buffer(inputs[1])
+        .map(x => `[${x}]`);
+    }
+  },
+
+  bufferCount: {
+    label: 'bufferCount(3, 2)',
+    inputs: [
+      [{t:9, c:'A'}, {t:23, c:'B'}, {t:40, c:'C'}, {t:54, c:'D'}, {t:71, c:'E'}, {t:85, c:'F'}],
+    ],
+    apply: function(inputs) {
+      return inputs[0].pluck('content')
+        .bufferCount(3, 2)
+        .map(x => `[${x}]`);
+    } 
+  },
+
+  bufferTime: {
+    label: 'bufferTime(30)',
+    inputs: [
+      [{t:0, c:'A'}, {t:10, c:'B'}, {t:22, c:'C'}, {t:61, c:'D'}, {t:71, c:'E'}, {t:95, c:'F'}],
+    ],
+    apply: function(inputs, scheduler) {
+      return inputs[0].pluck('content')
+        .bufferTime(30, scheduler)
+        .map(x => `[${x}]`);
+    } 
+  },
+
   map: {
     label: 'map(x => 10 * x)',
     inputs: [

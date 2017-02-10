@@ -23,13 +23,15 @@ export function Sandbox({ DOM, store }) {
     .map(exampleKey => examples[exampleKey])
     .publishReplay(1).refCount();
 
-  const newRouteInputs$ = example$
-    .pluck('inputs')
-    .map(inputsToTimelines);
-  const storeInputs$ = store.pluck('inputs')
-    .filter(identity);
-  const inputStores$ = Observable.merge(newRouteInputs$, storeInputs$)
-    .distinctUntilChanged()
+  const inputStores$ = example$
+    .switchMap(example =>
+      store.pluck('inputs')
+        .filter(identity)
+        // bug: For some reason inputDataList$ emits old value after
+        // route change. Skip it.
+        .skip(1)
+        .startWith(inputsToTimelines(example.inputs))
+    )
     .publishReplay(1).refCount();
 
   const outputStore$ = createOutputStream$(example$, inputStores$);
@@ -41,7 +43,8 @@ export function Sandbox({ DOM, store }) {
   };
 
   const inputTimelines$
-    = Collection.gather(Timeline, { DOM }, inputStores$, 'id');
+    = Collection.gather(Timeline, { DOM }, inputStores$, 'id')
+      .publishReplay(1).refCount()
   const outputTimeline = Timeline(outputTimelineSources$);
 
   const inputDOMs$ = Collection.pluck(inputTimelines$, prop('DOM'));

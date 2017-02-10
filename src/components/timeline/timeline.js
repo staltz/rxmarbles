@@ -65,11 +65,11 @@ function OriginalTimeline(sources) {
       div({ style: timelineStyle }, [
         svg({
           attrs: { viewBox: '0 0 7 10' },
-          style: { width: 48, height: 68, overflow: 'visible' },
+          style: { width: '48px', height: '68px', overflow: 'visible' },
         }, [
           svg.line({
-            attrs: { x1: 0, x2: 112, y1: 5, y2: 5 },
-            style: { stroke: 'black', strokeWidth: STROKE_WIDTH },
+            attrs: { x1: '0', x2: '112', y1: '5', y2: '5' },
+            style: { stroke: 'black', strokeWidth: `${STROKE_WIDTH}` },
           }),
           svg.polygon({
             attrs: { points: '111.7,6.1 111.7,3.9 114,5' },
@@ -77,7 +77,7 @@ function OriginalTimeline(sources) {
         ]),
         svg({
           attrs: { viewBox: '0 0 100 10' },
-          style: { width: 680, height: 68, overflow: 'visible' },
+          style: { width: '680px', height: '68px', overflow: 'visible' },
         }, [
           endMarkerDOM,
           ...marbleDOMs,
