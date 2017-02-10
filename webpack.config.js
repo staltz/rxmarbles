@@ -1,12 +1,31 @@
 'use strict';
 
-const webpack = require('webpack');
 const path = require('path');
+const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const isProduction = process.env.NODE_ENV === 'production';
 const gitPackage = require('./package.json');
 
 const rxjsVersion = gitPackage.devDependencies.rxjs;
 const appVersion = gitPackage.version;
+
+let plugins = [
+  new webpack.DefinePlugin({
+    RXJS_VERSION: `"${rxjsVersion}"`,
+    APP_VERSION: `"${appVersion}"`,
+  }),
+
+  new CopyWebpackPlugin([
+    { from: 'src/index.html' },
+    { from: 'src/index.css' },
+  ]),
+]
+
+if (isProduction) {
+  plugins = plugins.concat([
+    new webpack.optimize.UglifyJsPlugin({ sourceMap: true })
+  ]);
+}
 
 module.exports = {
   entry: './src/app.js',
@@ -26,12 +45,7 @@ module.exports = {
     host: '0.0.0.0',
   },
 
-  plugins: [
-    new webpack.DefinePlugin({
-      RXJS_VERSION: `"${rxjsVersion}"`,
-      APP_VERSION: `"${appVersion}"`,
-    }),
-  ],
+  plugins: plugins,
 
   module: {
     loaders: [

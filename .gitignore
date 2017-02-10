@@ -1,5 +1,4 @@
 node_modules/
-dist/
 
 # remove npm
 npm-debug.log

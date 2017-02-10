@@ -43,8 +43,8 @@ function renderFooter() {
     a({ attrs: { href: `${rxjsMarblesGithubUrl}` } }, `v${appVersion}`),
     ' built on ',
     a({ attrs: { href: `${rxjsGithubUrl}/tree/${rxjsVersion}` } }, `RxJS v${rxjsVersion}`),
-    ' by ',
-    a({ attrs: { href: 'https://twitter.com/andrestaltz' } }, '@andrestaltz')
+    // ' by ',
+    // a({ attrs: { href: 'https://twitter.com/andrestaltz' } }, '@andrestaltz')
   ]);
 }
 
