@@ -66,6 +66,30 @@ export const transformationExamples = {
     }
   },
 
+  concatMap: {
+    label: 'obs1$.concatMap(() => obs2$, (x, y) => "" + x + y)',
+    inputs: [
+      [{t:0, c:'A'}, {t:42, c:'B'}, {t:55, c:'C'}],
+      [{t:0, c:1}, {t:10, c:2}, {t:20, c:3}, 25]
+    ],
+    apply: function(inputs, scheduler) {
+      return inputs[0].pluck('content')
+        .concatMap(() => inputs[1].pluck('content'), (x, y) => '' + x + y);
+    }
+  },
+
+  concatMapTo: {
+    label: 'obs1$.concatMapTo(obs2$, (x, y) => "" + x + y)',
+    inputs: [
+      [{t:0, c:'A'}, {t:42, c:'B'}, {t:55, c:'C'}],
+      [{t:0, c:1}, {t:10, c:2}, {t:20, c:3}, 25]
+    ],
+    apply: function(inputs, scheduler) {
+      return inputs[0].pluck('content')
+        .concatMapTo(inputs[1].pluck('content'), (x, y) => '' + x + y);
+    }
+  },
+
   map: {
     label: 'map(x => 10 * x)',
     inputs: [
@@ -73,6 +97,51 @@ export const transformationExamples = {
     ],
     apply: function(inputs) {
       return inputs[0].map(evolve({ content: (c) => c * 10 }));
+    }
+  },
+
+  mapTo: {
+    label: 'mapTo("a")',
+    inputs: [
+      [{t:10, c:1}, {t:20, c:2}, {t:50, c:3}]
+    ],
+    apply: function(inputs) {
+      return inputs[0].mapTo('a');
+    }
+  },
+
+  mergeMap: {
+    label: 'obs1$.mergeMap(() => obs2$, (x, y) => "" + x + y, 2)',
+    inputs: [
+      [{t:0, c:'A'}, {t:3, c:'B'}, {t:6, c:'C'}],
+      [{t:0, c:1}, {t:12, c:2}, {t:24, c:3}, 28]
+    ],
+    apply: function(inputs, scheduler) {
+      return inputs[0].pluck('content')
+        .mergeMap(() => inputs[1].pluck('content'), (x, y) => '' + x + y, 2);
+    }
+  },
+
+  mergeMapTo: {
+    label: 'obs1$.mergeMapTo(obs2$, (x, y) => "" + x + y, 2)',
+    inputs: [
+      [{t:0, c:'A'}, {t:3, c:'B'}, {t:6, c:'C'}],
+      [{t:0, c:1}, {t:12, c:2}, {t:24, c:3}, 25]
+    ],
+    apply: function(inputs, scheduler) {
+      return inputs[0].pluck('content')
+        .mergeMapTo(inputs[1].pluck('content'), (x, y) => '' + x + y, 2);
+    }
+  },
+
+  pairwise: {
+    label: 'pairwise',
+    inputs: [
+      [{t:9, c:'A'}, {t:23, c:'B'}, {t:40, c:'C'}, {t:54, c:'D'}, {t:71, c:'E'}, {t:85, c:'F'}],
+    ],
+    apply: function(inputs) {
+      return inputs[0].pluck('content')
+        .pairwise().map(x => `[${x}]`);
     }
   },
 
@@ -87,6 +156,16 @@ export const transformationExamples = {
     }
   },
 
+  repeat: {
+    label: 'repeat(3)',
+    inputs: [
+      [{t:0, c:'A'}, {t:12, c: 'B'}, 26],
+    ],
+    apply: function(inputs) {
+      return inputs[0].repeat(3);
+    }
+  },
+
   scan: {
     label: 'scan((x, y) => x + y)',
     inputs: [
@@ -96,6 +175,30 @@ export const transformationExamples = {
       return inputs[0].scan((x, y) =>
         merge(x, { content: x.content + y.content, id: x.id + y.id })
       );
+    }
+  },
+
+  switchMap: {
+    label: 'obs1$.switchMap(() => obs2$, (x, y) => "" + x + y)',
+    inputs: [
+      [{t:0, c:'A'}, {t:42, c:'B'}, {t:55, c:'C'}],
+      [{t:0, c:1}, {t:10, c:2}, {t:20, c:3}, 25]
+    ],
+    apply: function(inputs, scheduler) {
+      return inputs[0].pluck('content')
+        .switchMap(() => inputs[1].pluck('content'), (x, y) => '' + x + y);
+    }
+  },
+
+  switchMapTo: {
+    label: 'obs1$.switchMap(obs2$, (x, y) => "" + x + y)',
+    inputs: [
+      [{t:0, c:'A'}, {t:42, c:'B'}, {t:55, c:'C'}],
+      [{t:0, c:1}, {t:10, c:2}, {t:20, c:3}, 25]
+    ],
+    apply: function(inputs, scheduler) {
+      return inputs[0].pluck('content')
+        .switchMapTo(inputs[1].pluck('content'), (x, y) => '' + x + y);
     }
   },
 };
