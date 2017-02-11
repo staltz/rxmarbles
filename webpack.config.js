@@ -12,7 +12,6 @@ const appVersion = gitPackage.version;
 let plugins = [
   new webpack.DefinePlugin({
     RXJS_VERSION: `"${rxjsVersion}"`,
-    APP_VERSION: `"${appVersion}"`,
   }),
 
   new CopyWebpackPlugin([

@@ -3,6 +3,7 @@ body {
   background: #ECECEC;
   font-family: 'Source Sans Pro', sans-serif;
   color: #323232;
+  margin: 0;
 }
 
 a {
@@ -18,4 +19,8 @@ a.link:hover::after {
   position: absolute;
   right: 10px;
   content: '❯';
+}
+
+a.github-fork-ribbon:before {
+  background-color: #AAA;
 }
