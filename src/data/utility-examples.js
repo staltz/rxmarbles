@@ -14,7 +14,7 @@ export const utilityExamples = {
   },
 
   delayWhen: {
-    label: 'delayWhen(x => Rx.Observable.timer(20 * x))',
+    label: 'delayWhen(x => Observable.timer(20 * x))',
     inputs: [
       [{t:0, c:1}, {t:10, c:2}, {t:20, c:1}]
     ],

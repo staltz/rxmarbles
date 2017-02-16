@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 export const conditionalExamples = {
   defaultIfEmpty: {
     label: 'defaultIfEmpty(true)',
-    inputs: [[]],
+    inputs: [[99]],
     apply: function(inputs) {
       return inputs[0].defaultIfEmpty(true);
     }
