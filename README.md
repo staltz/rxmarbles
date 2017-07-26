@@ -3,7 +3,7 @@ RxMarbles
 
 A webapp for experimenting with diagrams of [Rx](http://reactivex.io/) Observables, for learning purposes.
 
-![Example merge](https://raw.githubusercontent.com/staltz/rxmarbles/master/dist/img/example_merge.png)
+![Example switchMap](./dist/example-switchmap.png)
 
 #### Features:
 

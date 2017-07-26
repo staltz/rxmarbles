@@ -1,27 +1,33 @@
-import Cycle from '@cycle/core';
-import {makeDOMDriver} from '@cycle/dom';
-import appModel from 'rxmarbles/app-model';
-import appView from 'rxmarbles/app-view';
-import operatorsMenuLinkComponent from 'rxmarbles/components/operators-menu-link';
-import operatorsMenuComponent from 'rxmarbles/components/operators-menu';
-import sandboxComponent from 'rxmarbles/components/sandbox/sandbox';
-import diagramComponent from 'rxmarbles/components/diagram/diagram';
-import marbleComponent from 'rxmarbles/components/marble';
-import diagramCompletionComponent from 'rxmarbles/components/diagram-completion';
+import { run } from '@cycle/rxjs-run';
+import { makeDOMDriver } from '@cycle/dom';
+import { Observable } from 'rxjs';
+import { merge } from 'ramda';
 
-function main() {
-  return {
-    DOM: appView(appModel())
+import { Sandbox } from './components/sandbox';
+
+import { appModel } from './app-model';
+import { appView } from './app-view';
+
+
+function main(sources) {
+  const route$ = appModel();
+  const sandbox = Sandbox(sources);
+
+  const sinks = {
+    DOM: appView(sandbox.DOM),
+    store: Observable.merge(route$, sandbox.data)
+      .scan(merge, {}),
   };
+
+  return sinks;
 }
 
-Cycle.run(main, {
-  DOM: makeDOMDriver('.js-appContainer', {
-    'x-operators-menu-link': operatorsMenuLinkComponent,
-    'x-operators-menu': operatorsMenuComponent,
-    'x-sandbox': sandboxComponent,
-    'x-marble': marbleComponent,
-    'x-diagram-completion': diagramCompletionComponent,
-    'x-diagram': diagramComponent
-  })
+// Note: drivers use xstream 
+function dummyDriver(initialValue) {
+  return (value$) => value$.remember().startWith(initialValue);
+}
+
+run(main, {
+  DOM: makeDOMDriver('#app-container'),
+  store: dummyDriver({}),
 });

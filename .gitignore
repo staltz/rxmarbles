@@ -1,6 +1,6 @@
 node_modules
-build
-ignore
+
+npm-debug.log
 
 *.sublime-project
 *.sublime-workspace

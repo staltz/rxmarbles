@@ -1,5 +1,4 @@
-
-export default {
+export const DIMENS = {
   spaceTiny:   '5px',
   spaceSmall:  '10px',
   spaceMedium: '22px',
