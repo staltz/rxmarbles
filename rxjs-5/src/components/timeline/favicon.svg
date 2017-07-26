@@ -1,0 +1,11 @@
+<svg width="96" height="96">
+  <line
+    x1="0" x2="100%"
+    y1="50%" y2="50%"
+    style="stroke: black; stroke-width: 4;" />
+
+   <circle
+    cx="50%" cy="50%" r="30"
+    stroke="black" stroke-width="4.5" fill="red" />
+
+</svg>

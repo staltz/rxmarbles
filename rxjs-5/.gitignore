@@ -1,0 +1,4 @@
+node_modules/
+
+# remove npm
+npm-debug.log
