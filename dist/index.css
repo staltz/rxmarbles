@@ -1,0 +1,26 @@
+body {
+  position: relative;
+  background: #ECECEC;
+  font-family: 'Source Sans Pro', sans-serif;
+  color: #323232;
+  margin: 0;
+}
+
+a {
+  color: #3EA1CB;
+}
+
+a.link:hover {
+  color: black !important;
+}
+
+a.link:hover::after {
+  display: inline-block;
+  position: absolute;
+  right: 10px;
+  content: '❯';
+}
+
+a.github-fork-ribbon:before {
+  background-color: #AAA;
+}

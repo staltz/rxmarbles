@@ -1,72 +1,36 @@
-/*
- * Functions to handle data of input diagrams in the example shown in the
- * sandbox.
- */
-import {Rx} from '@cycle/core';
-import Utils from 'rxmarbles/components/sandbox/utils';
-import Immutable from 'immutable';
+import { last } from 'ramda';
 
-function getNotifications(diagram) {
-  let last = diagram[diagram.length - 1];
-  if (typeof last === 'number') {
-    return Immutable.List(diagram.slice(0, -1));
-  } else {
-    return Immutable.List(diagram);
-  }
+import { calculateNotificationHash } from './sandbox-utils';
+
+function inputToMarbles(stream) {
+  return stream.map(({ t: time, c: content }, index) => ({
+    id: calculateNotificationHash({ time, content }),
+    time,
+    content,
+    itemId: index,
+  }));
 }
 
-function prepareNotification(input, diagramId) {
-  if (input && input.get && typeof input.get('time') !== 'undefined') {
-    return input; // is already a prepared notification
-  }
-  return Immutable.Map({})
-    .set('time', input.t)
-    .set('content', input.d)
-    .set('diagramId', diagramId)
-    .set('id', Utils.calculateNotificationHash({time: input.t, content: input.d}));
+function getInput(input) {
+  const lastInput = last(input);
+  return typeof lastInput === 'number'
+    ? input.slice(0, -1)
+    : input;
 }
 
-function prepareInputDiagram(diagram, indexInDiagramArray = 0) {
-  let last = diagram[diagram.length - 1];
-  return Immutable.Map({})
-    .set('notifications', getNotifications(diagram)
-      .map(notification => prepareNotification(notification, indexInDiagramArray))
-    )
-    .set('end', (typeof last === 'number') ? last : 100)
-    .set('id', indexInDiagramArray);
+function getTime(input) {
+  const lastInput = last(input);
+  return typeof lastInput === 'number'
+    ? lastInput
+    : 100;
 }
 
-function augmentWithExampleKey(diagramData, exampleKey) {
-  return diagramData
-    .set('example', exampleKey)
-    .set('notifications', diagramData.get('notifications')
-      .map(notif => notif.set('example', exampleKey))
-    );
+export function inputsToTimelines(inputs) {
+  return inputs
+    .map((input, index) => ({
+      id: index,
+      marbles: inputToMarbles(getInput(input)),
+      end: { time: getTime(input) },
+      interactive: true,
+    }));
 }
-
-function replaceDiagramDataIn(diagrams, newDiagramData) {
-  return diagrams.map(diagramData => {
-    if (diagramData.get('id') === newDiagramData.get('id')) {
-      return newDiagramData;
-    } else {
-      return diagramData;
-    }
-  });
-}
-
-function makeNewInputDiagramsData$(changeInputDiagram$, inputs$) {
-  return inputs$
-    .flatMapLatest(inputs =>
-      changeInputDiagram$.scan(inputs, (acc, newDiagramData) =>
-        acc.set('diagrams',
-          replaceDiagramDataIn(acc.get('diagrams'), newDiagramData)
-        )
-      )
-    );
-}
-
-module.exports = {
-  prepareInputDiagram: prepareInputDiagram,
-  augmentWithExampleKey: augmentWithExampleKey,
-  makeNewInputDiagramsData$: makeNewInputDiagramsData$
-};

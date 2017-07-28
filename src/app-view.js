@@ -1,95 +1,65 @@
-import {h} from '@cycle/dom';
-import Colors from 'rxmarbles/styles/colors';
-import Dimens from 'rxmarbles/styles/dimens';
-import Fonts from 'rxmarbles/styles/fonts';
-import {mergeStyles, renderSvgDropshadow} from 'rxmarbles/styles/utils';
+import { a, div, h1, h3, section } from '@cycle/dom';
 
-const rxmarblesGithubUrl = 'https://github.com/staltz/rxmarbles';
-const rxjsGithubUrl = 'https://github.com/Reactive-Extensions/RxJS';
+import { renderSvgDropshadow, merge } from './styles/utils';
+import { flex, flex1, greyDark, fontSpecial, DIMENS } from './styles';
+import { renderOperatorsMenu } from './components/operators-menu';
 
-const pageRowWidth = '1060px';
-const sandboxWidth = '820px';
 
-const pageRowStyle = {
-  position: 'relative',
-  width: pageRowWidth,
-  margin: '0 auto'
-};
+const rxjsVersion = RXJS_VERSION; // webpack constant
+const rxjsGithubUrl = 'https://github.com/ReactiveX/rxjs';
 
-const pageRowChildStyle = {
-  display: 'inline-block',
-};
+const containerWidth = { width: '1060px' };
+const flexMain = { flex: '0 0 820px' };
 
-const pageRowFirstChildStyle = mergeStyles(pageRowChildStyle, {
-  width: `calc(${pageRowWidth} - ${sandboxWidth} - ${Dimens.spaceMedium})`,
-});
-
-const pageRowLastChildStyle = mergeStyles(pageRowChildStyle, {
-  width: sandboxWidth
-});
+function renderGithubRibbon() {
+  return a('.github-fork-ribbon',
+    {
+      attrs: {
+        href: 'https://github.com/staltz/rxmarbles',
+        title: 'Fork me on GitHub',
+      }
+    }, [ 'Fork me on GitHub' ]);
+}
 
 function renderHeader() {
-  return h('div', {style: pageRowStyle}, [
-    h('h1',
-      {style: mergeStyles({
-        fontFamily: Fonts.fontSpecial,
-        color: Colors.greyDark},
-        pageRowFirstChildStyle)},
-      'RxMarbles'),
-    h('h3',
-      {style: mergeStyles({
-        color: Colors.greyDark},
-        pageRowLastChildStyle)},
-      'Interactive diagrams of Rx Observables')
+  return div({ style: merge(flex, { alignItems: 'baseline' }) }, [
+    h1({
+      style: merge(fontSpecial, greyDark, flex1),
+    }, ['RxJS Marbles']),
+    h3({
+      style: merge(greyDark, flexMain),
+    }, ['Interactive timelines of Rx Observables'])
   ]);
 }
 
-function renderContent(route) {
-  const style = mergeStyles(pageRowStyle, {marginTop: Dimens.spaceSmall});
-  return (
-    h('div', {style}, [
-      h('div',
-        {style: pageRowFirstChildStyle},
-        h('x-operators-menu', {key: 'operatorsMenu'})
-      ),
-      h('div',
-        {style: mergeStyles({
-          position: 'absolute',
-          top: '0'},
-          pageRowLastChildStyle)}
-        ,h('x-sandbox', {key: 'sandbox', route: route, width: '820px'})
-      )
-    ])
-  );
+function renderContent(sandboxDOM) {
+  return div({ style: flex }, [
+    div({ style: flex1 }, [renderOperatorsMenu()]),
+    div({ style: flexMain }, [sandboxDOM]),
+  ]);
 }
 
-function renderFooter(appVersion, rxVersion) {
+function renderFooter() {
   const style = {
     position: 'fixed',
     bottom: '2px',
-    right: Dimens.spaceMedium,
-    color: Colors.greyDark
+    right: DIMENS.spaceMedium,
   };
-  return h('section', {style}, [
-    h('a', {href: `${rxmarblesGithubUrl}/releases/tag/v${appVersion}`}, `v${appVersion}`),
-    ' built on ',
-    h('a', {href: `${rxjsGithubUrl}/tree/v${rxVersion}`}, `RxJS v${rxVersion}`),
-    ' by ',
-    h('a', {href: 'https://twitter.com/andrestaltz'}, '@andrestaltz')
+  return section({ style: merge(style, greyDark) }, [
+    'Built on ',
+    a({ attrs: { href: `${rxjsGithubUrl}/tree/${rxjsVersion}` } }, `RxJS v${rxjsVersion}`),
   ]);
 }
 
-module.exports = function appView(state$) {
-  const wrapperStyle = {
-    paddingLeft:  Dimens.spaceSmall,
-    paddingRight: `calc(${Dimens.spaceHuge} + ${Dimens.spaceSmall})`,
-  }
-  return state$.map(({route, appVersion, rxVersion}) =>
-    h('div', {style: wrapperStyle}, [
-      renderSvgDropshadow(),
-      renderHeader(),
-      renderContent(route),
-      renderFooter(appVersion, rxVersion)
-    ])
-  );
-};
+export function appView(sandboxDOM$) {
+  return sandboxDOM$
+    .map((sandboxDOM) =>
+      div({ style: merge(containerWidth, { margin: '0 auto' }) }, [
+        renderSvgDropshadow(),
+        renderGithubRibbon(),
+        renderHeader(),
+        renderContent(sandboxDOM),
+        renderFooter(),
+      ]),
+    );
+}

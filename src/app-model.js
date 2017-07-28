@@ -1,18 +1,13 @@
-import {Rx} from '@cycle/core';
-let packageJson = require('package');
-let RxPackageJson = require('@cycle/core/node_modules/rx/package.json');
+import { Observable } from 'rxjs';
+
 
 const DEFAULT_EXAMPLE = 'merge';
 
-module.exports = function appModel() {
-  let route$ = Rx.Observable.fromEvent(window, 'hashchange')
+export function appModel() {
+  return Observable.fromEvent(window, 'hashchange')
     .map(hashEvent => hashEvent.target.location.hash.replace('#', ''))
-    .startWith(window.location.hash.replace('#', '') || DEFAULT_EXAMPLE);
-  let appVersion$ = Rx.Observable.just(packageJson.version);
-  let rxVersion$ = Rx.Observable.just(RxPackageJson.version);
-  return Rx.Observable.combineLatest(
-    route$, appVersion$, rxVersion$,
-    (route, appVersion, rxVersion) =>
-    ({route, appVersion, rxVersion})
-  );
+    .startWith(window.location.hash.replace('#', ''))
+    .map(route => route || DEFAULT_EXAMPLE)
+    .distinctUntilChanged()
+    .map(route => ({ route, inputs: undefined }));
 };

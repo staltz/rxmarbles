@@ -1,44 +1,40 @@
 {
   "name": "rxmarbles",
-  "version": "1.4.1",
+  "version": "2.0.0",
   "author": "Andre Staltz",
+  "contributors": [
+    { "name": "Alan Thai" }
+  ],
   "repository": {
     "type": "git",
     "url": "git@github.com:staltz/rxmarbles.git"
   },
   "license": "BSD 3-Clause",
   "private": true,
-  "main": "js/app.js",
-  "dependencies": {
-    "@cycle/core": "1.0.x",
-    "@cycle/dom": "3.1.x",
-    "immutable": "^3.7.2",
-    "rxtween": "0.3.3"
-  },
   "devDependencies": {
-    "browserify": "10.1.3",
-    "less": "^2.5.0",
-    "uglify-js": "~2.4.21",
-    "watchify": "~3.2.1",
-    "babel": "^5.2.7"
+    "@cycle/collection": "0.5.1",
+    "@cycle/dom": "15.0.0-rc.1",
+    "@cycle/isolate": "1.4.0",
+    "@cycle/rxjs-adapter": "3.3.0",
+    "@cycle/rxjs-run": "4.0.0-rc.3",
+    "babel-core": "6.22.1",
+    "babel-loader": "6.2.10",
+    "babel-preset-es2015": "6.22.0",
+    "copy-webpack-plugin": "^4.0.1",
+    "cross-env": "3.1.4",
+    "ramda": "0.23.0",
+    "rxjs": "5.0.3",
+    "webpack": "1.14.0",
+    "webpack-dev-server": "1.16.2",
+    "webpack-hot-middleware": "2.16.0"
   },
   "scripts": {
-    "preinstall": "rm -rf build && rm -rf node_modules && mkdir -p ignore/es5src",
-    "postinstall": "ln -s ../ignore/es5src node_modules/rxmarbles && ln -s ../package.json node_modules/package.json",
-    "less": "lessc styles/main.less dist/css/main.css",
-    "babel": "mkdir -p ignore/es5src && babel src --out-dir ignore/es5src",
-    "browserify": "browserify -e ignore/es5src/app.js --outfile dist/js/app.js",
-    "browserify-element": "browserify -e ignore/es5src/element.js --outfile dist/js/element.js",
-    "build": "npm run less && npm run babel && npm run browserify",
-    "build-production": "npm run less && npm run babel && npm run browserify && npm run uglify",
-    "build-element": "npm run less && npm run babel && npm run browserify-element",
-    "build-element-production": "npm run less && npm run babel && npm run browserify-element && npm run uglify-element",
-    "uglify": "uglifyjs dist/js/app.js -o dist/js/app.js",
-    "uglify-element": "uglifyjs dist/js/element.js -o dist/js/element.js",
-    "update-gh-pages": "git checkout gh-pages && git merge --no-ff -X theirs master && git push origin gh-pages && git checkout master",
+    "build": "cross-env NODE_ENV=production webpack",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --debug --inline --hot --progress --no-info --host 0.0.0.0 --port 8081",
+    "gh-pages": "git subtree push --prefix dist origin gh-pages",
     "release": "npm run release-patch",
-    "release-patch": "git checkout master && npm version patch && npm run build-production && npm run build-element-production && git commit -a -m 'Build dist/' && git push origin master --tags && npm run update-gh-pages",
-    "release-minor": "git checkout master && npm version minor && npm run build-production && npm run build-element-production && git commit -a -m 'Build dist/' && git push origin master --tags && npm run update-gh-pages",
-    "release-major": "git checkout master && npm version major && npm run build-production && npm run build-element-production && git commit -a -m 'Build dist/' && git push origin master --tags && npm run update-gh-pages"
+    "release-patch": "git checkout master && npm version patch && npm run build && git commit -a -m 'Build dist/' && git push origin master --tags && npm run update-gh-pages",
+    "release-minor": "git checkout master && npm version minor && npm run build && git commit -a -m 'Build dist/' && git push origin master --tags && npm run update-gh-pages",
+    "release-major": "git checkout master && npm version major && npm run build && git commit -a -m 'Build dist/' && git push origin master --tags && npm run update-gh-pages"
   }
 }

@@ -1,116 +1,71 @@
-import {Rx} from '@cycle/core';
-import {h} from '@cycle/dom';
-import RxTween from 'rxtween';
-import Examples from 'rxmarbles/data/examples';
-import {prepareInputDiagram, augmentWithExampleKey, makeNewInputDiagramsData$}
-  from 'rxmarbles/components/sandbox/sandbox-input';
-import {getOutputDiagram$} from 'rxmarbles/components/sandbox/sandbox-output';
-import Immutable from 'immutable';
-import Colors from 'rxmarbles/styles/colors';
-import Dimens from 'rxmarbles/styles/dimens';
-import Fonts from 'rxmarbles/styles/fonts';
-import {mergeStyles, elevation1Style, elevation2Style, elevation2Before, elevation2After}
-  from 'rxmarbles/styles/utils';
+import { div } from '@cycle/dom';
+import { Observable } from 'rxjs';
+import { apply, flip, identity, length, map, merge, prop, zip } from 'ramda';
 
-function renderOperatorLabel(label) {
-  let fontSize = (label.length >= 45) ? 1.3 : (label.length >= 30) ? 1.5 : 2;
-  let style = {
-    fontFamily: Fonts.fontCode,
-    fontWeight: '400',
-    fontSize: `${fontSize}rem`
+import { Collection } from '../../collection';
+import { examples } from '../../data';
+import { bgWhite } from '../../styles';
+import { merge as mergeStyles, elevation1 } from '../../styles/utils';
+
+import { Timeline } from '../timeline';
+
+import { createOutputStream$ } from './sandbox-output';
+import { inputsToTimelines } from './sandbox-input';
+import { renderOperatorBox } from './operator-label';;
+
+
+const sandboxStyle = mergeStyles(bgWhite, elevation1, { borderRadius: '2px' });
+
+export function Sandbox({ DOM, store }) {
+  const example$ = store.pluck('route')
+    .skip(1) // blank first route
+    .distinctUntilChanged()
+    .map(exampleKey => examples[exampleKey])
+    .publishReplay(1).refCount();
+
+  const inputStores$ = example$
+    .switchMap(example =>
+      store.pluck('inputs')
+        .filter(identity)
+        // bug: For some reason inputDataList$ emits old value after
+        // route change. Skip it.
+        .skip(1)
+        .startWith(inputsToTimelines(example.inputs))
+    )
+    .publishReplay(1).refCount();
+
+  const outputStore$ = createOutputStream$(example$, inputStores$);
+  const outputTimelineSources$ = {
+    DOM,
+    marbles: outputStore$.pluck('marbles'),
+    end: outputStore$.pluck('end'),
+    interactive: Observable.of(false),
   };
-  return h('span.operatorLabel', {style}, label);
-}
 
-function renderOperator(label) {
-  let style = mergeStyles({
-      border: '1px solid rgba(0,0,0,0.06)',
-      padding: Dimens.spaceMedium,
-      textAlign: 'center'},
-    elevation2Style
-  );
-  return h('div.operatorBox', {style}, [
-    elevation2Before,
-    renderOperatorLabel(label),
-    elevation2After
-  ]);
-}
+  const inputTimelines$
+    = Collection.gather(Timeline, { DOM }, inputStores$, 'id')
+      .publishReplay(1).refCount()
+  const outputTimeline = Timeline(outputTimelineSources$);
 
-function getSandboxStyle(width) {
-  return mergeStyles({
-      background: Colors.white,
-      width: width,
-      borderRadius: '2px'},
-    elevation1Style
-  );
-}
+  const inputDOMs$ = Collection.pluck(inputTimelines$, prop('DOM'));
+  const inputDataList$ = Collection.pluck(inputTimelines$, prop('data'))
+    .filter(length)
+    .debounceTime(0)
+    .withLatestFrom(inputStores$, zip)
+    .map(map(apply(flip(merge))));
 
-function renderSandbox(inputDiagrams, operatorLabel, outputDiagram, width) {
-  return h('div.sandboxRoot', {style: getSandboxStyle(width)}, [
-    inputDiagrams.get('diagrams').map((diagram, index) =>
-        h('x-diagram.sandboxInputDiagram', {
-          key: `inputDiagram${index}`,
-          data: diagram,
-          interactive: true
-        })
-    ),
-    renderOperator(operatorLabel),
-    h('x-diagram.sandboxOutputDiagram', {
-      key: 'outputDiagram',
-      data: outputDiagram,
-      interactive: false
-    })
-  ]);
-}
-
-function makeInputDiagrams(example) {
-  return Immutable.Map({
-    'diagrams': example.get('inputs')
-      .map(prepareInputDiagram)
-      .map(diag => augmentWithExampleKey(diag, example.get('key')))
-  });
-}
-
-function markAsFirstDiagram(diagram) {
-  return diagram.set('isFirst', true);
-}
-
-function markAllDiagramsAsFirst(diagramsData) {
-  return diagramsData.update('diagrams', diagrams =>
-    diagrams.map(markAsFirstDiagram)
-  );
-}
-
-let isTruthy = (x => !!x);
-
-function sandboxComponent({DOM, props}) {
-  let changeInputDiagram$ = DOM.get('.sandboxInputDiagram', 'newdata')
-    .map(ev => ev.detail);
-  let width$ = props.get('width').startWith('100%');
-  let example$ = props.get('route')
-    .filter(isTruthy)
-    .map(key => Immutable.Map(Examples[key]).set('key', key))
-    .shareReplay(1);
-  let inputDiagrams$ = example$
-    .map(makeInputDiagrams)
-    .map(markAllDiagramsAsFirst)
-    .shareReplay(1);
-  let newInputDiagrams$ = makeNewInputDiagramsData$(
-    changeInputDiagram$, inputDiagrams$
-  );
-  let operatorLabel$ = example$.map(example => example.get('label'));
-  let firstOutputDiagram$ = getOutputDiagram$(example$, inputDiagrams$)
-    .map(markAsFirstDiagram);
-  let newOutputDiagram$ = getOutputDiagram$(example$, newInputDiagrams$);
-  let outputDiagram$ = firstOutputDiagram$.merge(newOutputDiagram$);
-  let vtree$ = Rx.Observable.combineLatest(
-    inputDiagrams$, operatorLabel$, outputDiagram$, width$,
-    renderSandbox
-  );
+  const vtree$ = Observable
+    .combineLatest(inputDOMs$, outputTimeline.DOM, example$)
+    .map(([inputsDOMs, outputDOM, example]) =>
+      div({ style: sandboxStyle }, [
+        ...inputsDOMs,
+        renderOperatorBox(example.label),
+        outputDOM,
+      ]),
+    );
 
   return {
-    DOM: vtree$
+    DOM: vtree$,
+    data: inputDataList$.map((inputs) => ({ inputs })),
   };
 }
-
-module.exports = sandboxComponent;
