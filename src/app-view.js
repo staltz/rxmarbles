@@ -28,7 +28,7 @@ function renderHeader() {
     }, ['RxJS Marbles']),
     h3({
       style: merge(greyDark, flexMain),
-    }, ['Interactive timelines of Rx Observables'])
+    }, ['Interactive diagrams of Rx Observables'])
   ]);
 }
 
