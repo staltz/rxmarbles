@@ -25,7 +25,7 @@ export const transformationExamples = {
       return inputs[0].pluck('content')
         .bufferCount(3, 2)
         .map(x => `[${x}]`);
-    } 
+    }
   },
 
   bufferTime: {
@@ -37,7 +37,7 @@ export const transformationExamples = {
       return inputs[0].pluck('content')
         .bufferTime(30, scheduler)
         .map(x => `[${x}]`);
-    } 
+    }
   },
 
   bufferToggle: {
@@ -191,7 +191,7 @@ export const transformationExamples = {
   },
 
   switchMapTo: {
-    label: 'obs1$.switchMap(obs2$, (x, y) => "" + x + y)',
+    label: 'obs1$.switchMapTo(obs2$, (x, y) => "" + x + y)',
     inputs: [
       [{t:0, c:'A'}, {t:42, c:'B'}, {t:55, c:'C'}],
       [{t:0, c:1}, {t:10, c:2}, {t:20, c:3}, 25]
