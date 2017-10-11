@@ -27,11 +27,14 @@ if (isProduction) {
 }
 
 module.exports = {
-  entry: './src/app.js',
+  entry: {
+    app: './src/app.js',
+    element: './src/element.js'
+  },
 
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'app.js',
+    filename: '[name].js',
   },
 
   devtool: isProduction ?
