@@ -11,7 +11,7 @@ class SandboxElement extends HTMLElement {
       const sandbox = Sandbox( sources );
       const sinks = {
         DOM: sandbox.DOM,
-        store: Observable.merge( sandbox.data ).scan(merge, { route: key, inputs: undefined }),
+        store: sandbox.data.scan(merge, { route: key, inputs: undefined }),
       };
       return sinks;
     }
