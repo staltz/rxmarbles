@@ -57,11 +57,12 @@ export const transformationExamples = {
     label: 'bufferWhen',
     inputs: [
       [{t:0, c:1}, {t:10, c:2}, {t:20, c:3}, {t:30, c:4}, {t:40, c:5}, {t:50, c:6}, {t:60, c:7}, {t:70, c:8}, {t:80, c:9}],
-      [{t:35, c:0}, {t:50, c:0}],
+      [{t:35, c:'Any'}],
     ],
     apply: function(inputs) {
-      return inputs[0].pluck('content')
-        .bufferWhen(() => inputs[1])
+      return inputs[0]
+        .pluck('content')
+        .bufferWhen(() => inputs[1].filter((x) => x.time > 1))
         .map(x => `[${x}]`);
     }
   },
