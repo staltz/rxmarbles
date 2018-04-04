@@ -31,6 +31,13 @@ export function Sandbox({ DOM, store }) {
         // route change. Skip it.
         .skip(1)
         .startWith(inputsToTimelines(example.inputs))
+        .map(timelines => timelines.map(timeline => { // note: We modify the timelines object here.
+            const endTimes = timeline.marbles.filter(marble => (marble.content === 'X') || (marble.content === '|')).map(marble => marble.time);
+            const endTime = Math.min.apply(null, endTimes);
+            timeline.marbles.forEach(marble => { marble.pastEnd = (marble.time > endTime); });
+            return timeline;
+        })
+        )
     )
     .publishReplay(1).refCount();
 
