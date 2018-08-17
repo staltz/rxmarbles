@@ -90,6 +90,18 @@ export const transformationExamples = {
     }
   },
 
+  flatMap: {
+    label: 'obs1$.flatMap(() => obs2$, (x, y) => "" + x + y, 2)',
+    inputs: [
+      [{t:0, c:'A'}, {t:3, c:'B'}, {t:6, c:'C'}],
+      [{t:0, c:1}, {t:12, c:2}, {t:24, c:3}, 28]
+    ],
+    apply: function(inputs, scheduler) {
+      return inputs[0].pluck('content')
+        .flatMap(() => inputs[1].pluck('content'), (x, y) => '' + x + y, 2);
+    }
+  },
+
   map: {
     label: 'map(x => 10 * x)',
     inputs: [
