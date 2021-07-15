@@ -68,7 +68,7 @@ function OriginalTimeline(sources) {
           style: { width: '48px', height: '68px', overflow: 'visible' },
         }, [
           svg.line({
-            attrs: { x1: '0', x2: '112', y1: '5', y2: '5' },
+            attrs: { x1: '0', y1: '5', x2: '112', y2: '5' },
             style: { stroke: 'black', strokeWidth: `${STROKE_WIDTH}` },
           }),
           svg.polygon({

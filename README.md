@@ -1,5 +1,4 @@
-RxMarbles
-=========
+# RxMarbles
 
 A webapp for experimenting with diagrams of [Rx](http://reactivex.io/) Observables, for learning purposes.
 
