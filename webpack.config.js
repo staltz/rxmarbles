@@ -7,63 +7,56 @@ const isProduction = process.env.NODE_ENV === 'production';
 const gitPackage = require('./package.json');
 
 const rxjsVersion = gitPackage.devDependencies.rxjs;
-const appVersion = gitPackage.version;
+// Unused var:
+// const appVersion = gitPackage.version;
 
 let plugins = [
   new webpack.DefinePlugin({
     RXJS_VERSION: `"${rxjsVersion}"`,
   }),
 
-  new CopyWebpackPlugin([
-    { from: 'src/index.html' },
-    { from: 'src/index.css' },
-  ]),
+  new CopyWebpackPlugin({
+    patterns: [
+      { from: 'src/index.html' },
+      { from: 'src/index.css' }
+    ]
+  }),
 ]
 
-if (isProduction) {
-  plugins = plugins.concat([
-    new webpack.optimize.UglifyJsPlugin({ sourceMap: true })
-  ]);
-}
-
 module.exports = {
-  entry: './src/app.js',
+  entry: {
+    app: './src/app.js'
+  },
 
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'app.js',
+    filename: '[name].js',
   },
+
+  mode: isProduction ?
+    'production' :
+    'development',
 
   devtool: isProduction ?
     'source-map' :
     'inline-source-map',
 
   devServer: {
-    historyApiFallback: { index: '/' },
-    proxy: {},
-    host: '0.0.0.0',
+    historyApiFallback: true
   },
 
-  plugins: plugins,
+  plugins,
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
-        query: {
-          presets: ['es2015'],
+        options: {
+          presets: ['@babel/env']
         }
-      },
-      {
-        test: /\.html$/,
-        loader: 'raw-loader',
-      },
+      }
     ],
-  },
-
-  resolve: {
-    extensions: ['', '.js']
   }
 };
