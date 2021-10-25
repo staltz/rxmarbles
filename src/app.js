@@ -1,6 +1,7 @@
 import { run } from '@cycle/rxjs-run';
 import { makeDOMDriver } from '@cycle/dom';
-import { Observable } from 'rxjs';
+import { merge as mergeOperator } from 'rxjs';
+import { scan } from 'rxjs/operators';
 import { merge } from 'ramda';
 
 import { Sandbox } from './components/sandbox';
@@ -15,14 +16,16 @@ function main(sources) {
 
   const sinks = {
     DOM: appView(sandbox.DOM),
-    store: Observable.merge(route$, sandbox.data)
-      .scan(merge, {}),
+    store: mergeOperator(route$, sandbox.data)
+      .pipe(
+        scan(merge, {})
+      ),
   };
 
   return sinks;
 }
 
-// Note: drivers use xstream 
+// Note: drivers use xstream
 function dummyDriver(initialValue) {
   return (value$) => value$.remember().startWith(initialValue);
 }

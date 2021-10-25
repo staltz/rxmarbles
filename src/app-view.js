@@ -1,7 +1,6 @@
 import { a, div, h1, h3, section } from '@cycle/dom';
-
-import { renderSvgDropshadow, merge } from './styles/utils';
-import { flex, flex1, greyDark, fontSpecial, DIMENS } from './styles';
+import { map } from 'rxjs/operators'
+import { flex, flex1, greyDark, fontSpecial, DIMENS, renderSvgDropshadow, merge } from './styles';
 import { renderOperatorsMenu } from './components/operators-menu';
 
 
@@ -53,13 +52,15 @@ function renderFooter() {
 
 export function appView(sandboxDOM$) {
   return sandboxDOM$
-    .map((sandboxDOM) =>
-      div({ style: merge(containerWidth, { margin: '0 auto' }) }, [
-        renderSvgDropshadow(),
-        renderGithubRibbon(),
-        renderHeader(),
-        renderContent(sandboxDOM),
-        renderFooter(),
-      ]),
+    .pipe(
+      map((sandboxDOM) =>
+        div({ style: merge(containerWidth, { margin: '0 auto' }) }, [
+          renderSvgDropshadow(),
+          renderGithubRibbon(),
+          renderHeader(),
+          renderContent(sandboxDOM),
+          renderFooter(),
+        ]),
+      )
     );
 }
