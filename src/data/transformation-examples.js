@@ -162,14 +162,16 @@ export const transformationExamples = {
   },
 
   mergeMapTo: {
-    label: 'obs1$.mergeMapTo(obs2$, (x, y) => "" + x + y, 2)',
+    label: 'obs1$.mergeMapTo(obs2$)',
     inputs: [
-      [{t:0, c:'A'}, {t:3, c:'B'}, {t:6, c:'C'}],
+      [{t:0, c:'A'}, {t:3, c:'B'}, {t:40, c:'C'}],
       [{t:0, c:1}, {t:12, c:2}, {t:24, c:3}, 25]
     ],
     apply(inputs) {
-      return inputs[0].pluck('content')
-        .mergeMapTo(inputs[1].pluck('content'), (x, y) => '' + x + y, 2);
+      return inputs[0].pipe(
+        pluck('content'),
+        mergeMapTo(inputs[1].pipe(pluck('content')), 2)
+      )
     }
   },
 
@@ -214,33 +216,37 @@ export const transformationExamples = {
       [{t:5, c:1}, {t:15, c:2}, {t:25, c:3}, {t:35, c:4}, {t:65, c:5}]
     ],
     apply(inputs) {
-      return inputs[0].scan((x, y) =>
-        merge(x, { content: x.content + y.content, id: x.id + y.id })
+      return inputs[0].pipe(
+        scan((x, y) => merge(x, { content: x.content + y.content, id: x.id + y.id }))
       );
     }
   },
 
   switchMap: {
-    label: 'obs1$.switchMap(() => obs2$, (x, y) => "" + x + y)',
+    label: 'obs1$.switchMap(x => obs2$.pipe(y => "" + x + y))',
     inputs: [
       [{t:0, c:'A'}, {t:42, c:'B'}, {t:55, c:'C'}],
       [{t:0, c:1}, {t:10, c:2}, {t:20, c:3}, 25]
     ],
     apply(inputs) {
-      return inputs[0].pluck('content')
-        .switchMap(() => inputs[1].pluck('content'), (x, y) => '' + x + y);
+      return inputs[0].pipe(
+        pluck('content'),
+        switchMap(x => inputs[1].pipe(pluck('content'), map(y => '' + x + y)))
+      )
     }
   },
 
   switchMapTo: {
-    label: 'obs1$.switchMapTo(obs2$, (x, y) => "" + x + y)',
+    label: 'obs1$.switchMapTo(obs2$)',
     inputs: [
       [{t:0, c:'A'}, {t:42, c:'B'}, {t:55, c:'C'}],
       [{t:0, c:1}, {t:10, c:2}, {t:20, c:3}, 25]
     ],
     apply(inputs) {
-      return inputs[0].pluck('content')
-        .switchMapTo(inputs[1].pluck('content'), (x, y) => '' + x + y);
+      return inputs[0].pipe(
+        pluck('content'),
+        switchMapTo(inputs[1].pipe(pluck('content')))
+      )
     }
   },
 };
