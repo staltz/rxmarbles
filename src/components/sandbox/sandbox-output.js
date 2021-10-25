@@ -15,14 +15,16 @@ import { assoc, curry, merge } from 'ramda';
 
 import { calculateNotificationContentHash } from './sandbox-utils';
 
-const MAX_TIME = 100;
+// add 0.01 or else things at exactly MAX_TIME will cut off
+const PAD_TIME = 0.1
+const MAX_TIME = 100 + PAD_TIME;
 
 const toVTStream = curry(function _toVTStream(scheduler, data) {
   const marbleStreams$ = new Observable(observer => {
     data.marbles.forEach(item =>
       scheduler.schedule(() => observer.next(item), item.time));
   });
-  return marbleStreams$.pipe(takeUntil(timer(data.end.time + 1, scheduler))
+  return marbleStreams$.pipe(takeUntil(timer(data.end.time + PAD_TIME, scheduler))
 )
 });
 
@@ -43,14 +45,18 @@ function outputStreamToMarbles$(scheduler, stream) {
       }),
       takeUntil(stop$),
       reduce((a, b) => a.concat(b), []),
-      map(items => items.map(
-        (item, i) => merge(item, { itemId: i })))
+      map(items =>
+        items.map((item, i) => merge(item, { itemId: i }))
+      )
     )
-    .subscribe(
-      items => subject$.next(items),
-      undefined,
-      () => endTime = scheduler.now(),
-    );
+    .subscribe({
+       next(items) {
+         subject$.next(items)
+       },
+       complete() {
+         endTime = scheduler.now()
+       }
+    });
 
   scheduler.flush();
   stop$.next();
@@ -69,8 +75,7 @@ export function createOutputStream$(example$, inputStores$) {
 
       const inputStreams = inputStores.map(toVTStream(vtScheduler));
       const outputStream = example.apply(inputStreams, vtScheduler)
-        // add 0.01 or else things at exactly MAX_TIME will cut off
-        .pipe(takeUntil(timer(MAX_TIME + 0.01, vtScheduler)));
+        .pipe(takeUntil(timer(MAX_TIME, vtScheduler)));
 
       return outputStreamToMarbles$(vtScheduler, outputStream);
     }),
