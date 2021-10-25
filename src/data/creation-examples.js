@@ -12,10 +12,10 @@ export const creationExamples = {
   },
 
   interval: {
-    label: 'interval(10)',
+    label: 'interval(7)',
     inputs: [],
     apply(inputs, scheduler) {
-      return interval(10, scheduler);
+      return interval(7, scheduler);
     }
   },
 
