@@ -3,6 +3,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const isProduction = process.env.NODE_ENV === 'production';
 const gitPackage = require('./package.json');
 
@@ -17,10 +18,12 @@ let plugins = [
 
   new CopyWebpackPlugin({
     patterns: [
-      { from: 'src/index.html' },
       { from: 'src/index.css' }
     ]
   }),
+  new HtmlWebpackPlugin({
+    template: 'src/index.html'
+  })
 ]
 
 module.exports = {
@@ -30,16 +33,12 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].js',
+    filename: '[name]-[contenthash].js',
   },
 
-  mode: isProduction ?
-    'production' :
-    'development',
+  mode: isProduction ? 'production' : 'development',
 
-  devtool: isProduction ?
-    'source-map' :
-    'inline-source-map',
+  devtool: isProduction ? 'source-map' : 'inline-source-map',
 
   devServer: {
     historyApiFallback: true
