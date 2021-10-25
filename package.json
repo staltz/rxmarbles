@@ -19,17 +19,17 @@
     "@cycle/isolate": "5.2.0",
     "@cycle/rxjs-adapter": "3.3.0",
     "@cycle/rxjs-run": "10.5.0",
+    "@types/ramda": "^0.27.45",
     "babel-loader": "8.2.3",
     "copy-webpack-plugin": "^9.0.1",
     "cross-env": "7.0.3",
     "html-webpack-plugin": "^5.5.0",
-    "@types/ramda": "^0.27.45",
-    "babel-core": "6.22.1",
     "ramda": "0.23.0",
-    "webpack": "^5.59.1",
+    "rxjs": "6.6.7",
+    "rxjs-compat": "^6.6.7",
+    "webpack": "^5.60.0",
     "webpack-cli": "^4.9.1",
-    "webpack-dev-server": "^4.3.1",
-    "rxjs": "6.6.7"
+    "webpack-dev-server": "^4.3.1"
   },
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
