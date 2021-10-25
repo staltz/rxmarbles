@@ -215,7 +215,7 @@ export const filteringExamples = {
     inputs: [
       [{t:5, c:1}, {t:20, c:3}, {t:35, c:6}, {t:50, c:4}, {t:65, c:7}, {t:80, c:2}]
     ],
-    apply: function(inputs) {
+    apply(inputs) {
       return inputs[0].pipe(takeWhile(x => x.content < 5));
     }
   },
