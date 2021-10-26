@@ -15,7 +15,9 @@ A webapp for experimenting with diagrams of [Rx](http://reactivex.io/) Observabl
 
 This is a [Cycle.js](https://github.com/staltz/cycle) app. Use this as an example implementation of advanced custom elements in Cycle.
 
-## Contributing
+## ~~Contributing~~
+
+*Unfortunately I do not have time to maintain this project (I have hundreds of other repos to maintain), but I don't want this project to be changed, I think it's very valuable to keep the same features online at `rxmarbles.com`, which I still regularly pay the domain for. I am sorry for people who would like to update this repo. I advise to build other tools and enrichen the RxJS ecosystem overall. RxMarbles is fine as it is.*
 
 Fork and git clone the repository.
 
