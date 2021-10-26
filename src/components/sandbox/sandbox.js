@@ -1,5 +1,18 @@
 import { div } from '@cycle/dom';
-import { Observable } from 'rxjs';
+import { combineLatest, of } from 'rxjs';
+import {
+  pluck,
+  skip,
+  distinctUntilChanged,
+  map as mapOperator,
+  publishReplay,
+  refCount,
+  switchMap,
+  filter,
+  debounceTime,
+  withLatestFrom,
+  startWith
+} from 'rxjs/operators'
 import { apply, flip, identity, length, map, merge, prop, zip } from 'ramda';
 
 import { Collection } from '../../collection';
@@ -11,35 +24,43 @@ import { Timeline } from '../timeline';
 
 import { createOutputStream$ } from './sandbox-output';
 import { inputsToTimelines } from './sandbox-input';
-import { renderOperatorBox } from './operator-label';;
+import { renderOperatorBox } from './operator-label';
 
 
 const sandboxStyle = mergeStyles(bgWhite, elevation1, { borderRadius: '2px' });
 
 export function Sandbox({ DOM, store }) {
-  const example$ = store.pluck('route')
-    .skip(1) // blank first route
-    .distinctUntilChanged()
-    .map(exampleKey => examples[exampleKey])
-    .publishReplay(1).refCount();
+  const example$ = store.pipe(
+      pluck('route'),
+      skip(1), // blank first route
+      distinctUntilChanged(),
+      mapOperator(exampleKey => examples[exampleKey]),
+      publishReplay(1),
+      refCount()
+  );
 
   const inputStores$ = example$
-    .switchMap(example =>
-      store.pluck('inputs')
-        .filter(identity)
-        // bug: For some reason inputDataList$ emits old value after
-        // route change. Skip it.
-        .skip(1)
-        .startWith(inputsToTimelines(example.inputs))
+    .pipe(
+      switchMap(example =>
+        store.pipe(
+          pluck('inputs'),
+          filter(identity),
+          // bug: For some reason inputDataList$ emits old value after
+          // route change. Skip it.
+          skip(1),
+          startWith(inputsToTimelines(example.inputs))
+        )
+      ),
+      publishReplay(1),
+      refCount()
     )
-    .publishReplay(1).refCount();
 
   const outputStore$ = createOutputStream$(example$, inputStores$);
   const outputTimelineSources$ = {
     DOM,
-    marbles: outputStore$.pluck('marbles'),
-    end: outputStore$.pluck('end'),
-    interactive: Observable.of(false),
+    marbles: outputStore$.pipe(pluck('marbles')),
+    end: outputStore$.pipe(pluck('end')),
+    interactive: of(false)
   };
 
   const inputTimelines$
@@ -49,23 +70,26 @@ export function Sandbox({ DOM, store }) {
 
   const inputDOMs$ = Collection.pluck(inputTimelines$, prop('DOM'));
   const inputDataList$ = Collection.pluck(inputTimelines$, prop('data'))
-    .filter(length)
-    .debounceTime(0)
-    .withLatestFrom(inputStores$, zip)
-    .map(map(apply(flip(merge))));
+    .pipe(
+      filter(length),
+      debounceTime(0),
+      withLatestFrom(inputStores$, zip),
+      mapOperator(map(apply(flip(merge))))
+    );
 
-  const vtree$ = Observable
-    .combineLatest(inputDOMs$, outputTimeline.DOM, example$)
-    .map(([inputsDOMs, outputDOM, example]) =>
-      div({ style: sandboxStyle }, [
-        ...inputsDOMs,
-        renderOperatorBox(example.label),
-        outputDOM,
-      ]),
+  const vtree$ = combineLatest(inputDOMs$, outputTimeline.DOM, example$)
+    .pipe(
+      mapOperator(([inputsDOMs, outputDOM, example]) =>
+        div({ style: sandboxStyle }, [
+          ...inputsDOMs,
+          renderOperatorBox(example.label),
+          outputDOM,
+        ]),
+      )
     );
 
   return {
     DOM: vtree$,
-    data: inputDataList$.map((inputs) => ({ inputs })),
+    data: inputDataList$.pipe(mapOperator((inputs) => ({ inputs }))),
   };
 }

@@ -2,9 +2,11 @@ import { div, span } from '@cycle/dom';
 
 import {
   renderElevation2After,
-  renderElevation2Before
-} from '../../styles/utils';
-import { fontCode, DIMENS, merge } from '../../styles';
+  renderElevation2Before,
+  fontCode,
+  DIMENS,
+  merge
+} from '../../styles';
 
 function renderOperatorLabel(label) {
   let fontSize = (label.length >= 45) ? 1.3 : (label.length >= 30) ? 1.5 : 2;

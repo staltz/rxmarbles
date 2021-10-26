@@ -1,17 +1,31 @@
-import { Observable, ReplaySubject, Subject, VirtualTimeScheduler } from 'rxjs';
+import { Observable, timer, ReplaySubject, Subject, VirtualTimeScheduler } from 'rxjs';
+import {
+  debounceTime,
+  withLatestFrom,
+  map,
+  mergeAll,
+  publishReplay,
+  refCount,
+  takeUntil,
+  observeOn,
+  timestamp,
+  reduce
+} from 'rxjs/operators'
 import { assoc, curry, merge } from 'ramda';
 
 import { calculateNotificationContentHash } from './sandbox-utils';
 
-const MAX_TIME = 100;
+// add 0.01 or else things at exactly MAX_TIME will cut off
+const PAD_TIME = 0.1
+const MAX_TIME = 100 + PAD_TIME;
 
 const toVTStream = curry(function _toVTStream(scheduler, data) {
   const marbleStreams$ = new Observable(observer => {
     data.marbles.forEach(item =>
       scheduler.schedule(() => observer.next(item), item.time));
   });
-  return marbleStreams$
-    .takeUntil(Observable.timer(data.end.time + 1, scheduler));
+  return marbleStreams$.pipe(takeUntil(timer(data.end.time + PAD_TIME, scheduler))
+)
 });
 
 function outputStreamToMarbles$(scheduler, stream) {
@@ -20,45 +34,53 @@ function outputStreamToMarbles$(scheduler, stream) {
   let endTime;
 
   stream
-    .observeOn(scheduler)
-    .timestamp(scheduler)
-    .map(({ value, timestamp }) => {
-      const marble = typeof value !== 'object'
-        ? { content: value, id: calculateNotificationContentHash(value) }
-        : value;
-
-      return assoc('time', timestamp / MAX_TIME * 100, marble);
-    })
-    .takeUntil(stop$)
-    .reduce((a, b) => a.concat(b), [])
-    .map(items => items.map(
-      (item, i) => merge(item, { itemId: i }))
+    .pipe(
+      observeOn(scheduler),
+      timestamp(scheduler),
+      map(({ value, timestamp }) => {
+        const marble = typeof value !== 'object'
+          ? { content: value, id: calculateNotificationContentHash(value) }
+          : value;
+        return assoc('time', timestamp / MAX_TIME * 100, marble);
+      }),
+      takeUntil(stop$),
+      reduce((a, b) => a.concat(b), []),
+      map(items =>
+        items.map((item, i) => merge(item, { itemId: i }))
+      )
     )
-    .subscribe(
-      items => subject$.next(items),
-      undefined,
-      () => endTime = scheduler.now(),
-    );
+    .subscribe({
+       next(items) {
+         subject$.next(items)
+       },
+       complete() {
+         endTime = scheduler.now()
+       }
+    });
 
   scheduler.flush();
   stop$.next();
 
-  return subject$.asObservable()
-    .map(marbles => ({ marbles, end: { time: endTime } }));
+  return subject$.asObservable().pipe(
+      map(marbles => ({ marbles, end: { time: endTime } }))
+    )
 }
 
 export function createOutputStream$(example$, inputStores$) {
-  return inputStores$.debounceTime(0).withLatestFrom(example$)
-    .map(([inputStores, example]) => {
+  return inputStores$.pipe(
+    debounceTime(0),
+    withLatestFrom(example$),
+    map(([inputStores, example]) => {
       const vtScheduler = new VirtualTimeScheduler(undefined, MAX_TIME);
 
       const inputStreams = inputStores.map(toVTStream(vtScheduler));
       const outputStream = example.apply(inputStreams, vtScheduler)
-        // add 0.01 or else things at exactly MAX_TIME will cut off
-        .takeUntil(Observable.timer(MAX_TIME + 0.01, vtScheduler));
+        .pipe(takeUntil(timer(MAX_TIME, vtScheduler)));
 
       return outputStreamToMarbles$(vtScheduler, outputStream);
-    })
-    .mergeAll()
-    .publishReplay(1).refCount();
+    }),
+    mergeAll(),
+    publishReplay(1),
+    refCount()
+  );
 }
