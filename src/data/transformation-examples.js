@@ -26,7 +26,7 @@ export const transformationExamples = {
     label: 'buffer',
     inputs: [
       [{t:9, c:'A'}, {t:23, c:'B'}, {t:40, c:'C'}, {t:54, c:'D'}, {t:71, c:'E'}, {t:85, c:'F'}],
-      [{t:33, c:0}, {t:66, c:0}, {t:90, c:0}],
+      [{t:33, c:0}, {t:50, c:0}, {t:90, c:0}],
     ],
     apply(inputs) {
       return inputs[0].pipe(
@@ -54,7 +54,7 @@ export const transformationExamples = {
   bufferTime: {
     label: 'bufferTime(30)',
     inputs: [
-      [{t:0, c:'A'}, {t:10, c:'B'}, {t:22, c:'C'}, {t:61, c:'D'}, {t:71, c:'E'}, {t:95, c:'F'}],
+      [{t:0, c:'A'}, {t:10, c:'B'}, {t:22, c:'C'}, {t:51, c:'D'}, {t:71, c:'E'}, {t:95, c:'F'}],
     ],
     apply(inputs, scheduler) {
       return inputs[0].pipe(
@@ -83,7 +83,7 @@ export const transformationExamples = {
   bufferWhen: {
     label: 'bufferWhen',
     inputs: [
-      [{t:0, c:1}, {t:10, c:2}, {t:20, c:3}, {t:30, c:4}, {t:40, c:5}, {t:50, c:6}, {t:60, c:7}, {t:70, c:8}, {t:80, c:9}, 99],
+      [{t:0, c:1}, {t:10, c:2}, {t:20, c:3}, {t:30, c:4}, {t:40, c:5}, {t:50, c:6}, {t:60, c:7}, {t:70, c:8}, {t:80, c:9}],
       [{t:35, c:0}, {t:50, c:0}],
     ],
     apply(inputs) {
@@ -223,7 +223,7 @@ export const transformationExamples = {
   },
 
   switchMap: {
-    label: 'obs1$.switchMap(x => obs2$.pipe(y => "" + x + y))',
+    label: 'obs1$.switchMap(x => obs2$.pipe(map(y => "" + x + y)))',
     inputs: [
       [{t:0, c:'A'}, {t:42, c:'B'}, {t:55, c:'C'}],
       [{t:0, c:1}, {t:10, c:2}, {t:20, c:3}, 25]

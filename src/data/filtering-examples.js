@@ -36,7 +36,7 @@ export const filteringExamples = {
   },
 
   debounce: {
-    label: 'debounce(x => timer(10 * x))',
+    label: 'obs1$.pipe(debounce(x => timer(10 * x)))',
     inputs: [
       [{t:0, c:1}, {t:26, c:2}, {t:34, c:1}, {t:40, c:1}, {t:45, c:2}, {t:79, c:1}]
     ],
