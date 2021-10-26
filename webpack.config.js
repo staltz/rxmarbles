@@ -18,6 +18,7 @@ let plugins = [
 
   new CopyWebpackPlugin({
     patterns: [
+      { from: 'src/assets' },
       { from: 'src/index.css' }
     ]
   }),
@@ -34,6 +35,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name]-[contenthash].js',
+    clean: isProduction
   },
 
   mode: isProduction ? 'production' : 'development',
