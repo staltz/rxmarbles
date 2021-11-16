@@ -90,6 +90,18 @@ export const transformationExamples = {
     }
   },
 
+  exhaustMap: {
+    label: 'obs1$.exhaustMap(() => obs2$, (x, y) => "" + x + y)',
+    inputs: [
+      [{t:0, c:'A'}, {t:42, c:'B'}, {t:55, c:'C'}],
+      [{t:0, c:1}, {t:10, c:2}, {t:20, c:3}, 25]
+    ],
+    apply: function(inputs, scheduler) {
+      return inputs[0].pluck('content')
+        .exhaustMap(() => inputs[1].pluck('content'), (x, y) => '' + x + y);
+    }
+  },
+
   map: {
     label: 'map(x => 10 * x)',
     inputs: [
