@@ -26,6 +26,14 @@ export const creationExamples = {
     }
   },
 
+  range: {
+    label: 'Observable.range(3, 7).delayWhen(x => timer(x * 10))',
+    inputs: [],
+    apply: function(inputs, scheduler) {
+      return Observable.range(3, 7).delayWhen(x => Observable.timer(x * 10, scheduler));
+    }
+  },
+
   timer: {
     label: 'Observable.timer(30, 10)',
     inputs: [],
