@@ -41,7 +41,7 @@ export const combinationExamples = {
     label: 'race',
     inputs: [
       [{t:10, c:20}, {t:20, c:40}, {t:30, c:60}],
-      [{t:5, c:1}, {t:15, c:2}, {t:25, c:3}],
+      [{t:5, c:1}, {t:55, c:2}, {t:65, c:3}],
       [{t:20, c:0}, {t:32, c:0}, {t:44, c:0}]
     ],
     apply: function(inputs) {
