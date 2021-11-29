@@ -21,24 +21,36 @@ const POSSIBLE_COLORS = [COLORS.blue, COLORS.green, COLORS.yellow, COLORS.red];
 
 function view(sources, value$, isHighlighted$) {
   return Observable.combineLatest(
-    sources.id, sources.content, value$, isHighlighted$)
-    .map(([id, content, value, isHighlighted]) =>
+    sources.id, sources.content, sources.pastEnd, value$, isHighlighted$)
+    .map(([id, content, pastEnd, value, isHighlighted]) =>
       svg.g({
         attrs: { class: ELEMENT_CLASS, transform: `translate(${value}, 5)` },
         style: { cursor: isHighlighted ? 'ew-resize' : 'default'  },
       }, [
-        svg.circle({
+        ((content === 'X') || (content === '|'))
+        ? svg.rect({
+          attrs: { x: -MARBLE_SIZE, y: -MARBLE_SIZE, width: 2*MARBLE_SIZE, height: 2*MARBLE_SIZE },
+          style: merge({
+            fill: pastEnd ? COLORS.greyLight : POSSIBLE_COLORS[id % POSSIBLE_COLORS.length],
+            stroke: pastEnd ? COLORS.grey : 'black',
+            strokeWidth: STROKE_WIDTH,
+          }, isHighlighted ? dropshadow : {}),
+        })
+        : svg.circle({
           attrs: { r: MARBLE_SIZE },
           style: merge({
-            fill: POSSIBLE_COLORS[id % POSSIBLE_COLORS.length],
-            stroke: 'black',
+            fill: pastEnd ? COLORS.greyLight : POSSIBLE_COLORS[id % POSSIBLE_COLORS.length],
+            stroke: pastEnd ? COLORS.grey : 'black',
             strokeWidth: STROKE_WIDTH,
           }, isHighlighted ? dropshadow : {}),
         }),
         svg.text({
           attrs: {
             'text-anchor': 'middle', y: '0.8' },
-          style: mergeStyles({ fontSize: '2.5px' }, fontBase, userSelectNone),
+          style: mergeStyles({
+              fontSize: '2.5px',
+              fill: pastEnd ? COLORS.grey : 'black',
+            }, fontBase, userSelectNone),
         }, [`${content}`]),
       ]),
     );

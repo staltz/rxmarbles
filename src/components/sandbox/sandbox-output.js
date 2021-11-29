@@ -7,8 +7,13 @@ const MAX_TIME = 100;
 
 const toVTStream = curry(function _toVTStream(scheduler, data) {
   const marbleStreams$ = new Observable(observer => {
+    let emit = (item) => {
+        if (item.content === 'X') observer.error(item)
+        else if (item.content === '|') observer.complete()
+        else observer.next(item);
+    };
     data.marbles.forEach(item =>
-      scheduler.schedule(() => observer.next(item), item.time));
+      scheduler.schedule(() => emit(item), item.time));
   });
   return marbleStreams$
     .takeUntil(Observable.timer(data.end.time + 1, scheduler));
@@ -21,10 +26,13 @@ function outputStreamToMarbles$(scheduler, stream) {
 
   stream
     .observeOn(scheduler)
+    .catch(error => {
+       return Observable.of(error);
+    })
     .timestamp(scheduler)
     .map(({ value, timestamp }) => {
       const marble = typeof value !== 'object'
-        ? { content: value, id: calculateNotificationContentHash(value) }
+        ? { content: value, id: calculateNotificationContentHash(value), pastEnd: false }
         : value;
 
       return assoc('time', timestamp / MAX_TIME * 100, marble);
